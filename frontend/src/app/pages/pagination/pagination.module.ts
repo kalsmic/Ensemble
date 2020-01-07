@@ -1,6 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {PaginationComponent} from './pagination.component';
+import {IonicModule} from '@ionic/angular';
 
 
 @NgModule({
@@ -8,7 +9,8 @@ import {PaginationComponent} from './pagination.component';
         PaginationComponent,
     ],
     imports: [
-        CommonModule
+        CommonModule,
+        IonicModule
     ],
     entryComponents: [PaginationComponent],
 

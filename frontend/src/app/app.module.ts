@@ -9,7 +9,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import {AuthService} from './services/auth.service';
 import {ArtistService} from './services/artist.service';
 import {MovieService} from './services/movie.service';
@@ -17,7 +16,7 @@ import {MovieService} from './services/movie.service';
 
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-
+import {ToastService} from './services/toast.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -28,7 +27,9 @@ import {HttpClientModule} from '@angular/common/http';
         HttpClientModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+
+
     ],
     providers: [
         StatusBar,
@@ -36,6 +37,8 @@ import {HttpClientModule} from '@angular/common/http';
         AuthService,
         ArtistService,
         MovieService,
+        ToastService,
+
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]

@@ -6,7 +6,7 @@
         <ion-title>Subheader</ion-title>
         <ion-tabs>
             <ion-tab-bar slot="bottom">
-                <ion-tab-button (click)="openMovieForm()" [disabled]="!auth.can('post:movies')">
+                <ion-tab-button (click)="openMovieForm('')" [disabled]="!auth.can('post:movies')">
                     <ion-icon name="add-circle"></ion-icon>
                     <ion-label>New Movie</ion-label>
                 </ion-tab-button>
@@ -23,45 +23,38 @@
 <ion-content *ngIf="movies && movies.cinemas">
 
 
-       <ion-grid class="table">
+    <ion-grid class="table">
 
-           <ion-row size="12">
-               <ion-col>Title</ion-col>
-               <ion-col size="4">Released</ion-col>
-               <ion-col size="2">View</ion-col>
-           </ion-row>
+        <ion-row size="12">
+            <ion-col>Title</ion-col>
+            <ion-col size="4">Released</ion-col>
+            <ion-col size="2">View</ion-col>
+        </ion-row>
 
-           <ion-row  *ngFor="let movieId of Object.keys(movies.cinemas)">
-               <ion-col>{{movies.cinemas[movieId].title}}</ion-col>
+        <ion-row *ngFor="let movieId of Object.keys(movies.cinemas)">
+            <ion-col>{{movies.cinemas[movieId].title}}</ion-col>
 
-               <ion-col size="4">{{movies.cinemas[movieId].release_date}} </ion-col>
-               <ion-col size="2">
-                       <ion-button
-                                   (click)="openMovieForm(movies.cinemas[movieId])"
-                                   [disabled]="!auth.can('patch:movies') || !auth.can('delete:movies')"
-                       ><ion-icon  name="eye"></ion-icon>{{movieId}}</ion-button>
-               </ion-col>
-           </ion-row>
-           <ion-row>
-               <ion-col size="12">
-                   <app-pagination
-                           (goToPage)="navigateToPage($event)"
-                           [currentPage]="movies.currentPage"
-                           [currentPage]="movies.currentPage"
-                           [hasNext]="movies.hasNext"
-                           [hasPrevious]="movies.hasPrevious"
-                           [nextPage]="movies.nextPage"
-                           [page]="movies.page"
-                           [pages]="movies.pages"
-                           [previousPage]="movies.previousPage"
-                           [total]="movies.total"
-                   ></app-pagination>
-
-               </ion-col>
+            <ion-col size="4">{{movies.cinemas[movieId].release_date}} </ion-col>
+            <ion-col size="2">
+                <ion-button
+                        (click)="openMovieForm(movieId=movieId)"
+                        [disabled]="!auth.can('patch:movies') || !auth.can('delete:movies')"
+                >
+                    <ion-icon name="eye"></ion-icon>
+                    {{movieId}}</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+                <app-pagination (goToPage)="navigateToPage($event)"
+                                *ngIf="movies.pagination"
+                                [pagination]="movies.pagination"
+                ></app-pagination>
+            </ion-col>
 
 
-           </ion-row>
-       </ion-grid>
+        </ion-row>
+    </ion-grid>
 
 </ion-content>
 

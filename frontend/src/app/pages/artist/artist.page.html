@@ -112,14 +112,6 @@
 <ion-footer>
     <app-pagination
             (goToPage)="navigateToPage($event)"
-            [currentPage]="artists.currentPage"
-            [currentPage]="artists.currentPage"
-            [hasNext]="artists.hasNext"
-            [hasPrevious]="artists.hasPrevious"
-            [nextPage]="artists.nextPage"
-            [page]="artists.page"
-            [pages]="artists.pages"
-            [previousPage]="artists.previousPage"
-            [total]="artists.total"
+            [pagination]="artists.pagination"
     ></app-pagination>
 </ion-footer>

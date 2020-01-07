@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from 'src/app/services/auth.service';
 import {ModalController} from '@ionic/angular';
-import {Actor, ArtistService} from 'src/app/services/artist.service';
-import {Router} from '@angular/router';
+import {ArtistService} from 'src/app/services/artist.service';
 import {ArtistFormComponent} from './artist-form/artist-form.component';
+import {Actor} from '../../shared/models';
 
 
 @Component({
@@ -18,7 +18,6 @@ export class ArtistPage implements OnInit {
         private auth: AuthService,
         private modalCtrl: ModalController,
         public artists: ArtistService,
-        private router: Router
     ) {
     }
 

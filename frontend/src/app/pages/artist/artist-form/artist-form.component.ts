@@ -1,7 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Actor, ArtistService} from 'src/app/services/artist.service';
+import {ArtistService} from 'src/app/services/artist.service';
 import {AuthService} from 'src/app/services/auth.service';
 import {ModalController} from '@ionic/angular';
+import {Actor} from '../../../shared/models';
+import {formatDate} from '../../../shared/utils';
 
 @Component({
     selector: 'app-artist-form',
@@ -24,7 +26,7 @@ export class ArtistFormComponent implements OnInit {
             this.artist = {
                 id: -1,
                 name: '',
-                age: 18,
+                birth_date: '',
                 gender: 'M'
             };
         }
@@ -34,20 +36,18 @@ export class ArtistFormComponent implements OnInit {
         this.modalCtrl.dismiss();
     }
 
-
-    addArtist() {
-        this.artistService.saveArtist(this.artist);
-        this.closeModal();
-    }
-
     deleteArtist() {
         this.artistService.deleteArtist(this.artist);
         this.closeModal();
     }
 
     saveArtist() {
-        this.artistService.saveArtist(this.artist);
-        this.closeModal();
+        const {name, birth_date, gender} = this.artist;
+        if (name && birth_date && gender) {
+            this.artist.birth_date = formatDate(birth_date);
+            this.artistService.saveArtist(this.artist);
+            this.closeModal();
+        }
     }
 
 

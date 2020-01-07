@@ -1,11 +1,10 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule, Routes} from '@angular/router';
 
 import {IonicModule} from '@ionic/angular';
 import {MoviePage} from './movie.page';
-import {MovieDetailPage} from './movie-detail/movie-detail.page';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {PaginationModule} from '../pagination/pagination.module';
 
@@ -16,10 +15,10 @@ const routes: Routes = [
         component: MoviePage,
 
     },
-    {
-        path: ':id',
-        component: MovieDetailPage
-    }
+    // {
+    //     path: ':id',
+    //     component: MovieDetailPage
+    // }
 
 
 ];
@@ -30,12 +29,14 @@ const routes: Routes = [
         FormsModule,
         RouterModule.forChild(routes),
         IonicModule,
-        PaginationModule
+        PaginationModule,
+        ReactiveFormsModule,
 
 
     ],
     entryComponents: [MovieFormComponent],
-    declarations: [MoviePage, MovieFormComponent, MovieDetailPage
+    declarations: [MoviePage, MovieFormComponent
+        // , MovieDetailPage
     ]
 })
 export class MoviePageModule {

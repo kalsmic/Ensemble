@@ -5,22 +5,9 @@ import {AuthService} from './auth.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {map, retry} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
-
-export interface MovieActor {
-   actor: {
-       id?: number | string;
-       name?: string;
-   };
-   role: string;
-}
-
-export interface Movie {
-    id?: number;
-    title: string;
-    release_date: string;
-    actors?: Array<MovieActor>;
-}
+import {Observable} from 'rxjs';
+import {Movie, Pagination} from '../shared/models';
+import {setPaginationDetails} from '../shared/utils';
 
 
 @Injectable({
@@ -33,14 +20,7 @@ export class MovieService {
 
     public cinemas: { [key: number]: Movie } = {};
     public cinema: Movie;
-    public page: number;
-    public pages: number;
-    public currentPage: number;
-    public nextPage: number;
-    public previousPage: number;
-    public total: number;
-    public hasNext: boolean;
-    public hasPrevious: boolean;
+    public pagination: Pagination;
 
     constructor(
         private auth: AuthService,
@@ -57,61 +37,96 @@ export class MovieService {
         return header;
     }
 
-    getMovies(page?: number) {
+    // getMovies(page?: number) {
+    //     if (this.auth.can('get:movies')) {
+    //         let url = this.url + '/movies';
+    //         if (page) {
+    //             url = url + '?page=' + page;
+    //         }
+    //         this.http.get(url, this.getHeaders())
+    //             .subscribe((res: any) => {
+    //                 this.cinemas = [];
+    //                 this.moviesToCinemaItems(res.movies);
+    //                 this.pagination = setPaginationDetails({...res});
+    //
+    //             });
+    //
+    //     }
+    // }
+    getMovies(page?: number): Observable<void> {
+
+        const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
+
         if (this.auth.can('get:movies')) {
-            let url = this.url + '/movies';
-            if (page) {
-                url = url + '?page=' + page;
-            }
-            this.http.get(url, this.getHeaders())
-                .subscribe((res: any) => {
-                    this.cinemas = [];
-                    this.moviesToCinemaItems(res.movies);
-                    this.page = res.page;
-                    this.currentPage = res.current_page;
-                    this.total = res.total;
-                    this.pages = res.pages;
-                    this.nextPage = res.next_num;
-                    this.previousPage = res.prev_num;
-                    this.hasNext = res.has_next;
-                    this.hasPrevious = res.has_prev;
-
-                });
-
+            return this.http.get<any>(url, this.getHeaders())
+                .pipe(
+                    retry(3),
+                    map((res) => {
+                        const {movies} = res;
+                        this.cinemas = [];
+                        this.moviesToCinemaItems(res.movies);
+                        this.pagination = setPaginationDetails({...res});
+                    })
+                );
         }
     }
 
-    getMovie(movieId: number) {
+    getMovie(movieId: string): Observable<Movie> {
 
         if (this.auth.can('get:movies')) {
-
-            this.http.get(this.url + '/movies/' + movieId, this.getHeaders())
-                .subscribe((res: any) => {
-                    this.cinema = res.movie;
-                });
+            return this.http.get<any>(this.url + '/movies/' + movieId, this.getHeaders())
+                .pipe(
+                    retry(3),
+                    map((res) => {
+                        const {movie} = res;
+                        return movie;
+                    })
+                );
         }
     }
 
-    saveMovie(movie: Movie) {
+    saveMovie(movie: Movie, actorIds) {
+
+        const movieData = {
+            title: movie.title,
+            release_date: movie.release_date,
+            actors: actorIds
+        };
         if (movie.id >= 0) { // patch
-            const movieData = {
-                title: movie.title,
-                release_date: movie.release_date,
-                actors: movie.actors
-            };
-            this.http.patch(this.url + '/movies/' + movie.id, movieData, this.getHeaders())
+            this.http.patch(this.url + '/movies/' + movie.id, {movie: movieData}, this.getHeaders())
                 .subscribe((res: any) => {
-                    if (res.success) {
-                        this.cinema = res.movie;
-                    }
-                });
-        } else { // insert
-            delete movie.id;
-            this.http.post(this.url + '/movies', movie, this.getHeaders())
-                    .subscribe((res: any) => {
                         if (res.success) {
                             this.cinema = res.movie;
+                            this.toast.showToast(res.message, 'success');
+                            const {id, title, release_date} = res.movie;
+                            this.cinemas[id] = {id, title, release_date};
+                            return res.message;
+
+
                         }
+                    },
+                    err => {
+                        this.toast.showToast('Error updating movie', 'danger');
+                        return err.error;
+                    });
+        } else { // insert
+            console.log('insert', 'actorIds', actorIds);
+
+            delete movie.id;
+            this.http.post(this.url + '/movies', {movie: movieData}, this.getHeaders())
+                .subscribe((res: any) => {
+                        if (res.success) {
+                            // this.cinemas = res.movie;
+                            const {id, title, release_date} = res.movie;
+                            this.cinemas[id] = {id, title, release_date};
+
+                            this.toast.showToast(res.message, 'success');
+
+                        }
+                    },
+                    err => {
+
+                        this.toast.showToast(err.error, 'danger');
                     });
         }
 
@@ -131,21 +146,5 @@ export class MovieService {
         for (const movie of movies) {
             this.cinemas[movie.id] = movie;
         }
-    }
-
-    goToNextPage() {
-        this.getMovies(this.nextPage);
-    }
-
-
-    getMovieActors(movieId: number): Observable<MovieActor[]> {
-        return this.http.get<any>(this.url + '/movies/' + movieId + '/actors')
-            .pipe(
-                retry(3),
-                map((res) => {
-                    const {actors} = res;
-                    return actors;
-                })
-            );
     }
 }

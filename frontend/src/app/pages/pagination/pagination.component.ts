@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Pagination} from '../../shared/models';
 
 @Component({
     selector: 'app-pagination',
@@ -6,14 +7,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
     styleUrls: ['./pagination.component.scss'],
 })
 export class PaginationComponent implements OnInit {
-    @Input() page: number;
-    @Input() pages: number;
-    @Input() currentPage: number;
-    @Input() nextPage: number;
-    @Input() previousPage: number;
-    @Input() total: number;
-    @Input() hasNext: boolean;
-    @Input() hasPrevious: boolean;
+    @Input() pagination: Pagination;
     @Output() goToPage: EventEmitter<number> = new EventEmitter();
 
 

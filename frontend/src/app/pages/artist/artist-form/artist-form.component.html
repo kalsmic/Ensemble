@@ -7,19 +7,19 @@
 
 <ion-content *ngIf='artist'>
 
-    <form (ngSubmit)="logForm()">
+    <form (ngSubmit)="saveArtist">
         <ion-item>
             <ion-label stacked>Name:</ion-label>
             <ion-input [(ngModel)]="artist.name" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
                        name="name" placeholder="name"
                        type="text"></ion-input>
         </ion-item>
-
-        <ion-item>
-            <ion-label stacked>Age:</ion-label>
-            <ion-input [(ngModel)]="artist.age" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
-                       name="age" placeholder="age"
-                       type="number"></ion-input>
+        <ion-item stacked>
+            <ion-label>Birth Date</ion-label>
+            <ion-datetime [(ngModel)]="artist.birth_date" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')" displayFormat="MMM DD, YYYY"
+                          name='release_date'
+                          pickerFormat="YYYY-MM-DD"
+                          placeholder="Select Date"></ion-datetime>
         </ion-item>
 
         <ion-item>

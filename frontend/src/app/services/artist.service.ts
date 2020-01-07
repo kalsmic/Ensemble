@@ -4,14 +4,8 @@ import {AuthService} from './auth.service';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
-
-
-export interface Actor {
-    id?: number;
-    name: string;
-    gender?: string;
-    age?: number;
-}
+import {Actor, Pagination} from '../shared/models';
+import {setPaginationDetails} from '../shared/utils';
 
 
 @Injectable({
@@ -24,14 +18,7 @@ export class ArtistService {
 
     public actors: { [key: number]: Actor } = {};
     public actor: Actor;
-    public page: number;
-    public pages: number;
-    public currentPage: number;
-    public nextPage: number;
-    public previousPage: number;
-    public total: number;
-    public hasNext: boolean;
-    public hasPrevious: boolean;
+    public pagination: Pagination;
 
     constructor(private auth: AuthService, private http: HttpClient) {
     }
@@ -54,34 +41,28 @@ export class ArtistService {
                 .subscribe((res: any) => {
                     this.actors = [];
                     this.artistsToItems(res.actors);
-                    this.page = res.page;
-                    this.currentPage = res.current_page;
-                    this.total = res.total;
-                    this.pages = res.pages;
-                    this.nextPage = res.next_num;
-                    this.previousPage = res.prev_num;
-                    this.hasNext = res.has_next;
-                    this.hasPrevious = res.has_prev;
+                    this.pagination = setPaginationDetails(res);
                 });
 
         }
     }
 
     saveArtist(artist: Actor) {
+        const actor = {
+            name: artist.name,
+            birth_date: artist.birth_date,
+            gender: artist.gender
+        };
         if (artist.id >= 0) { // patch
-            const artistData = {
-                name: artist.name,
-                age: artist.age,
-                gender: artist.gender
-            };
-            this.http.patch(this.url + '/actors/' + artist.id, artistData, this.getHeaders())
+
+            this.http.patch(this.url + '/actors/' + artist.id, {actor}, this.getHeaders())
                 .subscribe((res: any) => {
                     if (res.success) {
                         this.actor = res.actor;
                     }
                 });
         } else { // insert
-            this.http.post(this.url + '/actors', artist, this.getHeaders())
+            this.http.post(this.url + '/actors', {actor}, this.getHeaders())
                 .subscribe((res: any) => {
                     if (res.success) {
                         this.actor = res.artist;
@@ -99,8 +80,12 @@ export class ArtistService {
             });
     }
 
-    searchActor(searchTerm: string): Observable<Actor[]> {
-        return this.http.get<any>(this.url + '/actors/search?searchterm='.concat(searchTerm))
+    searchActor(searchTerm: string, actorIds = []): Observable<Actor[]> {
+        console.log(searchTerm, actorIds);
+        const url = this.url + '/actors/search';
+        const data = {actor_ids: actorIds, search_term: searchTerm};
+        return this.http.post<any>(url, data, this.getHeaders())
+
             .pipe(
                 retry(3),
                 map((res) => {
@@ -109,6 +94,8 @@ export class ArtistService {
                 })
             );
     }
+
+
     artistsToItems(artists: Array<Actor>) {
         for (const artist of artists) {
             this.actors[artist.id] = artist;
