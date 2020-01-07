@@ -3,7 +3,14 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    apiServerUrl: 'http://127.0.0.1:5000/api/v1', // the running FLASK api server url
+    auth0: {
+        url: 'dev-7d54-828.auth0.com', // the auth0 domain prefix
+        audience: 'ensemble', // the audience set for the auth0 app
+        clientId: '3M60ex70HYUjaHBIDC9l1v0XOfT11hep', // the client id generated for the auth0 app
+        callbackURL: 'http://localhost:4200', // the base url of the running ionic application.
+    }
 };
 
 /*

@@ -1,0 +1,75 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title *ngIf="isNew">Add New Movie</ion-title>
+        <ion-title *ngIf="!isNew">Edit Movie</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf='movie'>
+    <form (ngSubmit)="logForm()">
+        <ion-item>
+            <ion-label stacked>Title:</ion-label>
+            <ion-input [(ngModel)]="movie.title" [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
+                       name="title" placeholder="movie Title"
+                       type='text'></ion-input>
+        </ion-item>
+        <ion-item stacked>
+            <ion-label>MM DD YY</ion-label>
+            <ion-datetime [(ngModel)]="movie.release_date" displayFormat="MMM DD, YYYY" name='release_date'
+                          placeholder="Select Date"></ion-datetime>
+        </ion-item>
+       <ion-item>
+            <ion-label stacked>Search Actors:</ion-label>
+            <ion-input [(ngModel)]="actorFilter"
+                       name="actorFilter" placeholder="Actor" value=""
+
+                       type='text'></ion-input>
+        </ion-item>
+        <ion-item-group *ngIf="actorFilter">
+            <ion-item *ngFor="let actor of filteredActors">
+                <ion-label>  {{actor.name | uppercase}}</ion-label>
+                <ion-button (click)="addActor(actor)"> Add actor</ion-button>
+            </ion-item>
+       </ion-item-group>
+        <ion-grid class="table" *ngIf="movie && movie.actors" >
+            <ion-row>
+                <ion-col>Actor</ion-col>
+                <ion-col>Role</ion-col>
+                <ion-col size="2">Remove</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let actor of movie.actors; let i = index;  trackBy: customTrackBy">
+                <ion-col>
+                    <ion-text>{{movie.actors[i].actor.name}}</ion-text>
+                    <ion-input [(ngModel)]="movie.actors[i].actor.id" [name]="'Actor id'+i" type="number"  hidden></ion-input>
+                </ion-col>
+                <ion-col>
+                    <ion-input
+                            [(ngModel)]="movie.actors[i].role"
+                            [name]="'Actor Role'+i"
+                            type="text"
+                            placeholder="enter Role"
+                            required
+
+                    ></ion-input>
+                </ion-col>
+                <ion-col size="2">
+                    <ion-button (click)="removeActor(i)" [disabled]="i==0 && movie.actors.length==5">Remove</ion-button>
+
+                </ion-col>
+            </ion-row>
+
+        </ion-grid>
+
+        <ion-button (click)="deleteClickedMovie()" [disabled]="isNew || !auth.can('delete:movies')" color="danger">
+            Delete
+        </ion-button>
+        <ion-button (click)="closeModal()">Cancel</ion-button>
+
+        <ion-button (click)="saveMovie()" [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
+                    color="secondary">
+            <ion-icon name="save" slot="icon-only"></ion-icon>
+            Save
+        </ion-button>
+
+    </form>
+</ion-content>

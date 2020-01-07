@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
 
-import {HomePage} from './home.page';
+import {PaginationComponent} from './pagination.component';
 
-describe('HomePage', () => {
-    let component: HomePage;
-    let fixture: ComponentFixture<HomePage>;
+describe('PaginationComponent', () => {
+    let component: PaginationComponent;
+    let fixture: ComponentFixture<PaginationComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [HomePage],
+            declarations: [PaginationComponent],
             imports: [IonicModule.forRoot()]
         }).compileComponents();
 
-        fixture = TestBed.createComponent(HomePage);
+        fixture = TestBed.createComponent(PaginationComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

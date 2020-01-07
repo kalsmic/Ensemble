@@ -1,0 +1,28 @@
+<ion-segment (ionChange)="getPageNumber($event)" color="secondary">
+
+    <ion-segment-button [value]=1>
+        First
+        <ion-icon color="primary" name="rewind"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button [disabled]="!hasPrevious"
+                        [value]="previousPage">
+        Previous
+        <ion-icon color="primary" name="skip-backward"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button color="primary" disabled>
+        <ion-text color="primary">
+            {{currentPage}} of {{pages}} pages
+        </ion-text>
+    </ion-segment-button>
+
+    <ion-segment-button [disabled]="!hasNext"
+                        [value]="nextPage">
+        Next
+        <ion-icon color="primary" name="skip-forward"></ion-icon>
+
+    </ion-segment-button>
+    <ion-segment-button [value]="pages">
+        Last
+        <ion-icon color="primary" name="fastforward"></ion-icon>
+    </ion-segment-button>
+</ion-segment>

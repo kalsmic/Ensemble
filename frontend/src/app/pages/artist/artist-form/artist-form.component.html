@@ -1,0 +1,47 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title *ngIf="isNew">Add New Artist</ion-title>
+        <ion-title *ngIf="!isNew">Edit Artist</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf='artist'>
+
+    <form (ngSubmit)="logForm()">
+        <ion-item>
+            <ion-label stacked>Name:</ion-label>
+            <ion-input [(ngModel)]="artist.name" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                       name="name" placeholder="name"
+                       type="text"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label stacked>Age:</ion-label>
+            <ion-input [(ngModel)]="artist.age" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                       name="age" placeholder="age"
+                       type="number"></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Gender</ion-label>
+            <ion-select [(ngModel)]="artist.gender" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                        name="gender"
+                        placeholder="Select gender">
+                <ion-select-option value="F">Female</ion-select-option>
+                <ion-select-option value="M">Male</ion-select-option>
+            </ion-select>
+        </ion-item>
+
+        <ion-button (click)="deleteArtist()" [disabled]="isNew || !auth.can('delete:actors')" color="danger">Delete
+        </ion-button>
+        <br/>
+        <ion-button (click)="closeModal()">Cancel</ion-button>
+
+        <ion-button (click)="saveArtist()" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                    color="secondary">
+            <ion-icon name="save" slot="icon-only"></ion-icon>
+            Save
+        </ion-button>
+
+    </form>
+</ion-content>
