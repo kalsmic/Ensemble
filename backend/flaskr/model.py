@@ -1,6 +1,5 @@
 import datetime
 import json
-from os import environ
 
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
@@ -9,12 +8,10 @@ from marshmallow import fields, validate
 db = SQLAlchemy()
 ma = Marshmallow()
 
-database_path = environ.get('DATABASE_URI')
 
+def setup_db(app, config):
+    app.config.from_object(config)
 
-def setup_db(app, database_path=database_path):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
     db.create_all()
@@ -70,15 +67,16 @@ class Actor(BaseModel):
     def long(self):
         current_year = datetime.datetime.today().strftime("%Y")
         birth_year = self.birth_date.year
-        age = current_year - birth_year
-        return {
-            'id': self.id,
-            'name': self.name,
-            'gender': self.gender,
-            'birth_date': self.birth_date.strftime('%Y-%m-%d'),
-            "age": age
+        age = int(current_year) - int(birth_year)
+        birth_date = self.birth_date.strftime('%Y-%m-%d')
+        actor = self.short()
 
-        }
+        actor.update({
+            'gender': self.gender,
+            'birth_date': birth_date,
+            "age": age
+        })
+        return actor
 
     @classmethod
     def get_invalid_actor_ids(cls, actor_ids):
@@ -86,7 +84,7 @@ class Actor(BaseModel):
             cls.id.in_(actor_ids)).all()
                      ]
 
-        #     Compute difference to get invalid ids
+        #  Compute difference to get ids not in db
         invalid_ids = list(set(actor_ids) - set(valid_ids))
 
         return invalid_ids
@@ -146,7 +144,7 @@ class Movie(BaseModel):
 
     '''
     short()
-        long form representation of the Movie model
+        short form representation of the Movie model
     '''
 
     def short(self):
@@ -154,6 +152,16 @@ class Movie(BaseModel):
             'id': self.id,
             'title': self.title
         }
+
+    '''
+        long()
+            long form representation of the Movie model
+    '''
+
+    def long(self):
+        movie = self.short()
+        movie.update({"release_date": self.release_date.strftime('%Y-%m-%d')})
+        return movie
 
     def __repr__(self):
         return json.dumps(self.short())
@@ -218,6 +226,7 @@ class ActorSchema(ma.ModelSchema):
 
 
 class MovieSchema(ma.ModelSchema):
+    title = fields.String(required=True)
     movie_crew = fields.List(fields.Nested(lambda: MovieCrewSchema(only=(
         "actor",))))
 
@@ -238,9 +247,15 @@ class MovieCrewSchema(ma.ModelSchema):
         model = MovieCrew
 
 
+class IdListSchema(ma.Schema):
+    ids = fields.List(fields.Integer)
+
+
 movies_schema = MovieSchema(many=True, exclude=['actor_ids', 'movie_crew'])
 movie_schema = MovieSchema()
+
 movie_crew_schema = MovieCrewSchema(many=True, exclude=['movie'])
 
 actors_schema = ActorSchema(many=True, exclude=['movie_ids', 'movie_crew'])
 actor_schema = ActorSchema()
+actor_ids_schema = IdListSchema()

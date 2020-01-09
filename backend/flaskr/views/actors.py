@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound
 
 from flaskr.auth import requires_auth
-from flaskr.helpers import contains_request_data, validate_actor_id_list, \
+from flaskr.helpers import contains_request_data, validate_actor_ids, \
     actor_id_exists, validate_actor_data
 from flaskr.model import db, Actor, actors_schema, actor_schema
 
@@ -116,27 +116,26 @@ class RetrieveUpdateDestroyActorResource(Resource):
 
 
 class SearchActorResource(Resource):
+
     @requires_auth('get:actors')
     @contains_request_data
+    @validate_actor_ids
     def post(self, *args, **kwargs):
+        actor_ids = kwargs.get('actor_ids', [])
         data = kwargs['data']
 
         try:
             search_term = data['search_term']
-            actor_ids = data.get('actor_ids', [])
+
         except KeyError as err:
             return {
                        "success": False,
                        "error": f"please provide {err} field"
                    }, 400
 
-        if actor_ids:
-            # remove duplicate ids
-            actor_ids = list(set(actor_ids))
-            validate_actor_id_list(actor_ids)
-
         actors_query = Actor.search_actors(search_term=search_term,
                                            actor_ids=actor_ids)
 
         result = actors_schema.dump(actors_query)
+
         return {"success": True, "actors": result}, 200

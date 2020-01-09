@@ -2,46 +2,44 @@ from functools import wraps
 
 from flask import request
 from marshmallow import ValidationError
-from sqlalchemy.exc import DataError
 from werkzeug.exceptions import NotFound
 
-from flaskr.model import Actor, actor_schema
-
-
-def validate_actor_id_list(actor_ids):
-    try:
-        invalid_actor_ids = Actor.get_invalid_actor_ids(actor_ids)
-    except DataError:
-        return {
-                   'success': 'False',
-                   'error': f'You must provide a list of integer Actor Ids'
-               }, 400
-
-    if invalid_actor_ids:
-        return {
-                   'success': 'False',
-                   'error': f'Invalid Actor Ids {invalid_actor_ids}'
-               }, 400
+from flaskr.model import Actor, actor_schema, movie_schema, Movie
+from flaskr.model import actor_ids_schema
 
 
 def validate_actor_ids(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         json_data = request.get_json(force=True)
+        if 'actor_ids' not in json_data:
+            return func(*args, **kwargs)
+
         actor_ids = json_data.get('actor_ids', [])
-        # remove duplicate ids
+        if not actor_ids:
+            return func(*args, **kwargs, actor_ids=actor_ids)
+
         try:
-            actor_ids = list(set(actor_ids))
-        except TypeError as err:
+            actor_ids = actor_ids_schema.load({'ids': actor_ids})
+
+            # Remove duplicate ids
+            actor_ids = list(set(actor_ids.get('ids')))
+
+        except ValidationError:
             return {
                        "success": False,
                        "error": {
-                           "actor_ids": [f"{err}"]
-                       },
-                       "message": "Actor ids must be a list of numbers"
+                           "actor_ids": "Actor ids must be a list of integers"}
                    }, 400
 
-        validate_actor_id_list(actor_ids)
+        invalid_actor_ids = Actor.get_invalid_actor_ids(actor_ids)
+
+        if invalid_actor_ids:
+            return {
+                       'success': 'False',
+                       'error': f'Actors with Ids {invalid_actor_ids} do not exist'
+                   }, 400
+
         return func(*args, **kwargs, actor_ids=actor_ids)
 
     return wrapper
@@ -50,9 +48,14 @@ def validate_actor_ids(func):
 def contains_request_data(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        json_data = request.get_json(force=True)
-        if not json_data:
-            return {'error': 'No input data provided'}, 400
+        try:
+            json_data = request.get_json(force=True)
+            if not json_data:
+                return {'success': False,
+                        'error': 'No input data provided'}, 400
+        except Exception as err:
+            return {"success": False,
+                    "error": "Please Provide valid json data format"}, 400
 
         return func(*args, **kwargs, data=json_data)
 
@@ -104,5 +107,54 @@ def validate_actor_data(func):
                    }, 400
 
         return func(*args, **kwargs, actor=actor)
+
+    return wrapper
+
+
+def validate_movie_data(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        json_data = request.get_json(force=True)
+
+        try:
+            movie_data = json_data['movie']
+            title = movie_data['title']
+            release_date = movie_data['release_date']
+
+        except KeyError as err:
+            return {
+                       'success': False,
+                       "error": f"please provide {err} field",
+                       'format': "{'movie': { 'title': 'string', 'release_date':"
+                                 "'YYYY-MM-DD' } }"
+                   }, 400
+
+        try:
+            movie = movie_schema.load(
+                {'title': title, 'release_date': release_date})
+        except ValidationError as err:
+            # Show Errors if validation fails
+            return {
+                       "success": False,
+                       "error": err.messages
+                   }, 400
+
+        return func(*args, **kwargs, movie=movie)
+
+    return wrapper
+
+
+def movie_id_exists(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        movie_id = kwargs['movie_id']
+
+        try:
+            movie_object = Movie.query.get_or_404(movie_id)
+        except NotFound:
+            return {"success": False,
+                    "error": "Movie does not exist"
+                    }, 404
+        return func(*args, **kwargs, movie_object=movie_object)
 
     return wrapper

@@ -6,8 +6,7 @@ from flaskr.model import setup_db
 
 def create_app(config=None):
     app = Flask(__name__)
-    app.config.from_object(config)
-    setup_db(app)
+    setup_db(app, config)
 
     CORS(app)
     # Allow '*' for origins CORS.
