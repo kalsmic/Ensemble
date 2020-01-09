@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 
-from flaskr.model import setup_db
+from flaskr.models import setup_db
 
 
 def create_app(config=None):

@@ -4,8 +4,8 @@ from flask import request
 from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
 
-from flaskr.model import Actor, actor_schema, movie_schema, Movie
-from flaskr.model import actor_ids_schema
+from flaskr.models import Actor, actor_schema, movie_schema, Movie
+from flaskr.models import actor_ids_schema
 
 
 def validate_actor_ids(func):

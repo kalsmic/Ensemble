@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from flaskr.model import Actor
+from flaskr.models import Actor
 from tests.base import EnsembleTestCase, actor_bad_format_error
 
 

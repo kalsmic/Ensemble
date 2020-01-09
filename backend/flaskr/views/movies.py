@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from flaskr.auth import requires_auth
 from flaskr.helpers import validate_actor_ids, validate_movie_data, \
     contains_request_data, movie_id_exists
-from flaskr.model import db, Movie, movies_schema, movie_schema, MovieCrew, \
+from flaskr.models import db, Movie, movies_schema, movie_schema, MovieCrew, \
     Actor, movie_crew_schema
 
 

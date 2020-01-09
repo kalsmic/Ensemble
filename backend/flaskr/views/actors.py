@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound
 from flaskr.auth import requires_auth
 from flaskr.helpers import contains_request_data, validate_actor_ids, \
     actor_id_exists, validate_actor_data
-from flaskr.model import db, Actor, actors_schema, actor_schema
+from flaskr.models import db, Actor, actors_schema, actor_schema
 
 actor_not_found_response = {'success': False,
                             'error': 'Actor does not exist'}, 404
