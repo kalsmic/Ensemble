@@ -1,20 +1,28 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 
-from flaskr.models import setup_db
+from flaskr.models import db
+from flaskr.views.errors import auth_error
 
+migrate = Migrate()
 
 def create_app(config=None):
     app = Flask(__name__)
-    setup_db(app, config)
+
+    app.config.from_object(config)
+    db.init_app(app)
+    migrate.init_app(app)
 
     CORS(app)
     # Allow '*' for origins CORS.
     cors = CORS(app, resources={"r/*": {"origins": "*"}})
 
     from flaskr.views import api_bp
+    from flaskr.auth import AuthError
 
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_error_handler(AuthError, auth_error)
 
     # set Access-Control-Allow
     @app.after_request
@@ -27,14 +35,6 @@ def create_app(config=None):
         )
         return response
 
-    from flaskr.auth import AuthError
 
-    @app.errorhandler(AuthError)
-    def auth_error(error):
-        return jsonify({
-            "success": False,
-            "error": error.status_code,
-            "message": error.error['description']
-        }), error.status_code
 
     return app

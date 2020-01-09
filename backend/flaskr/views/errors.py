@@ -1,3 +1,14 @@
+from flask import jsonify
+
+
+def auth_error(error):
+    return jsonify({
+        "success": False,
+        "error": error.status_code,
+        "message": error.error['description']
+    }), error.status_code
+
+
 errors = {
     "BadRequest": {
         "message": "Bad Request",
@@ -18,14 +29,6 @@ errors = {
     "MethodNotAllowed": {
         "message": "Method Not allowed",
         "status": 405
-    },
-    "NotAcceptable": {
-        "message": "Not Acceptable",
-        "status": 406
-    },
-    "RequestTimeout": {
-        "message": "Request Timeout",
-        "status": 408
     },
     'Conflict': {
         'message': "You can not add a duplicate resource.",

@@ -9,8 +9,9 @@ from flaskr.views.movies import RetrieveUpdateDestroyMovieResource, \
 
 api_bp = Blueprint('api/', __name__)
 
-api = Api(api_bp, errors=errors)
 api = Api(api_bp)
+api = Api(api_bp, errors=errors, catch_all_404s=True)
+# Errors
 
 # Route
 api.add_resource(CreateListActorResource, '/v1/actors')
@@ -25,3 +26,4 @@ api.add_resource(RetrieveUpdateDestroyMovieResource,
                  '/v1/movies/<int:movie_id>')
 api.add_resource(ListMovieActorsResource,
                  '/v1/movies/<int:movie_id>/actors')
+
