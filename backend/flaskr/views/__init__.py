@@ -18,3 +18,10 @@ api.add_resource(RetrieveUpdateDestroyActorResource,
                  '/v1/actors/<int:actor_id>')
 
 api.add_resource(SearchActorResource, '/v1/actors/search')
+
+# Movie Views
+api.add_resource(CreateListMovieResource, '/v1/movies')
+api.add_resource(RetrieveUpdateDestroyMovieResource,
+                 '/v1/movies/<int:movie_id>')
+api.add_resource(ListMovieActorsResource,
+                 '/v1/movies/<int:movie_id>/actors')

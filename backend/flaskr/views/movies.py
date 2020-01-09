@@ -1,15 +1,14 @@
 import sys
-import json 
 
 from flask import request, abort
 from flask_restful import Resource
-from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 from flaskr.auth import requires_auth
 from flaskr.helpers import validate_actor_ids, validate_movie_data, \
     contains_request_data, movie_id_exists
-from flaskr.model import db, Movie, MovieCrew, Actor, movies_schema, movie_schema
+from flaskr.model import db, Movie, movies_schema, movie_schema, MovieCrew, \
+    Actor, movie_crew_schema
 
 
 def paginate(result_query):
@@ -49,11 +48,12 @@ class CreateListMovieResource(Resource):
     def post(self, *args, **kwargs):
         movie = kwargs['movie']
         actor_ids = kwargs.get('actor_ids')
+        actor_ids_present = kwargs['actor_ids_present']
 
         try:
             movie.insert()
-            
-            if actor_ids:
+
+            if actor_ids_present:
                 movie.add_movie_actors(actor_ids)
             
             result = movie_schema.dump(movie)
@@ -93,15 +93,16 @@ class RetrieveUpdateDestroyMovieResource(Resource):
     def patch(self, *args, **kwargs):
         movie = kwargs['movie_object']
         movie_data = kwargs['movie']
-        actor_ids = kwargs['actor_ids']
+        actor_ids = kwargs.get('actor_ids')
+        actor_ids_present = kwargs['actor_ids_present']
 
         try:
-            movie.title = movie_data['title']
-            movie.release_date = movie_data['release_date']
-            if actor_ids:
+            movie.title = movie_data.title
+            movie.release_date = movie_data.release_date
+            if actor_ids_present:
                 movie.remove_actors_from_movie(actor_ids)
                 movie.update_movie_actors(actor_ids)
-                db.session.commit()
+            db.session.commit()
 
             result = movie_schema.dump(movie)
         except IntegrityError:
@@ -113,7 +114,7 @@ class RetrieveUpdateDestroyMovieResource(Resource):
             print(sys.exc_info())
             abort(400)
 
-        return {"success": True, 'Movie': result,
+        return {"success": True, 'movie': result,
                 "message": "Movie updated successfully"}, 200
 
     @requires_auth('delete:movies')
@@ -127,3 +128,20 @@ class RetrieveUpdateDestroyMovieResource(Resource):
         return {"success": True,
                 "message": "Movie deleted successfully"}, 200
 
+
+class ListMovieActorsResource(Resource):
+
+    @requires_auth('get:movies')
+    def get(self, *args, **kwargs):
+        movie_id = kwargs['movie_id']
+
+        page = request.args.get("page", 1, type=int)
+
+        movie_actors_query = MovieCrew.query.filter_by(movie_id=movie_id).join(
+            Actor).paginate(page=page, error_out=False, max_per_page=5)
+
+        result = paginate(movie_actors_query)
+
+        result['actors'] = movie_crew_schema.dump(movie_actors_query.items)
+
+        return result, 200

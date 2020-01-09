@@ -12,8 +12,9 @@ def validate_actor_ids(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         json_data = request.get_json(force=True)
+
         if 'actor_ids' not in json_data:
-            return func(*args, **kwargs)
+            return func(*args, **kwargs, actor_ids_present=False)
 
         actor_ids = json_data.get('actor_ids', [])
         if not actor_ids:
@@ -40,7 +41,8 @@ def validate_actor_ids(func):
                        'error': f'Actors with Ids {invalid_actor_ids} do not exist'
                    }, 400
 
-        return func(*args, **kwargs, actor_ids=actor_ids)
+        return func(*args, **kwargs, actor_ids=actor_ids, actor_ids_present
+        =True)
 
     return wrapper
 
