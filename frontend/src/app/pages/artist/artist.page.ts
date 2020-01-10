@@ -33,10 +33,14 @@ export class ArtistPage implements OnInit {
 
         const modal = await this.modalCtrl.create({
             component: ArtistFormComponent,
+            backdropDismiss: false,
+            showBackdrop: true,
+            animated: true,
             componentProps: {artist: activeartist, isNew: !activeartist}
         });
 
-        modal.present();
+        await modal.present();
+
     }
 
     navigateToPage($event: number) {

@@ -5,6 +5,7 @@ import {ModalController} from '@ionic/angular';
 import {ArtistService} from '../../../services/artist.service';
 import {Actor, Movie, MovieError} from '../../../shared/models';
 import {formatDate} from '../../../shared/utils';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -25,12 +26,16 @@ export class MovieFormComponent implements OnInit {
         release_date: '',
         actors: ''
     };
+    movieForm: FormGroup;
+    private disabledAction: boolean;
+    private isSubmitted = false;
 
     constructor(
         public auth: AuthService,
         private modalCtrl: ModalController,
         private movieService: MovieService,
         private artistService: ArtistService,
+        public formBuilder: FormBuilder,
     ) {
     }
 
@@ -59,10 +64,18 @@ export class MovieFormComponent implements OnInit {
                 }
             );
         }
+        this.disabledAction = !this.auth.can('patch:movies') || !this.auth.can('post:movies');
+
+        this.movieForm = this.formBuilder.group({
+            title: [{value: this.movie.title, disabled: this.disabledAction}, [Validators.required, Validators.minLength(2)]],
+            release_date: [{value: this.movie.release_date, disabled: this.disabledAction}, [Validators.required]]
+        });
 
     }
 
-
+    get errorControl() {
+        return this.movieForm.controls;
+    }
     searchActor() {
         if (this.actorFilter) {
             this.artistService.searchActor(this.actorFilter, this.movie.actor_ids).subscribe(actors => {
@@ -100,27 +113,21 @@ export class MovieFormComponent implements OnInit {
         this.modalCtrl.dismiss();
     }
 
-    validateMovieForm() {
-        const {title, release_date} = this.movie;
-        if (!title) {
-            this.errors.title = 'Provide title';
-        }
-        if (!release_date) {
-            this.errors.release_date = 'Provide release Date';
-        }
-    }
-
 
     saveMovie() {
-        const {release_date} = this.movie;
+        this.isSubmitted = true;
+        if (this.movieForm.valid) {
 
-        this.validateMovieForm();
-        if (release_date) {
+            const {title, release_date} = this.movieForm.value;
+            this.movie.title = title;
             this.movie.release_date = formatDate(release_date);
-            this.movieService.saveMovie(this.movie);
 
+            this.movieService.saveMovie(this.movie);
             this.closeModal();
+
         }
+
+
     }
 
     deleteClickedMovie() {

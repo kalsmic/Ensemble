@@ -8,6 +8,10 @@
 <ion-content *ngIf='artist'>
 
     <form (ngSubmit)="saveArtist" [formGroup]="actorForm" novalidate>
+        <ion-item-divider *ngIf="isSubmitted && !this.artistService.success">
+            <ion-item *ngIf="artistService.error">{{artistService.error}}</ion-item>
+            <ion-item *ngIf="artistService.errorMessage">{{artistService.errorMessage}}</ion-item>
+        </ion-item-divider>
         <ion-item>
             <ion-label position="floating">Name:</ion-label>
             <ion-input formControlName="name"
@@ -21,7 +25,7 @@
             Name should be min 2 chars long.
           </span>
 
-        <ion-item staked>
+        <ion-item>
             <ion-label position="floating">Birth Date</ion-label>
             <ion-datetime displayFormat="MMM DD, YYYY" formControlName="birth_date"
                           name='release_date'
@@ -43,18 +47,25 @@
                 <ion-radio slot="start" value="M"></ion-radio>
             </ion-item>
         </ion-radio-group>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="deleteArtist()" [disabled]="isNew || !auth.can('delete:actors')" color="danger">
+                    Delete
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="closeModal()">Cancel</ion-button>
+            </ion-col>
+            <ion-col>
 
-        <ion-button (click)="deleteArtist()" [disabled]="isNew || !auth.can('delete:actors')" color="danger">Delete
-        </ion-button>
-        <br/>
-        <ion-button (click)="closeModal()">Cancel</ion-button>
-
-        <ion-button (click)="saveArtist()" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
-                    color="default"
-                    color="secondary">
-            <ion-icon name="save" slot="icon-only"></ion-icon>
-            Save
-        </ion-button>
+                <ion-button (click)="saveArtist()" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                            color="default"
+                            color="secondary">
+                    <ion-icon name="save" slot="icon-only"></ion-icon>
+                    Save
+                </ion-button>
+            </ion-col>
+        </ion-row>
 
     </form>
 </ion-content>

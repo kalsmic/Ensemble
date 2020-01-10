@@ -3,25 +3,32 @@
         <ion-title *ngIf="isNew">Add New Movie</ion-title>
         <ion-title *ngIf="!isNew">Edit Movie</ion-title>
     </ion-toolbar>
+
 </ion-header>
 
 <ion-content *ngIf='movie'>
-    <form (ngSubmit)="saveMovie" novalidate>
+    <form (ngSubmit)="saveMovie" [formGroup]="movieForm" novalidate>
         <ion-item>
-            <ion-label stacked>Title:</ion-label>
-            <ion-input [(ngModel)]="movie.title" [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
-                       name="title" placeholder="movie Title"
-                       required type='text'></ion-input>
-
+            <ion-label position="floating">Title:</ion-label>
+            <ion-input
+                    formControlName="title"
+                    name="title" placeholder="movie Title"
+                    type='text'>
+            </ion-input>
         </ion-item>
-        <ion-text *ngIf="errors && errors.title" color="danger">{{errors.title}}</ion-text>
-        <ion-item stacked>
-            <ion-label>Release Date</ion-label>
-            <ion-datetime [(ngModel)]="movie.release_date" displayFormat="MMM DD, YYYY" name='release_date'
-                          pickerFormat="YYYY-MM-DD"
-                          placeholder="Select Date"></ion-datetime>
+        <ion-text *ngIf="isSubmitted && errorControl.title.errors?.required" color="danger"></ion-text>
+        <ion-text *ngIf="isSubmitted && errorControl.title.errors?.minlength" color="danger"></ion-text>
+        <ion-item>
+            <ion-label position="floating">Release Date</ion-label>
+            <ion-datetime
+                    displayFormat="MMM DD, YYYY"
+                    formControlName="release_date"
+                    name='release_date'
+                    pickerFormat="YYYY-MM-DD"
+                    placeholder="Select Date">
+            </ion-datetime>
         </ion-item>
-        <ion-text *ngIf="errors && errors.release_date" color="danger">{{errors.release_date}}</ion-text>
+        <ion-text *ngIf="isSubmitted && errorControl.release_date.errors?.required" color="danger"></ion-text>
         <ion-item>
             <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search Actor"></ion-searchbar>
         </ion-item>
@@ -48,19 +55,44 @@
 
                 </ion-col>
             </ion-row>
-
         </ion-grid>
+        <ion-item-group>
+            <ion-list-header >Actors</ion-list-header>
+            <ion-item-divider></ion-item-divider>
 
-        <ion-button (click)="deleteClickedMovie()" [disabled]="isNew || !auth.can('delete:movies')" color="danger">
-            Delete
-        </ion-button>
-        <ion-button (click)="closeModal()">Cancel</ion-button>
+            <ion-list *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
+                <ion-item>
+                    <ion-text>{{movie_crew.actor.name}}</ion-text>
+                    <ion-text>
+                        <ion-button (click)="removeActor(i, movie_crew.actor.id)">Remove</ion-button>
+                    </ion-text>
+                </ion-item>
 
-        <ion-button (click)="saveMovie()" [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
-                    color="secondary"
-                    type="submit">
-            <ion-icon name="save" slot="icon-only"></ion-icon>
-            Save
-        </ion-button>
+            </ion-list>
+        </ion-item-group>
+
+
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="deleteClickedMovie()" [disabled]="isNew || !auth.can('delete:movies')"
+                            color="danger">
+                    Delete
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="closeModal()">Cancel</ion-button>
+
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="saveMovie()"
+                            [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
+                            color="secondary"
+                            type="submit">
+                    <ion-icon name="save" slot="icon-only"></ion-icon>
+                    Save
+                </ion-button>
+            </ion-col>
+        </ion-row>
+
     </form>
 </ion-content>

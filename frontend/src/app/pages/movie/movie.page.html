@@ -10,7 +10,7 @@
                     <ion-icon name="add-circle"></ion-icon>
                     <ion-label>New Movie</ion-label>
                 </ion-tab-button>
-                <ion-tab-button href="tabs/movies">
+                <ion-tab-button href="tabs/movies" [disabled]="!auth.can('get:movies')">
                     <ion-icon name="film"></ion-icon>
                     <ion-label>Movies</ion-label>
                 </ion-tab-button>

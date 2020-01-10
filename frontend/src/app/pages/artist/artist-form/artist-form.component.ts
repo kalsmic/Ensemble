@@ -59,20 +59,16 @@ export class ArtistFormComponent implements OnInit {
 
     async saveArtist() {
         this.isSubmitted = true;
-        if (!this.actorForm.valid) {
-            console.log('provide all missing data');
-        } else {
-            console.log('actor_id', this.artist.id);
+        if (this.actorForm.valid) {
 
             const {name, birth_date, gender} = this.actorForm.value;
 
             this.artist.name = name;
             this.artist.birth_date = formatDate(birth_date);
             this.artist.gender = gender;
-            const response = this.artistService.saveArtist(this.artist);
+            this.artistService.saveArtist(this.artist);
             this.closeModal();
 
-            console.log(this.actorForm.value);
         }
     }
 

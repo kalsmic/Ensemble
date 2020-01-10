@@ -14,11 +14,7 @@ const routes: Routes = [
         path: '',
         component: MoviePage,
 
-    },
-    // {
-    //     path: ':id',
-    //     component: MovieDetailPage
-    // }
+    }
 
 
 ];
@@ -30,13 +26,12 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         IonicModule,
         PaginationModule,
-        ReactiveFormsModule,
+        ReactiveFormsModule
 
 
     ],
     entryComponents: [MovieFormComponent],
     declarations: [MoviePage, MovieFormComponent
-        // , MovieDetailPage
     ]
 })
 export class MoviePageModule {

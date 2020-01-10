@@ -69,7 +69,6 @@ export class MovieService {
     }
 
     saveMovie(movie: Movie) {
-
         const movieData = {
             movie: {
                 title: movie.title,
