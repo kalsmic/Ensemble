@@ -37,22 +37,6 @@ export class MovieService {
         return header;
     }
 
-    // getMovies(page?: number) {
-    //     if (this.auth.can('get:movies')) {
-    //         let url = this.url + '/movies';
-    //         if (page) {
-    //             url = url + '?page=' + page;
-    //         }
-    //         this.http.get(url, this.getHeaders())
-    //             .subscribe((res: any) => {
-    //                 this.cinemas = [];
-    //                 this.moviesToCinemaItems(res.movies);
-    //                 this.pagination = setPaginationDetails({...res});
-    //
-    //             });
-    //
-    //     }
-    // }
     getMovies(page?: number): Observable<void> {
 
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
@@ -72,7 +56,6 @@ export class MovieService {
     }
 
     getMovie(movieId: string): Observable<Movie> {
-
         if (this.auth.can('get:movies')) {
             return this.http.get<any>(this.url + '/movies/' + movieId, this.getHeaders())
                 .pipe(
@@ -85,19 +68,20 @@ export class MovieService {
         }
     }
 
-    saveMovie(movie: Movie, actorIds) {
+    saveMovie(movie: Movie) {
 
         const movieData = {
-            title: movie.title,
-            release_date: movie.release_date,
-            actors: actorIds
+            movie: {
+                title: movie.title,
+                release_date: movie.release_date,
+            },
+            actor_ids: movie.actor_ids
         };
         if (movie.id >= 0) { // patch
-            this.http.patch(this.url + '/movies/' + movie.id, {movie: movieData}, this.getHeaders())
+            this.http.patch(this.url + '/movies/' + movie.id, {...movieData}, this.getHeaders())
                 .subscribe((res: any) => {
                         if (res.success) {
-                            this.cinema = res.movie;
-                            this.toast.showToast(res.message, 'success');
+                            this.toast.success(res.message);
                             const {id, title, release_date} = res.movie;
                             this.cinemas[id] = {id, title, release_date};
                             return res.message;
@@ -106,28 +90,22 @@ export class MovieService {
                         }
                     },
                     err => {
-                        this.toast.showToast('Error updating movie', 'danger');
+                        this.toast.error('Error updating movie');
                         return err.error;
                     });
         } else { // insert
-            console.log('insert', 'actorIds', actorIds);
-
             delete movie.id;
-            this.http.post(this.url + '/movies', {movie: movieData}, this.getHeaders())
+            this.http.post(this.url + '/movies', {...movieData}, this.getHeaders())
                 .subscribe((res: any) => {
                         if (res.success) {
-                            // this.cinemas = res.movie;
                             const {id, title, release_date} = res.movie;
                             this.cinemas[id] = {id, title, release_date};
 
-                            this.toast.showToast(res.message, 'success');
+                            this.toast.success(res.message);
 
                         }
                     },
-                    err => {
-
-                        this.toast.showToast(err.error, 'danger');
-                    });
+                    err => this.toast.error(err.message));
         }
 
     }
@@ -137,9 +115,9 @@ export class MovieService {
         this.http.delete(this.url + '/movies/' + movieId, this.getHeaders())
             .subscribe(
                 (res: any) => {
-                    this.toast.showToast(res.message);
+                    this.toast.success(res.message);
                 },
-                err => this.toast.showToast('Movie does not exist', 'danger'));
+                err => this.toast.error(err.message));
     }
 
     moviesToCinemaItems(movies: Array<Movie>) {

@@ -18,7 +18,6 @@ export class MovieFormComponent implements OnInit {
     @Input() isNew: boolean;
     Object = Object;
     filteredActors: Actor[];
-    actorIds = new Set<number>();
     movie: Movie;
     actorSearchFilter: string;
     errors: MovieError = {
@@ -50,48 +49,55 @@ export class MovieFormComponent implements OnInit {
                 id: -1,
                 title: '',
                 release_date: '',
-                actors: []
+                actors: [],
+                actor_ids: []
             };
         } else {
-            this.movieService.getMovie(this.movieId).subscribe(movie =>
-                this.movie = movie);
+            this.movieService.getMovie(this.movieId).subscribe(movie => {
+                    const {id, title, release_date, movie_crew: actors, actor_ids} = movie;
+                    this.movie = {id, title, release_date, actors, actor_ids};
+                }
+            );
         }
+
     }
 
 
     searchActor() {
-        const actorIds = this.getActorIds();
-
         if (this.actorFilter) {
-            this.artistService.searchActor(this.actorFilter, actorIds).subscribe(actors => {
+            this.artistService.searchActor(this.actorFilter, this.movie.actor_ids).subscribe(actors => {
                 this.filteredActors = actors;
             });
         }
+    }
+
+    handleSearchBar(event) {
+        const {target: {value: searchTerm}} = event;
+        this.actorFilter = searchTerm;
     }
 
     customTrackBy(index: number, obj: any): any {
         return index;
     }
 
-    addActor(actor: Actor) {
-        const {id, name} = actor;
-        this.actorIds.add(id);
-        this.movie.actors.splice(this.movie.actors.length + 1, 0, {id, name});
+    addActor(newActor: Actor) {
+
+        const {id, name} = newActor;
+        const actor = {actor: {id, name}};
+        this.movie.actors.splice(this.movie.actors.length + 1, 0, actor);
+        this.movie.actor_ids.push(id);
         this.actorFilter = '';
         this.filteredActors = [];
+
     }
 
-    removeActor(i: number) {
+    removeActor(i: number, actorId: number) {
         this.movie.actors.splice(i, 1);
+        this.movie.actor_ids.splice(i, 1);
     }
 
     closeModal() {
         this.modalCtrl.dismiss();
-    }
-
-    getActorIds() {
-        const selectedIds = this.movie.actors.map(({id}) => id);
-        return [...new Set(selectedIds)];
     }
 
     validateMovieForm() {
@@ -108,11 +114,10 @@ export class MovieFormComponent implements OnInit {
     saveMovie() {
         const {release_date} = this.movie;
 
-        const actorIds = this.getActorIds();
         this.validateMovieForm();
         if (release_date) {
             this.movie.release_date = formatDate(release_date);
-            this.movieService.saveMovie(this.movie, actorIds);
+            this.movieService.saveMovie(this.movie);
 
             this.closeModal();
         }

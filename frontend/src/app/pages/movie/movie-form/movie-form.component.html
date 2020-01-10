@@ -6,7 +6,7 @@
 </ion-header>
 
 <ion-content *ngIf='movie'>
-    <form (ngSubmit)="saveMovie">
+    <form (ngSubmit)="saveMovie" novalidate>
         <ion-item>
             <ion-label stacked>Title:</ion-label>
             <ion-input [(ngModel)]="movie.title" [disabled]="!auth.can('patch:movies') || !auth.can('post:movies')"
@@ -22,14 +22,10 @@
                           placeholder="Select Date"></ion-datetime>
         </ion-item>
         <ion-text *ngIf="errors && errors.release_date" color="danger">{{errors.release_date}}</ion-text>
-
         <ion-item>
-            <ion-label stacked>Search Actors:</ion-label>
-            <ion-input [(ngModel)]="actorFilter"
-                       name="actorFilter" placeholder="Actor" type='text'
-
-                       value=""></ion-input>
+            <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search Actor"></ion-searchbar>
         </ion-item>
+
         <ion-item-group *ngIf="actorFilter">
             <ion-item *ngFor="let actor of filteredActors">
                 <ion-label>  {{actor.name | uppercase}}</ion-label>
@@ -43,15 +39,12 @@
                 <ion-col>Actor</ion-col>
                 <ion-col size="2">Remove</ion-col>
             </ion-row>
-            <ion-row *ngFor="let actor of movie.actors; let i = index; trackBy: customTrackBy">
+            <ion-row *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
                 <ion-col>
-                    <ion-text>{{actor.name}}</ion-text>
-                    <ion-input [(ngModel)]="actor.id" [name]="'Actor id'+i" hidden
-                               type="number"></ion-input>
+                    <ion-text>{{movie_crew.actor.name}}</ion-text>
                 </ion-col>
-
                 <ion-col size="2">
-                    <ion-button (click)="removeActor(i)" [disabled]="i==0 && movie.actors.length==5">Remove</ion-button>
+                    <ion-button (click)="removeActor(i, movie_crew.actor.id)">Remove</ion-button>
 
                 </ion-col>
             </ion-row>

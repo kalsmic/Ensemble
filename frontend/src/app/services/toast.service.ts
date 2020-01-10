@@ -10,7 +10,7 @@ export class ToastService {
     constructor(private toastController: ToastController) {
     }
 
-    async showToast(message, color = 'dark') {
+    async showToast(message, color) {
         const toast = await this.toastController.create({
             message,
             position: 'top',
@@ -18,6 +18,14 @@ export class ToastService {
             duration: 3000,
         });
         toast.present();
+    }
+
+    async success(message) {
+        await this.showToast(message, 'dark');
+    }
+
+    async error(message) {
+        await this.showToast(message, 'danger');
     }
 
 }

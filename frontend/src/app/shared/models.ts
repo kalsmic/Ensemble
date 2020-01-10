@@ -8,8 +8,10 @@ export interface Actor {
 }
 
 export interface MovieActor {
-    id: number | string;
-    name: string;
+    actor: {
+        id: number | string;
+        name: string;
+    };
 }
 
 export interface Movie {
@@ -17,6 +19,8 @@ export interface Movie {
     title: string;
     release_date: string;
     actors?: Array<MovieActor>;
+    actor_ids?: Array<number>;
+    movie_crew?: Array<MovieActor>;
 }
 
 export interface MovieError {

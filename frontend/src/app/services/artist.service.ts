@@ -6,6 +6,7 @@ import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
 import {Actor, Pagination} from '../shared/models';
 import {setPaginationDetails} from '../shared/utils';
+import {ToastService} from './toast.service';
 
 
 @Injectable({
@@ -20,7 +21,11 @@ export class ArtistService {
     public actor: Actor;
     public pagination: Pagination;
 
-    constructor(private auth: AuthService, private http: HttpClient) {
+    constructor(
+        private auth: AuthService,
+        private http: HttpClient,
+        private toast: ToastService
+    ) {
     }
 
     getHeaders() {
@@ -53,21 +58,39 @@ export class ArtistService {
             birth_date: artist.birth_date,
             gender: artist.gender
         };
-        if (artist.id >= 0) { // patch
-
+        if (artist.id > 0) { // patch
+            //
             this.http.patch(this.url + '/actors/' + artist.id, {actor}, this.getHeaders())
                 .subscribe((res: any) => {
-                    if (res.success) {
-                        this.actor = res.actor;
+                        if (res.success) {
+                            const {id, age, name, birth_date, gender} = res.actor;
+                            this.actors[id] = {id, age, name, birth_date, gender};
+                            this.toast.success(res.message);
+                            return res.message;
+
+                        }
+                    },
+                    err => {
+                        this.toast.error('Error updating artist');
+                        return err.error;
                     }
-                });
+                );
         } else { // insert
             this.http.post(this.url + '/actors', {actor}, this.getHeaders())
                 .subscribe((res: any) => {
-                    if (res.success) {
-                        this.actor = res.artist;
-                    }
-                });
+                        if (res.success) {
+
+                            const {id, age, name, birth_date, gender} = res.actor;
+                            this.actors[id] = {id, age, name, birth_date, gender};
+
+                            this.toast.success(res.message);
+
+                        }
+                    },
+                    err => {
+                        this.toast.error('Error Adding new artist');
+                        return err.error;
+                    });
         }
 
     }
@@ -76,8 +99,13 @@ export class ArtistService {
         delete this.actors[artist.id];
         this.http.delete(this.url + '/actors/' + artist.id, this.getHeaders())
             .subscribe((res: any) => {
-
-            });
+                    this.actor = res.artist;
+                    this.toast.showToast(res.message, 'success');
+                },
+                err => {
+                    this.toast.showToast(err.message, 'danger');
+                    return err.error;
+                });
     }
 
     searchActor(searchTerm: string, actorIds = []): Observable<Actor[]> {
