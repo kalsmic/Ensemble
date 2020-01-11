@@ -1,6 +1,8 @@
 import json
+import sys
 from functools import wraps
 from os import environ
+from urllib.error import URLError
 from urllib.request import urlopen
 
 from flask import request, abort
@@ -80,8 +82,13 @@ def check_permissions(permission, payload):
 
 def verify_decode_jwt(token):
     # Get public key from Auth0
-    jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
-    jwks = json.loads(jsonurl.read())
+    try:
+        jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+        jwks = json.loads(jsonurl.read())
+
+    except URLError:
+        print(sys.exc_info())
+        abort(500)
 
     # Get the data in the header
     unverified_header = jwt.get_unverified_header(token)
