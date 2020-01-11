@@ -4,7 +4,6 @@ import unittest
 from flaskr.models import Actor
 from tests.base import EnsembleTestCase, actor_bad_format_error
 
-
 class EnsembleActorTestCase(EnsembleTestCase):
 
     def test_get_actors(self):

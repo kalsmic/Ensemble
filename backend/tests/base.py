@@ -1,9 +1,34 @@
 import unittest
+from functools import wraps
+from unittest.mock import patch
 
 from flaskr import create_app
 from flaskr.models import db
 
+permissions = [
+    "get:actors",
+    "get:movies",
+    "post:actors",
+    "delete:actors",
+    "patch:actors",
+    "patch:movies",
+    "post:movies",
+    "delete:movies"
+]
 
+def mock_requires_auth(permission=''):
+    def requires_auth_decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            payload = {"permissions": permission}
+            return f(payload, *args, **kwargs)
+
+        return wrapper
+
+    return requires_auth_decorator
+
+
+patch('flaskr.auth.requires_auth', mock_requires_auth).start()
 class EnsembleTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
 
@@ -19,8 +44,8 @@ class EnsembleTestCase(unittest.TestCase):
         self.headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
+            "Authorization": "Bearer Token"
         }
-        print(1)
 
     def tearDown(self):
         """Executed after reach test"""
@@ -28,9 +53,6 @@ class EnsembleTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-        print(2)
-
-
 
 
 
