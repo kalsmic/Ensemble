@@ -30,7 +30,6 @@ export class MoviePage implements OnInit {
         if (!this.auth.can('get:movies')) {
             return;
         }
-        // const movie = {id: 1, title: 'The Exodus', release_date: '2019-01-01', actor_ids: [], movie_crew: []};
 
         if (activeMovie) {
             console.log('activeMovie');
@@ -40,7 +39,7 @@ export class MoviePage implements OnInit {
             componentProps: {movie: activeMovie, isNew: !activeMovie}
         });
 
-        return modal.present();
+        return await modal.present();
     }
 
     navigateToPage($event: number) {

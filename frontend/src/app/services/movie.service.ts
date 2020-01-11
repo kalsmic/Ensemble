@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
 
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {map, retry} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Movie, Pagination} from '../shared/models';
-import {handleError, setPaginationDetails} from '../shared/utils';
+import {setPaginationDetails} from '../shared/utils';
 
 
 @Injectable({
@@ -19,7 +19,6 @@ export class MovieService {
     url = environment.apiServerUrl;
 
     public cinemas: { [key: number]: Movie } = {};
-    public cinema: Movie;
     public pagination: Pagination;
 
     constructor(
@@ -29,26 +28,18 @@ export class MovieService {
     ) {
     }
 
-    getHeaders() {
-        const header = {
-            headers: new HttpHeaders()
-                .set('Authorization', `Bearer ${this.auth.activeJWT()}`)
-        };
-        return header;
-    }
-
     getMovies(page?: number): Observable<void> {
 
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
 
         if (this.auth.can('get:movies')) {
-            return this.http.get<any>(url, this.getHeaders())
+            return this.http.get<any>(url)
                 .pipe(
                     retry(3),
                     map((res) => {
                         const {movies} = res;
                         this.cinemas = [];
-                        this.moviesToCinemaItems(res.movies);
+                        this.moviesToCinemaItems(movies);
                         this.pagination = setPaginationDetails({...res});
                     })
                 );
@@ -57,7 +48,7 @@ export class MovieService {
 
     getMovie(movieId: string | number): Observable<Movie> {
         if (this.auth.can('get:movies')) {
-            return this.http.get<any>(this.url + '/movies/' + movieId, this.getHeaders())
+            return this.http.get<any>(this.url + '/movies/' + movieId)
                 .pipe(
                     retry(3),
                     map((res) => {
@@ -78,7 +69,7 @@ export class MovieService {
             actor_ids: movie.actor_ids
         };
         if (movie.id >= 0) { // patch
-            this.http.patch(this.url + '/movies/' + movie.id, {...movieData}, this.getHeaders())
+            this.http.patch(this.url + '/movies/' + movie.id, {...movieData})
                 .subscribe((res: any) => {
                         if (res.success) {
                             this.toast.success(res.message);
@@ -88,13 +79,11 @@ export class MovieService {
 
 
                         }
-                    },
-                    error => handleError(error)
-                );
+                });
 
         } else { // insert
             delete movie.id;
-            this.http.post(this.url + '/movies', {...movieData}, this.getHeaders())
+            this.http.post(this.url + '/movies', {...movieData})
                 .subscribe((res: any) => {
                         if (res.success) {
                             const {id, title, release_date} = res.movie;
@@ -103,8 +92,7 @@ export class MovieService {
                             this.toast.success(res.message);
 
                         }
-                    },
-                    error => handleError(error)
+                    }
                 );
         }
 
@@ -114,12 +102,11 @@ export class MovieService {
 
     deleteMovie(movieId: number) {
         delete this.cinemas[movieId];
-        this.http.delete(this.url + '/movies/' + movieId, this.getHeaders())
+        this.http.delete(this.url + '/movies/' + movieId)
             .subscribe(
                 (res: any) => {
                     this.toast.success(res.message);
-                },
-                error => handleError(error));
+                });
     }
 
     moviesToCinemaItems(movies: Array<Movie>) {

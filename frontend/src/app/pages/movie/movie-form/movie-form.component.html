@@ -57,16 +57,19 @@
                 <ion-col>
                     <ion-card>
                         <ion-card-header>ACTORS</ion-card-header>
-                        <ion-list>
-                            <ion-item *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
-                                <span class="label label-success">{{movie_crew.actor.name}}</span>
-                                {{movie_crew.actor.id}}
-                                <ion-icon
-                                        (click)="removeActor(i, movie_crew.actor.id)"
-                                        [hidden]="disabledAction"
-                                        color="danger" name="remove-circle"></ion-icon>
-                            </ion-item>
-                        </ion-list>
+
+                        <ion-chip *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy"
+                                  color="dark"
+                                  outline>
+                            <ion-icon name="people"></ion-icon>
+                            <ion-label>{{movie_crew.actor.name}}</ion-label>
+                            <ion-icon
+                                    (click)="removeActor(i, movie_crew.actor.id)"
+                                    [hidden]="disabledAction"
+                                    color="danger"
+                                    name="close-circle"
+                            ></ion-icon>
+                        </ion-chip>
                     </ion-card>
                 </ion-col>
             </ion-row>

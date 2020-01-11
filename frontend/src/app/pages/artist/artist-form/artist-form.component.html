@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
-        <ion-title *ngIf="isNew">Add New Artist</ion-title>
-        <ion-title *ngIf="!isNew">Edit Artist</ion-title>
+        <ion-title *ngIf="isNew">Add New Actor</ion-title>
+        <ion-title *ngIf="!isNew">Edit Actor</ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -15,10 +15,10 @@
                        name="name" placeholder="name"
                        type="text"></ion-input>
         </ion-item>
-        <span *ngIf="isSubmitted && errorControl.name.errors?.required" class="ion-padding">
+        <span *ngIf="isSubmitted && errorControl.name.errors?.required" class="ion-padding" color="danger">
             Name is required.
           </span>
-        <span *ngIf="isSubmitted && errorControl.name.errors?.minlength" class="ion-padding">
+        <span *ngIf="isSubmitted && errorControl.name.errors?.minlength" class="ion-padding" color="danger">
             Name should be min 2 chars long.
           </span>
 

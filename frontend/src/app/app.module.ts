@@ -15,9 +15,10 @@ import {MovieService} from './services/movie.service';
 
 
 import {FormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {ToastService} from './services/toast.service';
 import {AuthGuard} from './shared/auth.guard';
+import {HttpInterceptorService} from './services/http-interceptor.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -40,7 +41,7 @@ import {AuthGuard} from './shared/auth.guard';
         MovieService,
         ToastService,
         AuthGuard,
-
+        {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]

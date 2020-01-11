@@ -9,7 +9,7 @@ const routes: Routes = [
         component: TabsPage,
         children: [
             {path: 'user-page', loadChildren: '../user-page/user-page.module#UserPagePageModule'},
-            {path: 'artists', loadChildren: '../artist/artist.module#ArtistPageModule', canActivate: [AuthGuard]},
+            {path: 'actors', loadChildren: '../artist/artist.module#ArtistPageModule', canActivate: [AuthGuard]},
             {path: 'movies', loadChildren: '../movie/movie.module#MoviePageModule', canActivate: [AuthGuard]},
             {
                 path: '',

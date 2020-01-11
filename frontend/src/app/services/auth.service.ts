@@ -16,7 +16,7 @@ export class AuthService {
     callbackURL = environment.auth0.callbackURL;
     token: string;
     payload: any;
-    private isLoggedIn: boolean;
+    public isLoggedIn: boolean;
 
 
     constructor() {
@@ -73,6 +73,7 @@ export class AuthService {
         this.token = '';
         this.payload = null;
         this.set_jwt();
+        this.isLoggedIn = false;
     }
 
     can(permission: string) {
@@ -87,6 +88,9 @@ export class AuthService {
 
     isAuthenticated() {
         this.isLoggedIn = !this.isTokenExpired();
+        if (!this.isLoggedIn) {
+            this.logout();
+        }
         return this.isLoggedIn;
     }
 

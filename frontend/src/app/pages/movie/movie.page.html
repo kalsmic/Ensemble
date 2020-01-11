@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="primary">
         <ion-title slot='secondary'>Movies</ion-title>
     </ion-toolbar>
     <ion-toolbar>
@@ -9,13 +9,18 @@
                     <ion-icon name="add-circle"></ion-icon>
                     <ion-label>New Movie</ion-label>
                 </ion-tab-button>
+                <ion-text color="secondary"> |</ion-text>
+                <ion-tab-button tab="actors">
+                    <ion-icon name="people"></ion-icon>
+                    <ion-label>Actors</ion-label>
+                </ion-tab-button>
             </ion-tab-bar>
         </ion-tabs>
     </ion-toolbar>
 </ion-header>
 
 
-<ion-content *ngIf="movies && movies.cinemas">
+<ion-content *ngIf="movies && movies.cinemas" class="ion-padding">
     <ion-grid>
 
 
