@@ -17,6 +17,7 @@ import {MovieService} from './services/movie.service';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './services/toast.service';
+import {AuthGuard} from './shared/auth.guard';
 
 @NgModule({
     declarations: [AppComponent],
@@ -38,6 +39,7 @@ import {ToastService} from './services/toast.service';
         ArtistService,
         MovieService,
         ToastService,
+        AuthGuard,
 
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],

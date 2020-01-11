@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {TabsPage} from './tabs.page';
+import {AuthGuard} from '../../shared/auth.guard';
 
 const routes: Routes = [
     {
@@ -8,11 +9,8 @@ const routes: Routes = [
         component: TabsPage,
         children: [
             {path: 'user-page', loadChildren: '../user-page/user-page.module#UserPagePageModule'},
-            {path: 'artists', loadChildren: '../artist/artist.module#ArtistPageModule'},
-            {
-                path: 'movies',
-                loadChildren: '../movie/movie.module#MoviePageModule'
-            },
+            {path: 'artists', loadChildren: '../artist/artist.module#ArtistPageModule', canActivate: [AuthGuard]},
+            {path: 'movies', loadChildren: '../movie/movie.module#MoviePageModule', canActivate: [AuthGuard]},
             {
                 path: '',
                 redirectTo: '/tabs/user-page',
