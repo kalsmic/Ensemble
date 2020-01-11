@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
 import {Actor, Pagination} from '../shared/models';
-import {setPaginationDetails} from '../shared/utils';
+import {handleError, setPaginationDetails} from '../shared/utils';
 import {ToastService} from './toast.service';
 
 
@@ -20,8 +20,6 @@ export class ArtistService {
     public actors: { [key: number]: Actor } = {};
     public actor: Actor;
     public pagination: Pagination;
-    public error: any;
-    public errorMessage: any;
     public success = false;
     public loading: boolean;
 
@@ -42,14 +40,12 @@ export class ArtistService {
 
     getArtists(page?: number) {
         if (this.auth.can('get:actors')) {
-            this.loading = true;
             let url = this.url + '/actors';
             if (page) {
                 url = url + '?page=' + page;
             }
             this.http.get(url, this.getHeaders())
                 .subscribe((res: any) => {
-                    this.loading = false;
 
                     this.actors = [];
                     this.artistsToItems(res.actors);
@@ -60,7 +56,6 @@ export class ArtistService {
     }
 
     saveArtist(artist: Actor) {
-        this.loading = true;
 
         const actor = {
             name: artist.name,
@@ -72,8 +67,6 @@ export class ArtistService {
             this.http.patch(this.url + '/actors/' + artist.id, {actor}, this.getHeaders())
                 .subscribe((res: any) => {
                         if (res.success) {
-                            this.loading = false;
-
                             const {id, age, name, birth_date, gender} = res.actor;
                             this.actors[id] = {id, age, name, birth_date, gender};
                             this.toast.success(res.message);
@@ -82,7 +75,7 @@ export class ArtistService {
 
                         }
                     },
-                    (error) => this.handleError);
+                    (error) => handleError(error));
 
 
         } else { // insert
@@ -91,18 +84,15 @@ export class ArtistService {
             this.http.post(this.url + '/actors', {actor}, this.getHeaders())
                 .subscribe((res: any) => {
                         if (res.success) {
-                            this.loading = false;
-
                             const {id, age, name, birth_date, gender} = res.actor;
                             this.actors[id] = {id, age, name, birth_date, gender};
 
                             this.toast.success(res.message);
                             this.success = res.success;
 
-
                         }
                     },
-                    (error) => this.handleError);
+                    (error) => handleError(error));
         }
 
     }
@@ -113,25 +103,14 @@ export class ArtistService {
         delete this.actors[artist.id];
         this.http.delete(this.url + '/actors/' + artist.id, this.getHeaders())
             .subscribe((res: any) => {
-                    this.loading = false;
-
                     this.actor = res.artist;
                     this.toast.showToast(res.message, 'success');
                     this.success = res.success;
 
                 },
-                (error) => this.handleError);
+                (error) => handleError(error));
     }
 
-    handleError(error: HttpErrorResponse) {
-        let errorMessage = error.error.error;
-        if (error.status === 500) {
-            errorMessage = 'Something went wrong';
-            console.log(`Error Code: ${error.status}\nMessage: ${error.message}`);
-
-        }
-        this.toast.error(errorMessage);
-    }
 
     searchActor(searchTerm: string, actorIds = []): Observable<Actor[]> {
         this.loading = true;
@@ -143,8 +122,6 @@ export class ArtistService {
             .pipe(
                 retry(3),
                 map((res) => {
-                    this.loading = false;
-
                     const {actors} = res;
                     return actors;
                 })

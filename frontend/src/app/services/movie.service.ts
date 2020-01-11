@@ -2,12 +2,12 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
 
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {map, retry} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {Movie, Pagination} from '../shared/models';
-import {setPaginationDetails} from '../shared/utils';
+import {handleError, setPaginationDetails} from '../shared/utils';
 
 
 @Injectable({
@@ -89,7 +89,7 @@ export class MovieService {
 
                         }
                     },
-                    error => this.handleError(error)
+                    error => handleError(error)
                 );
 
         } else { // insert
@@ -104,21 +104,12 @@ export class MovieService {
 
                         }
                     },
-                    error => this.handleError(error)
+                    error => handleError(error)
                 );
         }
 
     }
 
-    handleError(error: HttpErrorResponse) {
-        let errorMessage = error.error.error;
-        if (error.status === 500) {
-            errorMessage = 'Something went wrong';
-            console.log(`Error Code: ${error.status}\nMessage: ${error.message}`);
-
-        }
-        this.toast.error(errorMessage);
-    }
 
 
     deleteMovie(movieId: number) {
@@ -128,7 +119,7 @@ export class MovieService {
                 (res: any) => {
                     this.toast.success(res.message);
                 },
-                error => this.handleError(error));
+                error => handleError(error));
     }
 
     moviesToCinemaItems(movies: Array<Movie>) {
