@@ -3,7 +3,6 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 
 from flaskr.models import db
-from flaskr.views.errors import auth_error
 
 migrate = Migrate()
 
@@ -19,10 +18,7 @@ def create_app(config=None):
     cors = CORS(app, resources={"r/*": {"origins": "*"}})
 
     from flaskr.views import api_bp
-    from flaskr.auth import AuthError
-
     app.register_blueprint(api_bp, url_prefix='/api')
-    app.register_error_handler(AuthError, auth_error)
 
     # set Access-Control-Allow
     @app.after_request

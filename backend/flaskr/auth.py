@@ -6,21 +6,9 @@ from urllib.request import urlopen
 from flask import request, abort
 from jose import jwt
 
-AUTH0_DOMAIN = environ.get('AUTH0_DOMAIN', 'dev-7d54-828.auth0.com')
+AUTH0_DOMAIN = environ.get('AUTH0_DOMAIN')
 ALGORITHMS = ['RS256']
-API_AUDIENCE = environ.get('API_AUDIENCE', 'ensemble')
-
-# AuthError Exception
-'''
-AuthError Exception
-A standardized way to communicate auth failure modes
-'''
-
-
-class AuthError(Exception):
-    def __init__(self, error, status_code):
-        self.error = error
-        self.status_code = status_code
+API_AUDIENCE = environ.get('API_AUDIENCE')
 
 
 # Auth Header
@@ -36,25 +24,21 @@ class AuthError(Exception):
 
 def get_token_auth_header():
     auth_header = request.headers.get("Authorization", 'None')
-    print(auth_header)
 
-    if auth_header == 'null' or auth_header == '':
-        raise AuthError({"code": "authorization_header_missing",
-                         "description":
-                             "Authorization header is expected"}, 401)
+    if auth_header == 'null' or auth_header == '' or auth_header == 'None':
+        abort(status=401, description="Authorization header is expected")
 
     header_parts = auth_header.split(' ')
 
     if len(header_parts) != 2 or not header_parts:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must be in the format'
-                           ' Bearer token'}, 401)
+        abort(
+            status=401,
+            description='Authorization header must be in the format Bearer token'
+        )
 
     elif header_parts[0].lower() != 'bearer':
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization header must start with Bearer'}, 401)
+        abort(status=401,
+              description='Authorization header must start with Bearer')
 
     return header_parts[1]
 
@@ -71,16 +55,15 @@ def get_token_auth_header():
     return true otherwise
 '''
 
-# def check_permissions(permission, payload):
-#     if 'permissions' not in payload:
-#         abort(400)
 
-#     if permission not in payload['permissions']:
-#         raise AuthError({
-#             'code': 'unauthorized',
-#             'description': 'Permission Not found',
-#         }, 401)
-#     return True
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
+        abort(403)
+
+    if permission not in payload['permissions']:
+        abort(status=403,
+              description='Permission Not found')
+    return True
 
 
 '''
@@ -105,10 +88,8 @@ def verify_decode_jwt(token):
 
     # Auth0 token should have a key id
     if 'kid' not in unverified_header:
-        raise AuthError({
-            'code': 'invalid_header',
-            'description': 'Authorization malformed'
-        }, 401)
+        abort(status=401,
+              description='Authorization malformed')
 
     rsa_key = {}
 
@@ -137,31 +118,18 @@ def verify_decode_jwt(token):
             return payload
 
         except jwt.ExpiredSignatureError:
-
-            raise AuthError({
-                'code': 'token_expired',
-                'description': 'Token expired.'
-            }, 401)
+            abort(status=401,
+                  description='Token expired.')
 
         except jwt.JWTClaimsError:
 
-            raise AuthError({
-                'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, '
-                               'check the audience and issuer.'
-            }, 401)
-
+            abort(status=401,
+                  description='Incorrect claims. Please, '
+                              'check the audience and issuer.')
         except Exception:
-
-            raise AuthError({
-                'code': 'invalid_header',
-                'description': 'Unable to parse authentication token.'
-            }, 400)
-
-    raise AuthError({
-        'code': 'invalid_header',
-        'description': 'Unable to find the appropriate key.'
-    }, 400)
+            abort(status=401,
+                  description='Unable to parse authentication token.')
+    abort(status=401, description='Unable to find the appropriate key.')
 
 
 '''
@@ -176,45 +144,6 @@ return the decorator which passes the decoded payload to the
 decorated method
 '''
 
-# def requires_auth(permission=''):
-#     def requires_auth_decorator(f):
-#         @wraps(f)
-#         def wrapper(*args, **kwargs):
-#             token = get_token_auth_header()
-#             payload = verify_decode_jwt(token)
-#             check_permissions(permission, payload)
-#             return f(payload, *args, **kwargs)
-
-#         return wrapper
-#     return requires_auth_decorator
-
-
-casting_assistant = ["get:actors", "get:movies"]
-casting_director = [
-    "get:actors",
-    "get:movies",
-    "post:actors",
-    "delete:actors",
-    "patch:actors",
-    "patch:movies"
-]
-executive_producer = [
-    "get:actors",
-    "get:movies",
-    "post:actors",
-    "delete:actors",
-    "patch:actors",
-    "patch:movies",
-    "post:movies",
-    "delete:movies"
-]
-
-
-def check_permissions(permission, payload):
-    if permission not in payload:
-        abort(401)
-    return True
-
 
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
@@ -222,9 +151,9 @@ def requires_auth(permission=''):
         def wrapper(*args, **kwargs):
             # token = get_token_auth_header()
             # payload = verify_decode_jwt(token)
-            payload = executive_producer
-            check_permissions(permission, payload)
-            return f(payload, *args, **kwargs)
+            # check_permissions(permission, payload)
+            # return f(payload, *args, **kwargs)
+            return f(*args, **kwargs)
 
         return wrapper
 

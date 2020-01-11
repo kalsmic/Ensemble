@@ -1,23 +1,15 @@
-from flask import jsonify
-
-
-def auth_error(error):
-    return jsonify({
-        "success": False,
-        "error": error.status_code,
-        "message": error.error['description']
-    }), error.status_code
-
 
 errors = {
     "BadRequest": {
         "message": "Bad Request",
         "status": 400
     },
+
     "Unauthorized": {
         "message": "Invalid authentication details",
         "status": 401
     },
+
     "Forbidden": {
         "message": "Forbidden",
         "status": 403

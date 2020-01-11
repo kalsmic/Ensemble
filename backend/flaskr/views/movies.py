@@ -62,7 +62,7 @@ class CreateListMovieResource(Resource):
             # Show Error if Movie already exists
             return {
                        "success": False,
-                       "error": 'Movie already exists'
+                       "message": 'Movie already exists'
                    }, 409
 
         finally:

@@ -8,15 +8,6 @@ from marshmallow import fields, validate
 db = SQLAlchemy()
 ma = Marshmallow()
 
-
-# def setup_db(app, config):
-#     app.config.from_object(config)
-#
-#     db.app = app
-#     db.init_app(app)
-#     db.create_all()
-
-
 class BaseModel(db.Model):
     __abstract__ = True
 

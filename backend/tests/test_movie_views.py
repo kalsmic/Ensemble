@@ -52,7 +52,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(data['success'])
-        self.assertDictEqual(data["error"], movie_format_bad_error)
+        self.assertDictEqual(data["message"], movie_format_bad_error)
 
     def test_create_movie_with_invalid_movie_actor_ids(self):
         movie = {
@@ -73,7 +73,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         data = json.loads(response.data.decode())
 
         self.assertFalse(data['success'])
-        self.assertDictEqual(data["error"], {
+        self.assertDictEqual(data["message"], {
             'actor_ids': 'Actor ids must be a list of integers'})
 
     def test_create_movie_with_valid__actor_ids(self):
@@ -125,7 +125,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         self.assertDictEqual(data,
                              {
                                  "success": False,
-                                 "error": "Movie already exists"
+                                 "message": "Movie already exists"
                              })
 
     def test_update_movie(self):
@@ -149,7 +149,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
 
             self.assertEqual(response.status_code, 400)
             self.assertFalse(data["success"])
-            self.assertEqual(data["error"],
+            self.assertEqual(data["message"],
                              {'release_date': ['Not a valid date.'],
                               'title': ['Not a valid string.']})
 
@@ -181,7 +181,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 'Movie does not exist')
+        self.assertEqual(data["message"], 'Movie does not exist')
 
     def test_delete_actor(self):
         movie = Movie(title='Movie to delete', release_date='2007-02-01')

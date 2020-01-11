@@ -34,7 +34,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(data['success'])
-        self.assertEqual(data["error"], actor_bad_format_error)
+        self.assertEqual(data["message"], actor_bad_format_error)
 
     def test_create_duplicate_actor(self):
         Actor(name='Micheal', birth_date="1990-02-25", gender='M').insert()
@@ -55,7 +55,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertFalse(data['success'])
-        self.assertEqual(data["error"], 'Actor already exists')
+        self.assertEqual(data["message"], 'Actor already exists')
 
     def test_create_actors(self):
         actor = {
@@ -92,7 +92,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 'Actor does not exist')
+        self.assertEqual(data["message"], 'Actor does not exist')
 
     def test_get_actor(self):
         actor = Actor(name='Lydia', birth_date='2005-05-01', gender='F')
@@ -127,7 +127,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 'Actor does not exist')
+        self.assertEqual(data["message"], 'Actor does not exist')
 
     def test_patch_actor_bad_request_data(self):
         actor = Actor(name='Jane', birth_date='2007-02-01', gender='F')
@@ -149,7 +149,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(data["success"])
-        self.assertDictEqual(data['error'], actor_bad_format_error)
+        self.assertDictEqual(data["message"], actor_bad_format_error)
 
     def test_patch_actor(self):
         actor = Actor(name='Jeniffer', birth_date='2007-02-01', gender='F')
@@ -184,7 +184,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data["success"])
-        self.assertEqual(data["error"], 'Actor does not exist')
+        self.assertEqual(data["message"], 'Actor does not exist')
 
     def test_delete_actor(self):
         actor = Actor(name='Innocent', birth_date='2008-02-01', gender='M')
@@ -212,7 +212,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertFalse(data["success"])
         self.assertDictEqual(data, {
             'success': False,
-            'error': "please provide 'search_term' field"
+            "message": "please provide 'search_term' field"
         })
 
     def test_search_actor_return_all_if_search_term_is_empty(

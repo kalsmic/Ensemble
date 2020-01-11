@@ -17,8 +17,6 @@ def validate_actor_ids(func):
             return func(*args, **kwargs, actor_ids_present=False)
 
         actor_ids = json_data.get('actor_ids', [])
-        if not actor_ids:
-            return func(*args, **kwargs, actor_ids=actor_ids)
 
         try:
             actor_ids = actor_ids_schema.load({'ids': actor_ids})
@@ -29,7 +27,7 @@ def validate_actor_ids(func):
         except ValidationError:
             return {
                        "success": False,
-                       "error": {
+                       "message": {
                            "actor_ids": "Actor ids must be a list of integers"}
                    }, 400
 
@@ -38,7 +36,8 @@ def validate_actor_ids(func):
         if invalid_actor_ids:
             return {
                        'success': 'False',
-                       'error': f'Actors with Ids {invalid_actor_ids} do not exist'
+                       'message': f'Actors with Ids {invalid_actor_ids} do '
+                                  f'not exist'
                    }, 400
 
         return func(*args, **kwargs, actor_ids=actor_ids, actor_ids_present
@@ -54,10 +53,10 @@ def contains_request_data(func):
             json_data = request.get_json(force=True)
             if not json_data:
                 return {'success': False,
-                        'error': 'No input data provided'}, 400
+                        'message': 'No input data provided'}, 400
         except Exception as err:
             return {"success": False,
-                    "error": "Please Provide valid json data format"}, 400
+                    "message": "Please Provide valid json data format"}, 400
 
         return func(*args, **kwargs, data=json_data)
 
@@ -73,7 +72,7 @@ def actor_id_exists(func):
             actor_object = Actor.query.get_or_404(actor_id)
         except NotFound:
             return {"success": False,
-                    "error": "Actor does not exist"
+                    "message": "Actor does not exist"
                     }, 404
         return func(*args, **kwargs, actor_object=actor_object)
 
@@ -84,12 +83,13 @@ def validate_actor_data(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         json_data = request.get_json(force=True)
+
         try:
             actor_data = json_data['actor']
         except KeyError:
             return {
                        'success': False,
-                       'error': 'provide correct data format',
+                       'message': 'provide correct data format',
                        'format': '{actor: {name: string, birth_date: YYYY-MM-DD, gender: '
                                  'one of M or F}'
                    }, 422
@@ -105,7 +105,7 @@ def validate_actor_data(func):
             # Show Errors if validation fails
             return {
                        "success": False,
-                       "error": err.messages
+                       "message": err.messages
                    }, 400
 
         return func(*args, **kwargs, actor=actor)
@@ -126,7 +126,7 @@ def validate_movie_data(func):
         except KeyError as err:
             return {
                        'success': False,
-                       "error": f"please provide {err} field",
+                       "message": f"please provide {err} field",
                        'format': "{'movie': { 'title': 'string', 'release_date':"
                                  "'YYYY-MM-DD' } }"
                    }, 400
@@ -138,7 +138,7 @@ def validate_movie_data(func):
             # Show Errors if validation fails
             return {
                        "success": False,
-                       "error": err.messages
+                       "message": err.messages
                    }, 400
 
         return func(*args, **kwargs, movie=movie)
@@ -155,7 +155,7 @@ def movie_id_exists(func):
             movie_object = Movie.query.get_or_404(movie_id)
         except NotFound:
             return {"success": False,
-                    "error": "Movie does not exist"
+                    "message": "Movie does not exist"
                     }, 404
         return func(*args, **kwargs, movie_object=movie_object)
 

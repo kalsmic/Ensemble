@@ -9,7 +9,7 @@ from flaskr.helpers import contains_request_data, validate_actor_ids, \
 from flaskr.models import db, Actor, actors_schema, actor_schema
 
 actor_not_found_response = {'success': False,
-                            'error': 'Actor does not exist'}, 404
+                            "message": 'Actor does not exist'}, 404
 
 
 class CreateListActorResource(Resource):
@@ -40,7 +40,6 @@ class CreateListActorResource(Resource):
     @validate_actor_data
     def post(self, *args, **kwargs):
         actor_data = kwargs['actor']
-
         try:
             actor = Actor(**actor_data)
             actor.insert()
@@ -50,7 +49,7 @@ class CreateListActorResource(Resource):
             db.session.rollback()
             return {
                        "success": False,
-                       "error": 'Actor already exists'
+                       "message": 'Actor already exists'
                    }, 409
 
         result = actor_schema.dump(actor)
@@ -92,7 +91,7 @@ class RetrieveUpdateDestroyActorResource(Resource):
             # Show Error if Actor with specified name already exists
             return {
                        "success": False,
-                       "error": 'Actor already exists'
+                       "message": 'Actor already exists'
                    }, 409
 
         result = actor_schema.dump(actor)
@@ -130,7 +129,7 @@ class SearchActorResource(Resource):
         except KeyError as err:
             return {
                        "success": False,
-                       "error": f"please provide {err} field"
+                       "message": f"please provide {err} field"
                    }, 400
 
         actors_query = Actor.search_actors(search_term=search_term,
