@@ -37,7 +37,7 @@ class CreateListActorResource(Resource):
 
     @requires_auth('post:actors')
     @contains_request_data
-    @validate_actor_data
+    @validate_actor_data('post')
     def post(self, *args, **kwargs):
         actor_data = kwargs['actor']
         try:
@@ -76,7 +76,7 @@ class RetrieveUpdateDestroyActorResource(Resource):
     @requires_auth('patch:actors')
     @contains_request_data
     @actor_id_exists
-    @validate_actor_data
+    @validate_actor_data('patch')
     def patch(self, *args, **kwargs):
         actor = kwargs['actor_object']
         actor_data = kwargs['actor']

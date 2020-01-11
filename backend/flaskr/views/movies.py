@@ -43,7 +43,7 @@ class CreateListMovieResource(Resource):
 
     @requires_auth('post:movies')
     @contains_request_data
-    @validate_movie_data
+    @validate_movie_data('post')
     @validate_actor_ids
     def post(self, *args, **kwargs):
         movie = kwargs['movie']
@@ -88,7 +88,7 @@ class RetrieveUpdateDestroyMovieResource(Resource):
     @requires_auth('patch:movies')
     @movie_id_exists
     @contains_request_data
-    @validate_movie_data
+    @validate_movie_data('patch')
     @validate_actor_ids
     def patch(self, *args, **kwargs):
         movie = kwargs['movie_object']
