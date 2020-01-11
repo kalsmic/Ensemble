@@ -8,20 +8,17 @@
 <ion-content *ngIf='artist'>
 
     <form (ngSubmit)="saveArtist" [formGroup]="actorForm" novalidate>
-        <ion-item-divider *ngIf="isSubmitted && !this.artistService.success">
-            <ion-item *ngIf="artistService.error">{{artistService.error}}</ion-item>
-            <ion-item *ngIf="artistService.errorMessage">{{artistService.errorMessage}}</ion-item>
-        </ion-item-divider>
+
         <ion-item>
             <ion-label position="floating">Name:</ion-label>
             <ion-input formControlName="name"
                        name="name" placeholder="name"
                        type="text"></ion-input>
         </ion-item>
-        <span *ngIf="isSubmitted && errorControl.name.errors?.required" class="error ion-padding">
+        <span *ngIf="isSubmitted && errorControl.name.errors?.required" class="ion-padding">
             Name is required.
           </span>
-        <span *ngIf="isSubmitted && errorControl.name.errors?.minlength" class="error ion-padding">
+        <span *ngIf="isSubmitted && errorControl.name.errors?.minlength" class="ion-padding">
             Name should be min 2 chars long.
           </span>
 

@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
-import {catchError, map, retry} from 'rxjs/operators';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map, retry} from 'rxjs/operators';
 import {Actor, Pagination} from '../shared/models';
 import {setPaginationDetails} from '../shared/utils';
 import {ToastService} from './toast.service';
@@ -82,19 +82,9 @@ export class ArtistService {
 
                         }
                     },
-                    err => {
-                        this.loading = false;
+                    (error) => this.handleError);
 
-                        this.error = err.error;
-                        console.log(err.response);
-                        this.toast.error(this.error);
 
-                        if ('message' in err) {
-                            this.errorMessage = err.message;
-                        }
-                        return err.error;
-                    }
-                );
         } else { // insert
             this.loading = true;
 
@@ -112,17 +102,7 @@ export class ArtistService {
 
                         }
                     },
-                    err => {
-                        this.loading = false;
-
-                        this.error = err.error;
-                        this.toast.error(this.error);
-
-                        if ('message' in err) {
-                            this.errorMessage = err.message;
-                        }
-                        return err.error;
-                    });
+                    (error) => this.handleError);
         }
 
     }
@@ -140,29 +120,17 @@ export class ArtistService {
                     this.success = res.success;
 
                 },
-                catchError(this.handleError));
-        // err => {
-        //     this.toast.showToast(err.message, 'danger');
-        //     return err.error;
-        // });
+                (error) => this.handleError);
     }
 
-    handleError(error) {
-        let errorMessage = '';
-        if (error.error instanceof ErrorEvent) {
-            // Get client-side error
-            errorMessage = error.error.message;
-            // this.toast.showToast(errorMessage, 'danger');
-            // this.error = errorMessage;
+    handleError(error: HttpErrorResponse) {
+        let errorMessage = error.error.error;
+        if (error.status === 500) {
+            errorMessage = 'Something went wrong';
+            console.log(`Error Code: ${error.status}\nMessage: ${error.message}`);
 
-        } else {
-            // Get server-side error
-            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-            this.toast.showToast(errorMessage, 'danger');
-            // this.error = errorMessage;
         }
-        window.alert(errorMessage);
-        return throwError(errorMessage);
+        this.toast.error(errorMessage);
     }
 
     searchActor(searchTerm: string, actorIds = []): Observable<Actor[]> {

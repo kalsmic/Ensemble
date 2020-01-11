@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {AuthService} from './auth.service';
 
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {map, retry} from 'rxjs/operators';
 import {Observable} from 'rxjs';
@@ -55,7 +55,7 @@ export class MovieService {
         }
     }
 
-    getMovie(movieId: string): Observable<Movie> {
+    getMovie(movieId: string | number): Observable<Movie> {
         if (this.auth.can('get:movies')) {
             return this.http.get<any>(this.url + '/movies/' + movieId, this.getHeaders())
                 .pipe(
@@ -67,6 +67,7 @@ export class MovieService {
                 );
         }
     }
+
 
     saveMovie(movie: Movie) {
         const movieData = {
@@ -88,10 +89,9 @@ export class MovieService {
 
                         }
                     },
-                    err => {
-                        this.toast.error('Error updating movie');
-                        return err.error;
-                    });
+                    error => this.handleError(error)
+                );
+
         } else { // insert
             delete movie.id;
             this.http.post(this.url + '/movies', {...movieData}, this.getHeaders())
@@ -104,10 +104,22 @@ export class MovieService {
 
                         }
                     },
-                    err => this.toast.error(err.message));
+                    error => this.handleError(error)
+                );
         }
 
     }
+
+    handleError(error: HttpErrorResponse) {
+        let errorMessage = error.error.error;
+        if (error.status === 500) {
+            errorMessage = 'Something went wrong';
+            console.log(`Error Code: ${error.status}\nMessage: ${error.message}`);
+
+        }
+        this.toast.error(errorMessage);
+    }
+
 
     deleteMovie(movieId: number) {
         delete this.cinemas[movieId];
@@ -116,7 +128,7 @@ export class MovieService {
                 (res: any) => {
                     this.toast.success(res.message);
                 },
-                err => this.toast.error(err.message));
+                error => this.handleError(error));
     }
 
     moviesToCinemaItems(movies: Array<Movie>) {

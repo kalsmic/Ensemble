@@ -15,18 +15,17 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class MovieFormComponent implements OnInit {
 
-    @Input() movieId: string;
     @Input() isNew: boolean;
+    @Input() movie: Movie;
     Object = Object;
-    filteredActors: Actor[];
-    movie: Movie;
-    actorSearchFilter: string;
+    private filteredActors: Actor[];
+    private actorSearchFilter: string;
     errors: MovieError = {
         title: '',
         release_date: '',
         actors: ''
     };
-    movieForm: FormGroup;
+    private movieForm: FormGroup;
     private disabledAction: boolean;
     private isSubmitted = false;
 
@@ -49,7 +48,7 @@ export class MovieFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.isNew || this.movieId === '') {
+        if (this.isNew) {
             this.movie = {
                 id: -1,
                 title: '',
@@ -58,19 +57,19 @@ export class MovieFormComponent implements OnInit {
                 actor_ids: []
             };
         } else {
-            this.movieService.getMovie(this.movieId).subscribe(movie => {
-                    const {id, title, release_date, movie_crew: actors, actor_ids} = movie;
-                    this.movie = {id, title, release_date, actors, actor_ids};
-                }
-            );
+
+            this.movieService.getMovie(this.movie.id).subscribe(movie => {
+                const {movie_crew: actors, actor_ids} = movie;
+                this.movie.actors = actors;
+                this.movie.actor_ids = actor_ids;
+            });
         }
         this.disabledAction = !this.auth.can('patch:movies') || !this.auth.can('post:movies');
-
         this.movieForm = this.formBuilder.group({
+
             title: [{value: this.movie.title, disabled: this.disabledAction}, [Validators.required, Validators.minLength(2)]],
             release_date: [{value: this.movie.release_date, disabled: this.disabledAction}, [Validators.required]]
         });
-
     }
 
     get errorControl() {

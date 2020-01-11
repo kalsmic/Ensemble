@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 import {MoviePage} from './movie.page';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {PaginationModule} from '../pagination/pagination.module';
+import {MatDatepickerModule} from '@angular/material';
 
 
 const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         IonicModule,
         PaginationModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatDatepickerModule
 
 
     ],

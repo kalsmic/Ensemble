@@ -15,9 +15,16 @@
                     name="title" placeholder="movie Title"
                     type='text'>
             </ion-input>
+            <ion-text *ngIf="isSubmitted && errorControl.title.errors?.required" color="danger">
+                Movie title is required
+            </ion-text>
+            <ion-text *ngIf="isSubmitted && errorControl.title.errors?.minlength" color="danger">
+                Movie title should be atleast 2 characters long
+
+            </ion-text>
         </ion-item>
-        <ion-text *ngIf="isSubmitted && errorControl.title.errors?.required" color="danger"></ion-text>
-        <ion-text *ngIf="isSubmitted && errorControl.title.errors?.minlength" color="danger"></ion-text>
+
+
         <ion-item>
             <ion-label position="floating">Release Date</ion-label>
             <ion-datetime
@@ -25,12 +32,16 @@
                     formControlName="release_date"
                     name='release_date'
                     pickerFormat="YYYY-MM-DD"
-                    placeholder="Select Date">
+                    placeholder="Select Date"
+            >
             </ion-datetime>
+            <ion-text *ngIf="isSubmitted && errorControl.release_date.errors?.required" color="danger">
+                Release date is required
+            </ion-text>
+
         </ion-item>
-        <ion-text *ngIf="isSubmitted && errorControl.release_date.errors?.required" color="danger"></ion-text>
         <ion-item>
-            <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search Actor"></ion-searchbar>
+            <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search actor to Actor"></ion-searchbar>
         </ion-item>
 
         <ion-item-group *ngIf="actorFilter">
@@ -41,41 +52,36 @@
         </ion-item-group>
         <ion-text *ngIf="errors && errors.actors" color="danger">{{errors.actors}}</ion-text>
 
-        <ion-grid *ngIf="movie && movie.actors" class="table">
+        <ion-grid *ngIf="movie.actors.length">
             <ion-row>
-                <ion-col>Actor</ion-col>
-                <ion-col size="2">Remove</ion-col>
-            </ion-row>
-            <ion-row *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
                 <ion-col>
-                    <ion-text>{{movie_crew.actor.name}}</ion-text>
-                </ion-col>
-                <ion-col size="2">
-                    <ion-button (click)="removeActor(i, movie_crew.actor.id)">Remove</ion-button>
+                    <ion-card>
+                        <ion-card-header>Actors</ion-card-header>
+
+                        <ion-list *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
+                            <ion-item>
+                                {{movie_crew.actor.name}}
+                                <ion-badge
+                                        (click)="removeActor(i, movie_crew.actor.id)"
+                                        [hidden]="disabledAction"
+                                        color="danger">X
+                                </ion-badge>
+                            </ion-item>
+                        </ion-list>
+                    </ion-card>
 
                 </ion-col>
             </ion-row>
         </ion-grid>
-        <ion-item-group>
-            <ion-list-header >Actors</ion-list-header>
-            <ion-item-divider></ion-item-divider>
-
-            <ion-list *ngFor="let movie_crew of movie.actors; let i = index  trackBy: customTrackBy">
-                <ion-item>
-                    <ion-text>{{movie_crew.actor.name}}</ion-text>
-                    <ion-text>
-                        <ion-button (click)="removeActor(i, movie_crew.actor.id)">Remove</ion-button>
-                    </ion-text>
-                </ion-item>
-
-            </ion-list>
-        </ion-item-group>
 
 
         <ion-row>
             <ion-col>
-                <ion-button (click)="deleteClickedMovie()" [disabled]="isNew || !auth.can('delete:movies')"
-                            color="danger">
+                <ion-button
+                        (click)="deleteClickedMovie()"
+                        [disabled]="isNew || !auth.can('delete:movies')"
+                        color="danger"
+                >
                     Delete
                 </ion-button>
             </ion-col>

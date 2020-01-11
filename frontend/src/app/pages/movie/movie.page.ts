@@ -3,6 +3,7 @@ import {AuthService} from 'src/app/services/auth.service';
 import {ModalController} from '@ionic/angular';
 import {MovieService} from 'src/app/services/movie.service';
 import {MovieFormComponent} from './movie-form/movie-form.component';
+import {Movie} from '../../shared/models';
 
 
 @Component({
@@ -12,6 +13,7 @@ import {MovieFormComponent} from './movie-form/movie-form.component';
 })
 export class MoviePage implements OnInit {
     Object = Object;
+    movie: Movie;
 
     constructor(
         private auth: AuthService,
@@ -24,17 +26,21 @@ export class MoviePage implements OnInit {
         this.movies.getMovies().subscribe();
     }
 
-    async openMovieForm(movieId: string = '') {
+    async openMovieForm(activeMovie: Movie = null) {
         if (!this.auth.can('get:movies')) {
             return;
         }
+        // const movie = {id: 1, title: 'The Exodus', release_date: '2019-01-01', actor_ids: [], movie_crew: []};
 
+        if (activeMovie) {
+            console.log('activeMovie');
+        }
         const modal = await this.modalCtrl.create({
             component: MovieFormComponent,
-            componentProps: {movieId, isNew: movieId === ''}
+            componentProps: {movie: activeMovie, isNew: !activeMovie}
         });
 
-        return await modal.present();
+        return modal.present();
     }
 
     navigateToPage($event: number) {
