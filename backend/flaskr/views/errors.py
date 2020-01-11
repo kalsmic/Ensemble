@@ -5,11 +5,6 @@ errors = {
         "status": 400
     },
 
-    "Unauthorized": {
-        "message": "Invalid authentication details",
-        "status": 401
-    },
-
     "Forbidden": {
         "message": "Forbidden",
         "status": 403
