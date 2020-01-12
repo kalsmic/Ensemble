@@ -1,10 +1,10 @@
 import json
 
 from flaskr.views import errors
-from tests.base import EnsembleTestCase
+from tests.base import EnsembleBaseTestCase
 
 
-class EnsembleErrorHandlersTestCase(EnsembleTestCase):
+class EnsembleErrorHandlersTestCase(EnsembleBaseTestCase):
 
     def test_404_return_on_not_found(self):
         response = self.client.get("api/actors")

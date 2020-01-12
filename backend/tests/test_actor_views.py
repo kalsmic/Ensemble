@@ -1,23 +1,32 @@
 import json
 import unittest
+from unittest.mock import patch
 
 from flaskr.models import Actor
-from tests.base import EnsembleTestCase, actor_bad_format_error
+from tests.base import EnsembleBaseTestCase, actor_bad_format_error, \
+    executive_producer_payload
 
-class EnsembleActorTestCase(EnsembleTestCase):
 
-    def test_get_actors(self):
-        num_actors = Actor.query.count()
+class EnsembleActorTestCase(EnsembleBaseTestCase):
+    def setUp(self):
+        super(EnsembleActorTestCase, self).setUp()
+        patcher = patch('flaskr.auth.verify_decode_jwt',
+                        return_value=executive_producer_payload)
+        self.addCleanup(patcher.stop)
+        self.assistant_patcher = patcher.start()
 
-        response = self.client.get("/api/v1/actors")
-
+    def test_cannot_get_actor_not_found(self):
+        response = self.client.get(
+            "api/v1/actors/100",
+            headers=self.headers,
+        )
         data = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertEqual(data['total'], num_actors)
-        self.assertTrue(isinstance(data["actors"], list))
 
-    def test_create_actor_with_invalid_data_format(self):
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], 'Actor does not exist')
+
+    def test_cannot_create_actor_with_invalid_data_format(self):
         actor = {
             "actor": {"name": 12,
                       "birth_date": 12,
@@ -34,8 +43,18 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse(data['success'])
         self.assertEqual(data["message"], actor_bad_format_error)
+        response = self.client.post(
+            "api/v1/actors",
+            data=json.dumps({"name": "name"}),
+            headers=self.headers,
+        )
+        data = json.loads(response.data.decode())
 
-    def test_create_duplicate_actor(self):
+        self.assertEqual(response.status_code, 422)
+        self.assertFalse(data['success'])
+        self.assertEqual(data["message"], 'provide correct data format')
+
+    def test_cannot_create_duplicate_actor(self):
         Actor(name='Micheal', birth_date="1990-02-25", gender='M').insert()
         actor = {
             "actor": {
@@ -56,60 +75,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data["message"], 'Actor already exists')
 
-    def test_create_actors(self):
-        actor = {
-            "actor": {
-                "name": 'Arthur',
-                "birth_date": "2006-05-07",
-                "gender": 'F'
-            }
-        }
-
-        response = self.client.post(
-            "api/v1/actors",
-            data=json.dumps(actor),
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue(data["success"])
-        self.assertEqual(data["actor"]['name'], actor['actor']['name'])
-        self.assertEqual(data["actor"]['birth_date'],
-                         actor['actor']['birth_date'])
-        self.assertEqual(data["actor"]['gender'], actor['actor']['gender'])
-        self.assertIn('id', data['actor'])
-
-        self.assertEqual(data["message"], 'Actor created Successfully')
-
-    def test_get_actor_not_found(self):
-        response = self.client.get(
-            "api/v1/actors/100",
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 404)
-        self.assertFalse(data["success"])
-        self.assertEqual(data["message"], 'Actor does not exist')
-
-    def test_get_actor(self):
-        actor = Actor(name='Lydia', birth_date='2005-05-01', gender='F')
-        actor.insert()
-
-        response = self.client.get(
-            f"api/v1/actors/{actor.id}",
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        actor_dict = actor.long()
-        actor_dict.update({'movie_ids': [], 'movie_crew': []})
-        self.assertDictEqual(data["actor"], actor_dict)
-
-    def test_patch_actor_not_found(self):
+    def test_cannot_patch_actor_not_found(self):
         actor_data = {
             "actor": {
                 "name": 8,
@@ -128,7 +94,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertFalse(data["success"])
         self.assertEqual(data["message"], 'Actor does not exist')
 
-    def test_patch_actor_bad_request_data(self):
+    def test_cannot_patch_actor_bad_request_data(self):
         actor = Actor(name='Jane', birth_date='2007-02-01', gender='F')
         actor.insert()
         actor_data = {"actor": {
@@ -150,31 +116,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertFalse(data["success"])
         self.assertDictEqual(data["message"], actor_bad_format_error)
 
-    def test_patch_actor(self):
-        actor = Actor(name='Jeniffer', birth_date='2007-02-01', gender='F')
-        actor.insert()
-        actor_data = {"actor": {
-
-            "name": "Jennifer Est",
-            "birth_date": '2008-02-01',
-            "gender": 'F'
-        }
-        }
-
-        response = self.client.patch(
-            f"api/v1/actors/{actor.id}",
-            data=json.dumps(actor_data),
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        actor_dict = actor.long()
-        actor_dict.update({'movie_ids': [], 'movie_crew': []})
-        self.assertDictEqual(data['actor'], actor_dict)
-
-    def test_delete_actor_not_found(self):
+    def test_cannot_delete_actor_not_found(self):
         response = self.client.delete(
             "api/v1/actors/100",
             headers=self.headers,
@@ -184,20 +126,6 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse(data["success"])
         self.assertEqual(data["message"], 'Actor does not exist')
-
-    def test_delete_actor(self):
-        actor = Actor(name='Innocent', birth_date='2008-02-01', gender='M')
-        actor.insert()
-        response = self.client.delete(
-            f"api/v1/actors/{actor.id}",
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertEqual(data["message"], "Actor deleted successfully")
-        self.assertIsNone(Actor.query.get(actor.id))
 
     def test_search_actor_without_search_term(self):
         response = self.client.post(
@@ -228,7 +156,7 @@ class EnsembleActorTestCase(EnsembleTestCase):
         self.assertTrue(data["success"])
         self.assertEqual(len(data['actors']), num_actors)
 
-    def test_search_actor(self):
+    def test_can_search_actor(self):
         actor_1 = Actor(name='Lucy Williams', birth_date='2008-02-01',
                         gender='F')
         actor_2 = Actor(name='Lucy Jenkins', birth_date='1978-04-01',

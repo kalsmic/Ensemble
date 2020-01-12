@@ -1,42 +1,21 @@
 import json
 import unittest
+from unittest.mock import patch
 
-from flaskr.models import Movie, Actor, MovieCrew
-from tests.base import EnsembleTestCase, movie_format_bad_error
+from flaskr.models import Movie, Actor
+from tests.base import EnsembleBaseTestCase, movie_format_bad_error, \
+    executive_producer_payload
 
 
-class EnsembleMovieTestCase(EnsembleTestCase):
+class EnsembleMovieTestCase(EnsembleBaseTestCase):
+    def setUp(self):
+        super(EnsembleMovieTestCase, self).setUp()
+        patcher = patch('flaskr.auth.verify_decode_jwt',
+                        return_value=executive_producer_payload)
+        self.addCleanup(patcher.stop)
+        self.assistant_patcher = patcher.start()
 
-    def test_get_movies(self):
-        num_movies = Movie.query.count()
-
-        response = self.client.get("/api/v1/movies")
-
-        data = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertEqual(data['total'], num_movies)
-        self.assertTrue(isinstance(data["movies"], list))
-        self.assertNotIn('movie_crew', data['movies'])
-        self.assertNotIn('movie_ids', data['movies'])
-        self.assertNotIn('actor_ids', data['movies'])
-
-    def test_get_movie(self):
-        movie = Movie(title="Me Myself and I", release_date="2012-01-02")
-        movie.insert()
-
-        response = self.client.get(f"/api/v1/movies/{movie.id}")
-
-        data = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertTrue(isinstance(data["movie"], dict))
-        self.assertEqual(data['movie']['title'], movie.title)
-        self.assertIn('movie_crew', data['movie'])
-        self.assertNotIn('movie_ids', data['movie'])
-        self.assertIn('actor_ids', data['movie'])
-
-    def test_create_movie_with_invalid_movie_data_format(self):
+    def test_cannot_create_movie_with_invalid_movie_data_format(self):
         movie = {
             "movie": {"title": 12,
                       "release_date": 12,
@@ -54,7 +33,19 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         self.assertFalse(data['success'])
         self.assertDictEqual(data["message"], movie_format_bad_error)
 
-    def test_create_movie_with_invalid_movie_actor_ids(self):
+        response = self.client.post(
+            "api/v1/movies",
+            data=json.dumps({"title": "my movie", "release_date":
+                "2019-01-02"}),
+            headers=self.headers,
+        )
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(data['success'])
+        self.assertEqual(data["message"], "please provide 'movie' field")
+
+    def test_cannot_create_movie_with_invalid_movie_actor_ids(self):
         movie = {
             "movie": {"title": "The Exodus",
                       "release_date": "2019-01-01"
@@ -76,7 +67,29 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         self.assertDictEqual(data["message"], {
             'actor_ids': 'Actor ids must be a list of integers'})
 
-    def test_create_movie_with_valid__actor_ids(self):
+    def test_cannot_post_movie_with_non_existent_actor_ids(self):
+        movie = {
+            "movie": {"title": "The Exodus",
+                      "release_date": "2019-01-01"
+                      },
+            "actor_ids": [700,]
+
+        }
+
+        response = self.client.post(
+            "api/v1/movies",
+            data=json.dumps(movie),
+            headers=self.headers,
+        )
+
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data.decode())
+
+        # self.assertFalse(data['success'])
+        self.assertEqual(data["message"], "Actors with Ids [700] do not exist")
+
+
+    def test_can_create_movie_with_valid__actor_ids(self):
         actor1 = Actor(name='Mubarak', birth_date='1980-02-03', gender="M")
         actor2 = Actor(name='Emmanuel', birth_date='19780-02-03', gender="M")
         actor1.insert()
@@ -104,7 +117,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         self.assertIn(actor1.id, actor_ids)
         self.assertIn(actor2.id, actor_ids)
 
-    def test_create_duplicate_movie(self):
+    def test_cannot_create_duplicate_movie(self):
         Movie(title="my duplicate", release_date="2019-02-01").insert()
         movie = {
             "movie": {
@@ -128,51 +141,7 @@ class EnsembleMovieTestCase(EnsembleTestCase):
                                  "message": "Movie already exists"
                              })
 
-    def test_update_movie(self):
-        movie = Movie(title="Deer Hunter", release_date="1972-01-01")
-        actor = Actor(name="John Martin", gender="M", birth_date="1976-01-01")
-        actor.insert()
-        movie.insert()
-        MovieCrew(actor_id=actor.id, movie_id=movie.id).insert()
-        actor_id = actor.id
-
-        with self.client:
-            invalid_movie_data = {"movie": {"title": 1, "release_date": ""}
-                                  }
-
-            response = self.client.patch(
-                f"api/v1/movies/{movie.id}",
-                data=json.dumps(invalid_movie_data),
-                headers=self.headers
-            )
-            data = json.loads(response.data.decode())
-
-            self.assertEqual(response.status_code, 400)
-            self.assertFalse(data["success"])
-            self.assertEqual(data["message"],
-                             {'release_date': ['Not a valid date.'],
-                              'title': ['Not a valid string.']})
-
-            valid_data = {"movie": {"title": "Genesis", "release_date":
-                "1972-02-04"}}
-
-            response = self.client.patch(
-                f"api/v1/movies/{movie.id}",
-                data=json.dumps(valid_data),
-                headers=self.headers,
-            )
-            data = json.loads(response.data.decode())
-
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue(data['success'])
-            self.assertTrue(data['message'], 'Movie updated successfully')
-            self.assertNotEqual(data['movie']["title"], "Deer Hunter")
-            self.assertEqual(data['movie']["title"], valid_data['movie'][
-                'title'])
-            self.assertIn(actor_id, data["movie"]["actor_ids"])
-
-
-    def test_delete_movie_not_found(self):
+    def test_cannot_delete_movie_not_found(self):
         response = self.client.delete(
             "api/v1/movies/100",
             headers=self.headers,
@@ -183,25 +152,13 @@ class EnsembleMovieTestCase(EnsembleTestCase):
         self.assertFalse(data["success"])
         self.assertEqual(data["message"], 'Movie does not exist')
 
-    def test_delete_actor(self):
-        movie = Movie(title='Movie to delete', release_date='2007-02-01')
-        movie.insert()
-        response = self.client.delete(
-            f"api/v1/movies/{movie.id}",
-            headers=self.headers,
-        )
-        data = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(data["success"])
-        self.assertEqual(data["message"], "Movie deleted successfully")
-        self.assertIsNone(Movie.query.get(movie.id))
-
-    def test_get_movie_actors(self):
+    # get: movies
+    def test_can_get_movie_actors(self):
         movie = Movie(title="Purpose", release_date="1972-01-01")
         actor1 = Actor(name="Peter Murray", gender="M",
                        birth_date="1976-01-01")
-        actor2 = Actor(name="John Stephen", gender="M", birth_date="1976-01-01")
+        actor2 = Actor(name="John Stephen", gender="M",
+                       birth_date="1976-01-01")
         actor3 = Actor(name="Harrison Luke", gender="M",
                        birth_date="1976-01-01")
 
