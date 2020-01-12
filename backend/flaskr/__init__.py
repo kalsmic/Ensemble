@@ -13,7 +13,6 @@ def create_app(config='config.ProductionConfig'):
     app = Flask(__name__)
 
     app.config.from_object(config)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
     db.init_app(app)
     migrate.init_app(app)
 
