@@ -9,12 +9,12 @@ from flaskr.models import db
 migrate = Migrate()
 
 
-def create_app(config='config.ProductionConfig'):
+def create_app(config='config'):
     app = Flask(__name__)
 
     app.config.from_object(config)
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
 
     CORS(app)
     # Allow '*' for origins CORS.
