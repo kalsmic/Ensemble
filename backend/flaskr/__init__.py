@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -11,8 +13,9 @@ def create_app(config=None):
     app = Flask(__name__)
 
     app.config.from_object(config)
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
 
     CORS(app)
     # Allow '*' for origins CORS.
@@ -21,6 +24,9 @@ def create_app(config=None):
     from flaskr.views import api_bp
 
     app.register_blueprint(api_bp, url_prefix="/api")
+    @app.route('/')
+    def welcome():
+        return {"message": "welcome to Ensemble"}, 200
 
     # set Access-Control-Allow
     @app.after_request
