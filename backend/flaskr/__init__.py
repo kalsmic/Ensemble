@@ -9,7 +9,7 @@ from flaskr.models import db
 migrate = Migrate()
 
 
-def create_app(config=None):
+def create_app(config='config.ProductionConfig'):
     app = Flask(__name__)
 
     app.config.from_object(config)
