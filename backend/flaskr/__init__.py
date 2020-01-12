@@ -15,7 +15,7 @@ def create_app(config=None):
     app.config.from_object(config)
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app)
 
     CORS(app)
     # Allow '*' for origins CORS.
