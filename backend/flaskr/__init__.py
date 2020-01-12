@@ -6,6 +6,7 @@ from flaskr.models import db
 
 migrate = Migrate()
 
+
 def create_app(config=None):
     app = Flask(__name__)
 
@@ -18,7 +19,8 @@ def create_app(config=None):
     cors = CORS(app, resources={"r/*": {"origins": "*"}})
 
     from flaskr.views import api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
+
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     # set Access-Control-Allow
     @app.after_request
@@ -30,7 +32,5 @@ def create_app(config=None):
             "Access-Control-Allow-Methods", "GET,PATCH,POST,DELETE,OPTIONS"
         )
         return response
-
-
 
     return app

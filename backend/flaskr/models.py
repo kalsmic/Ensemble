@@ -8,6 +8,7 @@ from marshmallow import fields, validate
 db = SQLAlchemy()
 ma = Marshmallow()
 
+
 class BaseModel(db.Model):
     __abstract__ = True
 
@@ -27,53 +28,51 @@ class BaseModel(db.Model):
 
 
 class Actor(BaseModel):
-    __tablename__ = 'actors'
+    __tablename__ = "actors"
     name = db.Column(db.String(250), nullable=False, unique=True)
     gender = db.Column(db.String(250), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
 
-    movie_ids = db.relationship('Movie', secondary='movie_crew')
+    movie_ids = db.relationship("Movie", secondary="movie_crew")
 
     def __init__(self, name, gender, birth_date):
         self.name = name
         self.gender = gender
         self.birth_date = birth_date
 
-    '''
+    """
     short()
         short form representation of the Actor model
-    '''
+    """
 
     def short(self):
-        return {
-            'id': self.id,
-            'name': self.name
-        }
+        return {"id": self.id, "name": self.name}
 
-    '''
+    """
     long()
         long form representation of the Actor model
-    '''
+    """
 
     def long(self):
         current_year = datetime.datetime.today().strftime("%Y")
         birth_year = self.birth_date.year
         age = int(current_year) - int(birth_year)
-        birth_date = self.birth_date.strftime('%Y-%m-%d')
+        birth_date = self.birth_date.strftime("%Y-%m-%d")
         actor = self.short()
 
-        actor.update({
-            'gender': self.gender,
-            'birth_date': birth_date,
-            "age": age
-        })
+        actor.update(
+            {"gender": self.gender, "birth_date": birth_date, "age": age}
+        )
         return actor
 
     @classmethod
     def get_invalid_actor_ids(cls, actor_ids):
-        valid_ids = [actor.id for actor in db.session.query(cls).filter(
-            cls.id.in_(actor_ids)).all()
-                     ]
+        valid_ids = [
+            actor.id
+            for actor in db.session.query(cls)
+            .filter(cls.id.in_(actor_ids))
+            .all()
+        ]
 
         #  Compute difference to get ids not in db
         invalid_ids = list(set(actor_ids) - set(valid_ids))
@@ -82,9 +81,11 @@ class Actor(BaseModel):
 
     @classmethod
     def search_actors(cls, search_term, actor_ids=[]):
-        actors_query = cls.query.filter(
-            cls.name.ilike(f"%{search_term}%")
-        ).filter(cls.id.notin_(actor_ids)).all()
+        actors_query = (
+            cls.query.filter(cls.name.ilike(f"%{search_term}%"))
+            .filter(cls.id.notin_(actor_ids))
+            .all()
+        )
 
         return actors_query
 
@@ -93,12 +94,12 @@ class Actor(BaseModel):
 
 
 class Movie(BaseModel):
-    __tablename__ = 'movies'
+    __tablename__ = "movies"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), unique=True, nullable=False)
     release_date = db.Column(db.Date, nullable=False)
 
-    actor_ids = db.relationship('Actor', secondary='movie_crew')
+    actor_ids = db.relationship("Actor", secondary="movie_crew")
 
     def __init__(self, title, release_date):
         self.title = title
@@ -106,8 +107,7 @@ class Movie(BaseModel):
 
     def add_movie_actors(self, actor_ids):
         movie_actors_objs = [
-            MovieCrew(movie_id=self.id,
-                      actor_id=actor_id)
+            MovieCrew(movie_id=self.id, actor_id=actor_id)
             for actor_id in actor_ids
         ]
 
@@ -115,8 +115,9 @@ class Movie(BaseModel):
         db.session.commit()
 
     def get_movie_actors(self):
-        movie_crew = MovieCrew.query.filter_by(movie_id=self.id).join(
-            Actor).all()
+        movie_crew = (
+            MovieCrew.query.filter_by(movie_id=self.id).join(Actor).all()
+        )
 
         return movie_crew
 
@@ -129,29 +130,29 @@ class Movie(BaseModel):
             self.add_movie_actors(actors_to_insert)
 
     def remove_actors_from_movie(self, actor_ids):
-        actors_to_delete = db.session.query(MovieCrew).filter_by(
-            movie_id=self.id).filter(MovieCrew.actor_id.notin_(actor_ids))
+        actors_to_delete = (
+            db.session.query(MovieCrew)
+            .filter_by(movie_id=self.id)
+            .filter(MovieCrew.actor_id.notin_(actor_ids))
+        )
         actors_to_delete.delete(synchronize_session=False)
 
-    '''
+    """
     short()
         short form representation of the Movie model
-    '''
+    """
 
     def short(self):
-        return {
-            'id': self.id,
-            'title': self.title
-        }
+        return {"id": self.id, "title": self.title}
 
-    '''
+    """
         long()
             long form representation of the Movie model
-    '''
+    """
 
     def long(self):
         movie = self.short()
-        movie.update({"release_date": self.release_date.strftime('%Y-%m-%d')})
+        movie.update({"release_date": self.release_date.strftime("%Y-%m-%d")})
         return movie
 
     def __repr__(self):
@@ -159,17 +160,21 @@ class Movie(BaseModel):
 
 
 class MovieCrew(db.Model):
-    __tablename__ = 'movie_crew'
+    __tablename__ = "movie_crew"
 
-    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'),
-                         primary_key=True)
-    actor_id = db.Column(db.Integer, db.ForeignKey('actors.id'),
-                         primary_key=True)
+    movie_id = db.Column(
+        db.Integer, db.ForeignKey("movies.id"), primary_key=True
+    )
+    actor_id = db.Column(
+        db.Integer, db.ForeignKey("actors.id"), primary_key=True
+    )
 
-    movie = db.relationship('Movie', backref=db.backref('movie_crew',
-                                                        cascade='all, delete-orphan'))
-    actor = db.relationship('Actor', backref=db.backref('movie_crew',
-                                                        cascade='all, delete-orphan'))
+    movie = db.relationship(
+        "Movie", backref=db.backref("movie_crew", cascade="all, delete-orphan")
+    )
+    actor = db.relationship(
+        "Actor", backref=db.backref("movie_crew", cascade="all, delete-orphan")
+    )
 
     def __init__(self, movie_id, actor_id):
         self.movie_id = movie_id
@@ -184,16 +189,13 @@ class MovieCrew(db.Model):
         results = cls.query.filter_by(movie_id=movie_id).all()
         return [result.actor_id for result in results]
 
-    '''
+    """
     short()
         short form representation of the Movie model
-    '''
+    """
 
     def short(self):
-        return {
-            'movie': self.movie.title,
-            'actor': self.actor.name
-        }
+        return {"movie": self.movie.title, "actor": self.actor.name}
 
     def __repr__(self):
         return json.dumps(self.short())
@@ -204,35 +206,46 @@ class ActorSchema(ma.ModelSchema):
     name = fields.String(required=True)
     birth_date = fields.Date(required=True)
     age = fields.Function(
-        lambda obj: datetime.datetime.today().year - obj.birth_date.year)
+        lambda obj: datetime.datetime.today().year - obj.birth_date.year
+    )
 
-    movie_crew = fields.List(fields.Nested(lambda: MovieCrewSchema(only=(
-        "movie",))))
+    movie_crew = fields.List(
+        fields.Nested(lambda: MovieCrewSchema(only=("movie",)))
+    )
 
     class Meta:
         model = Actor
-        fields = ("id", "name", "gender", "age", "birth_date",
-                  'movie_ids', 'movie_crew')
+        fields = (
+            "id",
+            "name",
+            "gender",
+            "age",
+            "birth_date",
+            "movie_ids",
+            "movie_crew",
+        )
         ordered = True
 
 
 class MovieSchema(ma.ModelSchema):
     title = fields.String(required=True)
-    movie_crew = fields.List(fields.Nested(lambda: MovieCrewSchema(only=(
-        "actor",))))
+    movie_crew = fields.List(
+        fields.Nested(lambda: MovieCrewSchema(only=("actor",)))
+    )
 
     class Meta:
         model = Movie
-        fields = ("id", "title", "release_date", "actor_ids",
-                  "movie_crew")
+        fields = ("id", "title", "release_date", "actor_ids", "movie_crew")
         ordered = True
 
 
 class MovieCrewSchema(ma.ModelSchema):
-    actor = fields.Nested(lambda: ActorSchema(only=("id", "name")),
-                          dump_only=True)
-    movie = fields.Nested(lambda: MovieSchema(only=("id", "title")),
-                          dump_only=True)
+    actor = fields.Nested(
+        lambda: ActorSchema(only=("id", "name")), dump_only=True
+    )
+    movie = fields.Nested(
+        lambda: MovieSchema(only=("id", "title")), dump_only=True
+    )
 
     class Meta:
         model = MovieCrew
@@ -242,11 +255,11 @@ class IdListSchema(ma.Schema):
     ids = fields.List(fields.Integer)
 
 
-movies_schema = MovieSchema(many=True, exclude=['actor_ids', 'movie_crew'])
+movies_schema = MovieSchema(many=True, exclude=["actor_ids", "movie_crew"])
 movie_schema = MovieSchema()
 
-movie_crew_schema = MovieCrewSchema(many=True, exclude=['movie'])
+movie_crew_schema = MovieCrewSchema(many=True, exclude=["movie"])
 
-actors_schema = ActorSchema(many=True, exclude=['movie_ids', 'movie_crew'])
+actors_schema = ActorSchema(many=True, exclude=["movie_ids", "movie_crew"])
 actor_schema = ActorSchema()
 actor_ids_schema = IdListSchema()

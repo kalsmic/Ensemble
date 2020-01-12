@@ -8,9 +8,9 @@ from urllib.request import urlopen
 from flask import request, abort
 from jose import jwt
 
-AUTH0_DOMAIN = environ.get('AUTH0_DOMAIN')
-ALGORITHMS = ['RS256']
-API_AUDIENCE = environ.get('API_AUDIENCE')
+AUTH0_DOMAIN = environ.get("AUTH0_DOMAIN")
+ALGORITHMS = ["RS256"]
+API_AUDIENCE = environ.get("API_AUDIENCE")
 
 
 # Auth Header
@@ -25,27 +25,29 @@ API_AUDIENCE = environ.get('API_AUDIENCE')
 
 
 def get_token_auth_header():
-    auth_header = request.headers.get("Authorization", 'None')
+    auth_header = request.headers.get("Authorization", "None")
 
-    if auth_header == 'null' or auth_header == '' or auth_header == 'None':
+    if auth_header == "null" or auth_header == "" or auth_header == "None":
         abort(status=401, description="Authorization header is expected")
 
-    header_parts = auth_header.split(' ')
+    header_parts = auth_header.split(" ")
 
     if len(header_parts) != 2 or not header_parts:
         abort(
             status=401,
-            description='Authorization header must be in the format Bearer token'
+            description="Authorization header must be in the format Bearer token",
         )
 
-    elif header_parts[0].lower() != 'bearer':
-        abort(status=401,
-              description='Authorization header must start with Bearer')
+    elif header_parts[0].lower() != "bearer":
+        abort(
+            status=401,
+            description="Authorization header must start with Bearer",
+        )
 
     return header_parts[1]
 
 
-'''
+"""
 @INPUTS
     permission: string permission (i.e. 'post:actor')
     payload: decoded jwt payload
@@ -55,20 +57,19 @@ def get_token_auth_header():
     it should raise an AuthError if the requested permission
     string is not in the payload permissions array
     return true otherwise
-'''
+"""
 
 
 def check_permissions(permission, payload):
-    if 'permissions' not in payload:
+    if "permissions" not in payload:
         abort(403)
 
-    if permission not in payload['permissions']:
-        abort(status=403,
-              description='Permission Not found')
+    if permission not in payload["permissions"]:
+        abort(status=403, description="Permission Not found")
     return True
 
 
-'''
+"""
  @INPUTS
     token: a json web token (string)
 
@@ -77,13 +78,13 @@ def check_permissions(permission, payload):
     it should decode the payload from the token
     it should validate the claims
     return the decoded payload
-'''
+"""
 
 
 def verify_decode_jwt(token):
     # Get public key from Auth0
     try:
-        jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
+        jsonurl = urlopen(f"https://{AUTH0_DOMAIN}/.well-known/jwks.json")
         jwks = json.loads(jsonurl.read())
 
     except URLError:
@@ -94,20 +95,19 @@ def verify_decode_jwt(token):
     unverified_header = jwt.get_unverified_header(token)
 
     # Auth0 token should have a key id
-    if 'kid' not in unverified_header:
-        abort(status=401,
-              description='Authorization malformed')
+    if "kid" not in unverified_header:
+        abort(status=401, description="Authorization malformed")
 
     rsa_key = {}
 
-    for key in jwks['keys']:
-        if key['kid'] == unverified_header['kid']:
+    for key in jwks["keys"]:
+        if key["kid"] == unverified_header["kid"]:
             rsa_key = {
-                'kty': key['kty'],
-                'kid': key['kid'],
-                'use': key['use'],
-                'n': key['n'],
-                'e': key['e']
+                "kty": key["kty"],
+                "kid": key["kid"],
+                "use": key["use"],
+                "n": key["n"],
+                "e": key["e"],
             }
             break
 
@@ -120,26 +120,28 @@ def verify_decode_jwt(token):
                 rsa_key,
                 algorithms=ALGORITHMS,
                 audience=API_AUDIENCE,
-                issuer=f'https://{AUTH0_DOMAIN}/'
+                issuer=f"https://{AUTH0_DOMAIN}/",
             )
             return payload
 
         except jwt.ExpiredSignatureError:
-            abort(status=401,
-                  description='Token expired.')
+            abort(status=401, description="Token expired.")
 
         except jwt.JWTClaimsError:
 
-            abort(status=401,
-                  description='Incorrect claims. Please, '
-                              'check the audience and issuer.')
+            abort(
+                status=401,
+                description="Incorrect claims. Please, "
+                "check the audience and issuer.",
+            )
         except Exception:
-            abort(status=401,
-                  description='Unable to parse authentication token.')
-    abort(status=401, description='Unable to find the appropriate key.')
+            abort(
+                status=401, description="Unable to parse authentication token."
+            )
+    abort(status=401, description="Unable to find the appropriate key.")
 
 
-'''
+"""
 @INPUTS
     permission: string permission (i.e. 'post:actor')
 
@@ -149,10 +151,10 @@ it should use the check_permissions method validate claims
 and check the requested permission
 return the decorator which passes the decoded payload to the
 decorated method
-'''
+"""
 
 
-def requires_auth(permission=''):
+def requires_auth(permission=""):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):

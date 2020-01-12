@@ -13,35 +13,43 @@ def validate_actor_ids(func):
     def wrapper(*args, **kwargs):
         json_data = request.get_json(force=True)
 
-        if 'actor_ids' not in json_data:
+        if "actor_ids" not in json_data:
             return func(*args, **kwargs, actor_ids_present=False)
 
-        actor_ids = json_data.get('actor_ids', [])
+        actor_ids = json_data.get("actor_ids", [])
 
         try:
-            actor_ids = actor_ids_schema.load({'ids': actor_ids})
+            actor_ids = actor_ids_schema.load({"ids": actor_ids})
 
             # Remove duplicate ids
-            actor_ids = list(set(actor_ids.get('ids')))
+            actor_ids = list(set(actor_ids.get("ids")))
 
         except ValidationError:
-            return {
-                       "success": False,
-                       "message": {
-                           "actor_ids": "Actor ids must be a list of integers"}
-                   }, 400
+            return (
+                {
+                    "success": False,
+                    "message": {
+                        "actor_ids": "Actor ids must be a list of integers"
+                    },
+                },
+                400,
+            )
 
         invalid_actor_ids = Actor.get_invalid_actor_ids(actor_ids)
 
         if invalid_actor_ids:
-            return {
-                       'success': 'False',
-                       'message': f'Actors with Ids {invalid_actor_ids} do '
-                                  f'not exist'
-                   }, 400
+            return (
+                {
+                    "success": "False",
+                    "message": f"Actors with Ids {invalid_actor_ids} do "
+                    f"not exist",
+                },
+                400,
+            )
 
-        return func(*args, **kwargs, actor_ids=actor_ids, actor_ids_present
-        =True)
+        return func(
+            *args, **kwargs, actor_ids=actor_ids, actor_ids_present=True
+        )
 
     return wrapper
 
@@ -52,11 +60,18 @@ def contains_request_data(func):
         try:
             json_data = request.get_json(force=True)
             if not json_data:
-                return {'success': False,
-                        'message': 'No input data provided'}, 400
+                return (
+                    {"success": False, "message": "No input data provided"},
+                    400,
+                )
         except Exception as err:
-            return {"success": False,
-                    "message": "Please Provide valid json data format"}, 400
+            return (
+                {
+                    "success": False,
+                    "message": "Please Provide valid json data format",
+                },
+                400,
+            )
 
         return func(*args, **kwargs, data=json_data)
 
@@ -66,55 +81,54 @@ def contains_request_data(func):
 def actor_id_exists(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        actor_id = kwargs['actor_id']
+        actor_id = kwargs["actor_id"]
 
         try:
             actor_object = Actor.query.get_or_404(actor_id)
         except NotFound:
-            return {"success": False,
-                    "message": "Actor does not exist"
-                    }, 404
+            return {"success": False, "message": "Actor does not exist"}, 404
         return func(*args, **kwargs, actor_object=actor_object)
 
     return wrapper
 
 
-def validate_actor_data(method='post'):
+def validate_actor_data(method="post"):
     def validate_actor_data_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             json_data = request.get_json(force=True)
             try:
-                actor_data = json_data['actor']
+                actor_data = json_data["actor"]
             except KeyError:
-                return {
-                           'success': False,
-                           'message': 'provide correct data format',
-                           'format': '{actor: {name: string, birth_date: YYYY-MM-DD, gender: '
-                                     'one of M or F}'
-                       }, 422
+                return (
+                    {
+                        "success": False,
+                        "message": "provide correct data format",
+                        "format": "{actor: {name: string, birth_date: YYYY-MM-DD, gender: "
+                        "one of M or F}",
+                    },
+                    422,
+                )
             actor = {
-                'name': actor_data.get('name'),
-                'birth_date': actor_data.get('birth_date'),
-                'gender': actor_data.get('gender')
+                "name": actor_data.get("name"),
+                "birth_date": actor_data.get("birth_date"),
+                "gender": actor_data.get("gender"),
             }
-            if method == 'patch':
-                actor_object = kwargs['actor_object']
+            if method == "patch":
+                actor_object = kwargs["actor_object"]
                 actor = {
-                    'name': actor_data.get('name', actor_object.name),
-                    'birth_date': actor_data.get('birth_date',
-                                                 actor_object.birth_date),
-                    'gender': actor_data.get('gender', actor_object.gender)
+                    "name": actor_data.get("name", actor_object.name),
+                    "birth_date": actor_data.get(
+                        "birth_date", actor_object.birth_date
+                    ),
+                    "gender": actor_data.get("gender", actor_object.gender),
                 }
 
             try:
                 actor_schema.load(actor)
             except ValidationError as err:
                 # Show Errors if validation fails
-                return {
-                           "success": False,
-                           "message": err.messages
-                       }, 400
+                return {"success": False, "message": err.messages}, 400
 
             return func(*args, **kwargs, actor=actor)
 
@@ -123,39 +137,41 @@ def validate_actor_data(method='post'):
     return validate_actor_data_decorator
 
 
-def validate_movie_data(method='post'):
+def validate_movie_data(method="post"):
     def validate_movie_data_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             json_data = request.get_json(force=True)
 
             try:
-                movie_data = json_data['movie']
+                movie_data = json_data["movie"]
 
             except KeyError as err:
-                return {
-                           'success': False,
-                           "message": f"please provide {err} field",
-                       }, 400
-            title = movie_data.get('title')
-            release_date = movie_data.get('release_date')
+                return (
+                    {
+                        "success": False,
+                        "message": f"please provide {err} field",
+                    },
+                    400,
+                )
+            title = movie_data.get("title")
+            release_date = movie_data.get("release_date")
 
-            if method == 'patch':
-                movie_object = kwargs['movie_object']
-                title = movie_data.get('title', movie_object.title)
-                release_date = movie_data.get('release_date',
-                                              movie_object.release_date.strftime(
-                                                  '%Y-%m-%d'))
+            if method == "patch":
+                movie_object = kwargs["movie_object"]
+                title = movie_data.get("title", movie_object.title)
+                release_date = movie_data.get(
+                    "release_date",
+                    movie_object.release_date.strftime("%Y-%m-%d"),
+                )
 
             try:
                 movie = movie_schema.load(
-                    {'title': title, 'release_date': release_date})
+                    {"title": title, "release_date": release_date}
+                )
             except ValidationError as err:
                 # Show Errors if validation fails
-                return {
-                           "success": False,
-                           "message": err.messages
-                       }, 400
+                return {"success": False, "message": err.messages}, 400
 
             return func(*args, **kwargs, movie=movie)
 
@@ -167,14 +183,12 @@ def validate_movie_data(method='post'):
 def movie_id_exists(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        movie_id = kwargs['movie_id']
+        movie_id = kwargs["movie_id"]
 
         try:
             movie_object = Movie.query.get_or_404(movie_id)
         except NotFound:
-            return {"success": False,
-                    "message": "Movie does not exist"
-                    }, 404
+            return {"success": False, "message": "Movie does not exist"}, 404
         return func(*args, **kwargs, movie_object=movie_object)
 
     return wrapper

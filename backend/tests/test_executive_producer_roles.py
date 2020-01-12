@@ -2,15 +2,16 @@ import json
 from unittest.mock import patch
 
 from flaskr.models import Actor, Movie, MovieCrew
-from tests.base import executive_producer_payload, \
-    EnsembleBaseTestCase
+from tests.base import executive_producer_payload, EnsembleBaseTestCase
 
 
 class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
     def setUp(self):
         super(ExecutiveDirectorTestCase, self).setUp()
-        patcher = patch('flaskr.auth.verify_decode_jwt',
-                        return_value=executive_producer_payload)
+        patcher = patch(
+            "flaskr.auth.verify_decode_jwt",
+            return_value=executive_producer_payload,
+        )
         self.addCleanup(patcher.stop)
         self.producer_patcher = patcher.start()
 
@@ -23,63 +24,61 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
-        self.assertEqual(data['total'], num_actors)
+        self.assertEqual(data["total"], num_actors)
         self.assertTrue(isinstance(data["actors"], list))
 
     # get:actors - detail
     def test_get_actor(self):
-        actor = Actor(name='Lydia', birth_date='2005-05-01', gender='F')
+        actor = Actor(name="Lydia", birth_date="2005-05-01", gender="F")
         actor.insert()
 
         response = self.client.get(
-            f"api/v1/actors/{actor.id}",
-            headers=self.headers,
+            f"api/v1/actors/{actor.id}", headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
         actor_dict = actor.long()
-        actor_dict.update({'movie_ids': [], 'movie_crew': []})
+        actor_dict.update({"movie_ids": [], "movie_crew": []})
         self.assertDictEqual(data["actor"], actor_dict)
 
     # post:actors
     def test_can_post_actors(self):
         actor = {
             "actor": {
-                "name": 'Arthur',
+                "name": "Arthur",
                 "birth_date": "2006-05-07",
-                "gender": 'F'
+                "gender": "F",
             }
         }
 
         response = self.client.post(
-            "api/v1/actors",
-            data=json.dumps(actor),
-            headers=self.headers,
+            "api/v1/actors", data=json.dumps(actor), headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(data["success"])
-        self.assertEqual(data["actor"]['name'], actor['actor']['name'])
-        self.assertEqual(data["actor"]['birth_date'],
-                         actor['actor']['birth_date'])
-        self.assertEqual(data["actor"]['gender'], actor['actor']['gender'])
-        self.assertIn('id', data['actor'])
+        self.assertEqual(data["actor"]["name"], actor["actor"]["name"])
+        self.assertEqual(
+            data["actor"]["birth_date"], actor["actor"]["birth_date"]
+        )
+        self.assertEqual(data["actor"]["gender"], actor["actor"]["gender"])
+        self.assertIn("id", data["actor"])
 
-        self.assertEqual(data["message"], 'Actor created Successfully')
+        self.assertEqual(data["message"], "Actor created Successfully")
 
     # patch:actors
     def test_can_patch_actor(self):
-        actor = Actor(name='Jeniffer', birth_date='2007-02-01', gender='F')
+        actor = Actor(name="Jeniffer", birth_date="2007-02-01", gender="F")
         actor.insert()
-        actor_data = {"actor": {
-
-            "name": "Jennifer Est",
-            "birth_date": '2008-02-01',
-            "gender": 'F'
-        }
+        actor_data = {
+            "actor": {
+                "name": "Jennifer Est",
+                "birth_date": "2008-02-01",
+                "gender": "F",
+            }
         }
 
         response = self.client.patch(
@@ -92,16 +91,15 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
         actor_dict = actor.long()
-        actor_dict.update({'movie_ids': [], 'movie_crew': []})
-        self.assertDictEqual(data['actor'], actor_dict)
+        actor_dict.update({"movie_ids": [], "movie_crew": []})
+        self.assertDictEqual(data["actor"], actor_dict)
 
     # delete:actors
     def test_can_delete_actor(self):
-        actor = Actor(name='Innocent', birth_date='2008-02-01', gender='M')
+        actor = Actor(name="Innocent", birth_date="2008-02-01", gender="M")
         actor.insert()
         response = self.client.delete(
-            f"api/v1/actors/{actor.id}",
-            headers=self.headers,
+            f"api/v1/actors/{actor.id}", headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
@@ -119,11 +117,11 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
-        self.assertEqual(data['total'], num_movies)
+        self.assertEqual(data["total"], num_movies)
         self.assertTrue(isinstance(data["movies"], list))
-        self.assertNotIn('movie_crew', data['movies'])
-        self.assertNotIn('movie_ids', data['movies'])
-        self.assertNotIn('actor_ids', data['movies'])
+        self.assertNotIn("movie_crew", data["movies"])
+        self.assertNotIn("movie_ids", data["movies"])
+        self.assertNotIn("actor_ids", data["movies"])
 
     # get: movies (details)
     def test_can_get_movie(self):
@@ -136,32 +134,27 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
         self.assertTrue(isinstance(data["movie"], dict))
-        self.assertEqual(data['movie']['title'], movie.title)
-        self.assertIn('movie_crew', data['movie'])
-        self.assertNotIn('movie_ids', data['movie'])
-        self.assertIn('actor_ids', data['movie'])
+        self.assertEqual(data["movie"]["title"], movie.title)
+        self.assertIn("movie_crew", data["movie"])
+        self.assertNotIn("movie_ids", data["movie"])
+        self.assertIn("actor_ids", data["movie"])
 
     # post:movies
     def test_can_post_movies(self):
         movie = {
-            "movie": {
-                "title": "My movie title",
-                "release_date": "2019-01-01"
-            }
+            "movie": {"title": "My movie title", "release_date": "2019-01-01"}
         }
 
         response = self.client.post(
-            "api/v1/movies",
-            data=json.dumps(movie),
-            headers=self.headers,
+            "api/v1/movies", data=json.dumps(movie), headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(data["success"])
-        self.assertEqual(data["movie"]['title'], movie['movie']['title'])
-        self.assertIn('id', data['movie'])
-        self.assertEqual(data["message"], 'Movie created Successfully')
+        self.assertEqual(data["movie"]["title"], movie["movie"]["title"])
+        self.assertIn("id", data["movie"])
+        self.assertEqual(data["message"], "Movie created Successfully")
 
     # patch: movies
     def test_can_patch_movie(self):
@@ -173,24 +166,28 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
         actor_id = actor.id
 
         with self.client:
-            invalid_movie_data = {"movie": {"title": 1, "release_date": ""}
-                                  }
+            invalid_movie_data = {"movie": {"title": 1, "release_date": ""}}
 
             response = self.client.patch(
                 f"api/v1/movies/{movie.id}",
                 data=json.dumps(invalid_movie_data),
-                headers=self.headers
+                headers=self.headers,
             )
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 400)
             self.assertFalse(data["success"])
-            self.assertEqual(data["message"],
-                             {'release_date': ['Not a valid date.'],
-                              'title': ['Not a valid string.']})
+            self.assertEqual(
+                data["message"],
+                {
+                    "release_date": ["Not a valid date."],
+                    "title": ["Not a valid string."],
+                },
+            )
 
-            valid_data = {"movie": {"title": "Genesis", "release_date":
-                "1972-02-04"}}
+            valid_data = {
+                "movie": {"title": "Genesis", "release_date": "1972-02-04"}
+            }
 
             response = self.client.patch(
                 f"api/v1/movies/{movie.id}",
@@ -200,20 +197,20 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(data['success'])
-            self.assertTrue(data['message'], 'Movie updated successfully')
-            self.assertNotEqual(data['movie']["title"], "Deer Hunter")
-            self.assertEqual(data['movie']["title"], valid_data['movie'][
-                'title'])
+            self.assertTrue(data["success"])
+            self.assertTrue(data["message"], "Movie updated successfully")
+            self.assertNotEqual(data["movie"]["title"], "Deer Hunter")
+            self.assertEqual(
+                data["movie"]["title"], valid_data["movie"]["title"]
+            )
             self.assertIn(actor_id, data["movie"]["actor_ids"])
 
     # delete: movies
     def test_can_delete_movie(self):
-        movie = Movie(title='Movie to delete', release_date='2007-02-01')
+        movie = Movie(title="Movie to delete", release_date="2007-02-01")
         movie.insert()
         response = self.client.delete(
-            f"api/v1/movies/{movie.id}",
-            headers=self.headers,
+            f"api/v1/movies/{movie.id}", headers=self.headers,
         )
         data = json.loads(response.data.decode())
 

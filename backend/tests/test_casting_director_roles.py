@@ -2,15 +2,21 @@ import json
 from unittest.mock import patch
 
 from flaskr.models import Actor
-from tests.base import casting_director_payload, \
-    EnsembleBaseTestCase, movie_actor_data, movie_data
+from tests.base import (
+    casting_director_payload,
+    EnsembleBaseTestCase,
+    movie_actor_data,
+    movie_data,
+)
 
 
 class CastingDirectorTestCase(EnsembleBaseTestCase):
     def setUp(self):
         super(CastingDirectorTestCase, self).setUp()
-        patcher = patch('flaskr.auth.verify_decode_jwt',
-                        return_value=casting_director_payload)
+        patcher = patch(
+            "flaskr.auth.verify_decode_jwt",
+            return_value=casting_director_payload,
+        )
         self.addCleanup(patcher.stop)
         self.director_patcher = patcher.start()
 
@@ -45,17 +51,21 @@ class CastingDirectorTestCase(EnsembleBaseTestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertNotEqual(response.status_code, 403)
-        self.assertEqual(data["actor"]['name'],
-                         movie_actor_data['actor']['name'])
-        self.assertEqual(data["actor"]['birth_date'],
-                         movie_actor_data['actor']['birth_date'])
-        self.assertEqual(data["actor"]['gender'],
-                         movie_actor_data['actor']['gender'])
-        self.assertEqual(data["message"], 'Actor created Successfully')
+        self.assertEqual(
+            data["actor"]["name"], movie_actor_data["actor"]["name"]
+        )
+        self.assertEqual(
+            data["actor"]["birth_date"],
+            movie_actor_data["actor"]["birth_date"],
+        )
+        self.assertEqual(
+            data["actor"]["gender"], movie_actor_data["actor"]["gender"]
+        )
+        self.assertEqual(data["message"], "Actor created Successfully")
 
     # patch: actors
     def test_patch_actor(self):
-        actor = Actor(name='Micheal', birth_date="1990-02-25", gender='M')
+        actor = Actor(name="Micheal", birth_date="1990-02-25", gender="M")
         actor.insert()
 
         response = self.client.patch(
@@ -68,20 +78,20 @@ class CastingDirectorTestCase(EnsembleBaseTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
         actor_dict = actor.long()
-        actor_dict.update({'movie_ids': [], 'movie_crew': []})
+        actor_dict.update({"movie_ids": [], "movie_crew": []})
 
-        self.assertEqual(data["message"], 'Actor updated successfully')
-        self.assertDictEqual(data['actor'], actor_dict)
-        self.assertEqual(data['actor']["name"],
-                         movie_actor_data["actor"]["name"])
+        self.assertEqual(data["message"], "Actor updated successfully")
+        self.assertDictEqual(data["actor"], actor_dict)
+        self.assertEqual(
+            data["actor"]["name"], movie_actor_data["actor"]["name"]
+        )
 
     # delete: actors
     def test_can_delete_actor(self):
-        actor = Actor(name='Jones', birth_date='2008-02-01', gender='M')
+        actor = Actor(name="Jones", birth_date="2008-02-01", gender="M")
         actor.insert()
         response = self.client.delete(
-            f"api/v1/actors/{actor.id}",
-            headers=self.headers,
+            f"api/v1/actors/{actor.id}", headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
@@ -93,17 +103,14 @@ class CastingDirectorTestCase(EnsembleBaseTestCase):
     # post: movies
     def test_cannot_post_movies(self):
         response = self.client.post(
-            "api/v1/movies",
-            headers=self.headers,
-            data=json.dumps(movie_data)
+            "api/v1/movies", headers=self.headers, data=json.dumps(movie_data)
         )
         self.make_permission_error_assertions(response)
 
     # delete: movies
     def test_cannot_delete_movie(self):
         response = self.client.delete(
-            f"api/v1/movies/1",
-            headers=self.headers,
+            f"api/v1/movies/1", headers=self.headers,
         )
 
         self.make_permission_error_assertions(response)
