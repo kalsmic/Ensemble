@@ -16,7 +16,7 @@ export class MoviePage implements OnInit {
     movie: Movie;
 
     constructor(
-        private auth: AuthService,
+        public auth: AuthService,
         private modalCtrl: ModalController,
         public movies: MovieService,
     ) {

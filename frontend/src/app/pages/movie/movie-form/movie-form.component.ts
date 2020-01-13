@@ -20,12 +20,12 @@ export class MovieFormComponent implements OnInit {
     Object = Object;
     errorMessage: string;
     filteredActors: any;
-    private actorSearchFilter: string;
-    private movieForm: FormGroup;
-    private disabledAction: boolean;
-    private isSubmitted = false;
-    private searchLoader = false;
-    private loading = false;
+    actorSearchFilter: string;
+    movieForm: FormGroup;
+    disabledAction: boolean;
+    isSubmitted = false;
+    searchLoader = false;
+    loading = false;
 
     constructor(
         public auth: AuthService,

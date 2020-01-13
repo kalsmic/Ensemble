@@ -55,7 +55,6 @@
                 <ion-button (click)="addActor(actor)"> Add actor</ion-button>
             </ion-item>
         </ion-item-group>
-        <ion-text *ngIf="errors && errors.actors" color="danger">{{errors.actors}}</ion-text>
 
         <ion-grid *ngIf="movie.actors.length">
             <ion-row>

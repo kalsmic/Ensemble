@@ -15,7 +15,7 @@ export class ArtistPage implements OnInit {
     Object = Object;
 
     constructor(
-        private auth: AuthService,
+        public auth: AuthService,
         private modalCtrl: ModalController,
         public artists: ArtistService,
     ) {
