@@ -18,12 +18,12 @@ export class MovieFormComponent implements OnInit {
     @Input() isNew: boolean;
     @Input() movie: Movie;
     Object = Object;
-    private actorSearchFilter: string;
     errorMessage: string;
+    filteredActors: any;
+    private actorSearchFilter: string;
     private movieForm: FormGroup;
     private disabledAction: boolean;
     private isSubmitted = false;
-    filteredActors: any;
     private searchLoader = false;
     private loading = false;
 
@@ -43,6 +43,10 @@ export class MovieFormComponent implements OnInit {
     set actorFilter(value: string) {
         this.actorSearchFilter = value;
         this.searchActor();
+    }
+
+    get errorControl() {
+        return this.movieForm.controls;
     }
 
     ngOnInit() {
@@ -71,10 +75,6 @@ export class MovieFormComponent implements OnInit {
             }, [Validators.required, Validators.minLength(2)]],
             release_date: [{value: this.movie.release_date, disabled: this.disabledAction}, [Validators.required]]
         });
-    }
-
-    get errorControl() {
-        return this.movieForm.controls;
     }
 
     searchActor() {

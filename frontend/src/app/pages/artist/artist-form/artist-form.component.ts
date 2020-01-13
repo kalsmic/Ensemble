@@ -17,6 +17,7 @@ export class ArtistFormComponent implements OnInit {
     actorForm: FormGroup;
     isSubmitted = false;
     disabledAction: boolean;
+
     constructor(
         public auth: AuthService,
         private modalCtrl: ModalController,
@@ -41,7 +42,10 @@ export class ArtistFormComponent implements OnInit {
         this.disabledAction = !this.auth.can('patch:actors') || !this.auth.can('post:actors');
 
         this.actorForm = this.formBuilder.group({
-            name: [{value: this.artist.name, disabled: this.disabledAction}, [Validators.required, Validators.minLength(2)]],
+            name: [{
+                value: this.artist.name,
+                disabled: this.disabledAction
+            }, [Validators.required, Validators.minLength(2)]],
             gender: [{value: this.artist.gender, disabled: this.disabledAction}, [Validators.required,]],
             birth_date: [{value: this.artist.birth_date, disabled: this.disabledAction}, [Validators.required,]],
         });

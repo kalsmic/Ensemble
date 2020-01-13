@@ -59,14 +59,14 @@ export class ArtistService {
             //
             this.http.patch(this.url + '/actors/' + artist.id, {actor})
                 .subscribe((res: any) => {
-                        if (res.success) {
-                            const {id, age, name, birth_date, gender} = res.actor;
-                            this.actors[id] = {id, age, name, birth_date, gender};
-                            this.toast.success(res.message);
-                            this.success = res.success;
-                            return res.message;
+                    if (res.success) {
+                        const {id, age, name, birth_date, gender} = res.actor;
+                        this.actors[id] = {id, age, name, birth_date, gender};
+                        this.toast.success(res.message);
+                        this.success = res.success;
+                        return res.message;
 
-                        }
+                    }
                 });
 
 
@@ -75,14 +75,14 @@ export class ArtistService {
 
             this.http.post(this.url + '/actors', {actor})
                 .subscribe((res: any) => {
-                        if (res.success) {
-                            const {id, age, name, birth_date, gender} = res.actor;
-                            this.actors[id] = {id, age, name, birth_date, gender};
+                    if (res.success) {
+                        const {id, age, name, birth_date, gender} = res.actor;
+                        this.actors[id] = {id, age, name, birth_date, gender};
 
-                            this.toast.success(res.message);
-                            this.success = res.success;
+                        this.toast.success(res.message);
+                        this.success = res.success;
 
-                        }
+                    }
                 });
         }
 
@@ -94,9 +94,9 @@ export class ArtistService {
         delete this.actors[artist.id];
         this.http.delete(this.url + '/actors/' + artist.id)
             .subscribe((res: any) => {
-                    this.actor = res.artist;
-                    this.toast.showToast(res.message, 'success');
-                    this.success = res.success;
+                this.actor = res.artist;
+                this.toast.showToast(res.message, 'success');
+                this.success = res.success;
 
             });
     }

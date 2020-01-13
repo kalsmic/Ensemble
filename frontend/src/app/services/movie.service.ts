@@ -109,7 +109,6 @@ export class MovieService {
     }
 
 
-
     deleteMovie(movieId: number) {
         delete this.cinemas[movieId];
         this.http.delete(this.url + '/movies/' + movieId)
