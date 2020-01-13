@@ -1,3 +1,22 @@
 <ion-app>
-    <ion-router-outlet></ion-router-outlet>
+    <ion-router-outlet>
+        <ion-grid class="page_loader">
+            <ion-row class="page_loader_items">
+                <ion-spinner name="lines" color="secondary"></ion-spinner>
+
+                <ion-spinner name="lines-small" color="tertiary"></ion-spinner>
+
+                <ion-spinner name="dots"></ion-spinner><ion-text color="tertiary">loading</ion-text>
+
+                <ion-spinner name="lines-small" color="tertiary"></ion-spinner>
+
+                <ion-spinner name="bubbles" color="secondary"></ion-spinner>
+
+                <ion-spinner name="circles"></ion-spinner>
+
+                <ion-spinner name="crescent"></ion-spinner>
+
+            </ion-row>
+        </ion-grid>
+    </ion-router-outlet>
 </ion-app>
