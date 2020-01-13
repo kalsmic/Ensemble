@@ -1,7 +1,7 @@
 <ion-tabs>
 
     <ion-tab-bar slot="bottom">
-        <ion-tab-button tab="actors">
+        <ion-tab-button [disabled]="!auth.can('get:actors')" tab="actors">
             <ion-icon name="people"></ion-icon>
             <ion-label>Actors</ion-label>
         </ion-tab-button>
@@ -11,9 +11,18 @@
             <ion-label>Home</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="movies">
+        <ion-tab-button [disabled]="!auth.can('get:movies')" tab="movies">
             <ion-icon name="film"></ion-icon>
             <ion-label>Movies</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button (click)="auth.logout()" *ngIf="auth.token">
+            <ion-icon name="log-out"></ion-icon>
+            <ion-label>Logout</ion-label>
+        </ion-tab-button>
+        <ion-tab-button *ngIf="!auth.token" [href]="auth.build_login_link('/tabs/user-page')">
+            <ion-icon name="log-in"></ion-icon>
+            <ion-label>Login</ion-label>
         </ion-tab-button>
     </ion-tab-bar>
 

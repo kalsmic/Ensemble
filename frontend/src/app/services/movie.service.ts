@@ -62,6 +62,25 @@ export class MovieService {
     }
 
 
+    getMovieActors(movieId: string | number, page?: number): Observable<any> {
+
+        const url = page ? this.url + '/movies/' + movieId + '/actors?page=' + page : this.url + '/movies/' + movieId + '/actors';
+
+        if (this.auth.can('get:movies')) {
+            return this.http.get<any>(url)
+                .pipe(
+                    retry(3),
+                    map((res) => {
+                        const movieActorResult = {
+                            pagination: setPaginationDetails({...res}),
+                            actors: res.actors
+                        };
+                        return movieActorResult;
+                    })
+                );
+        }
+    }
+
     saveMovie(movie: Movie): Observable<boolean> {
         this.loading = true;
         const movieData = {

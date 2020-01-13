@@ -1,0 +1,37 @@
+<ion-tab-bar *ngIf="pagination.total && pagination.pages !== pagination.total" [slot]="paginationPosition">
+    <ion-tab-button
+            (click)="getPageNumber(1)"
+            [disabled]="!pagination.pages || !pagination.hasPrevious"
+    >
+        <ion-icon name="rewind"></ion-icon>
+        <ion-label>First</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button
+            (click)="getPageNumber(pagination.previousPage)"
+
+            [disabled]="!pagination.hasPrevious"
+    >
+        <ion-icon name="skip-backward"></ion-icon>
+        <ion-label>Previous</ion-label>
+    </ion-tab-button>
+    <ion-tab-button>{{pagination.currentPage}}
+        of {{pagination.pages}}</ion-tab-button>
+
+    <ion-tab-button
+            (click)="getPageNumber(pagination.nextPage)"
+            [disabled]="!pagination.hasNext"
+
+    >
+        <ion-icon name="skip-forward"></ion-icon>
+        <ion-label>Next</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="getPageNumber(pagination.pages)"
+                    [disabled]="!pagination.pages || pagination.currentPage === pagination.pages"
+
+    >
+        <ion-icon name="fastforward"></ion-icon>
+        <ion-label>Last</ion-label>
+    </ion-tab-button>
+</ion-tab-bar>

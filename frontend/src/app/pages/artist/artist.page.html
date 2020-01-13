@@ -12,7 +12,7 @@
                     <ion-label>New Actor</ion-label>
                 </ion-tab-button>
                 <ion-text color="secondary"> |</ion-text>
-                <ion-tab-button tab="movies">
+                <ion-tab-button [disabled]="!auth.can('get:movies')" href="/tabs/movies">
                     <ion-icon name="film"></ion-icon>
                     <ion-label>Movies</ion-label>
                 </ion-tab-button>
@@ -40,11 +40,11 @@
                     <ion-grid>
                         <ion-row>
                             <ion-col>
-                                <ion-item>Id</ion-item>
+                                <ion-item>Name</ion-item>
                             </ion-col>
                             <ion-col>
                                 <ion-item>
-                                    <ion-label>{{artists.actors[artist].id}}</ion-label>
+                                    <ion-label>{{artists.actors[artist].name}}</ion-label>
                                 </ion-item>
                             </ion-col>
                         </ion-row>

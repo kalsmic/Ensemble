@@ -10,7 +10,7 @@
                     <ion-label>New Movie</ion-label>
                 </ion-tab-button>
                 <ion-text color="secondary"> |</ion-text>
-                <ion-tab-button tab="actors">
+                <ion-tab-button [disabled]="!auth.can('get:actors')" href="/tabs/actors">
                     <ion-icon name="people"></ion-icon>
                     <ion-label>Actors</ion-label>
                 </ion-tab-button>
@@ -55,26 +55,33 @@
                                     <ion-label>{{movies.cinemas[movieId].release_date}} </ion-label>
                                 </ion-item>
                             </ion-col>
-                        </ion-row>
-                        <ion-row>
-                            <ion-col>
-                                <ion-item>
-                                    <ion-icon name="film" slot="start"></ion-icon>
-                                    Actions
-                                </ion-item>
-                            </ion-col>
 
+                        </ion-row>
+
+                        <ion-row>
                             <ion-col>
                                 <ion-button
                                         (click)="openMovieForm(movies.cinemas[movieId])"
                                         [disabled]="!auth.can('patch:movies') || !auth.can('delete:movies')"
                                 >
-                                    <ion-icon name="md-open" slot="icon-only"></ion-icon
-                                    >
-                                    Edit
+                                    <ion-icon color="dark" name="film" slot="start"></ion-icon>
+                                    <ion-item>
+                                        <ion-label>Edit</ion-label>
+                                    </ion-item>
+                                    <ion-icon color="dark" name="md-open" slot="end"></ion-icon>
+
                                 </ion-button>
                             </ion-col>
                         </ion-row>
+                        <ion-row>
+
+                            <ion-col>
+                                <app-movie-actors
+                                        [movieId]="movieId"
+                                ></app-movie-actors>
+                            </ion-col>
+                        </ion-row>
+
                     </ion-grid>
                 </ion-card>
             </ion-col>

@@ -8,6 +8,8 @@ import {MoviePage} from './movie.page';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {PaginationModule} from '../pagination/pagination.module';
 import {MatDatepickerModule} from '@angular/material';
+import {MovieActorsComponent} from "./movie-actors/movie-actors.component";
+import {MiniPaginationComponent} from "../mini-pagination/mini-pagination.component";
 
 
 const routes: Routes = [
@@ -33,7 +35,7 @@ const routes: Routes = [
 
     ],
     entryComponents: [MovieFormComponent],
-    declarations: [MoviePage, MovieFormComponent
+    declarations: [MoviePage, MovieFormComponent, MovieActorsComponent, MiniPaginationComponent
     ]
 })
 export class MoviePageModule {

@@ -31,9 +31,6 @@ export class MoviePage implements OnInit {
             return;
         }
 
-        if (activeMovie) {
-            console.log('activeMovie');
-        }
         const modal = await this.modalCtrl.create({
             component: MovieFormComponent,
             componentProps: {movie: activeMovie, isNew: !activeMovie}

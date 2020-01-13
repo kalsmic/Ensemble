@@ -102,7 +102,6 @@ export class MovieFormComponent implements OnInit {
         const actor = {actor: {id, name}};
         this.movie.actors.splice(this.movie.actors.length + 1, 0, actor);
         this.movie.actor_ids.push(id);
-        this.actorFilter = '';
 
     }
 
@@ -120,7 +119,6 @@ export class MovieFormComponent implements OnInit {
         this.isSubmitted = true;
         this.loading = true;
         if (this.movieForm.valid) {
-            console.log('initial', this.movieService.actionSuccess);
 
             const {title, release_date} = this.movieForm.value;
             this.movie.title = title;
@@ -129,13 +127,10 @@ export class MovieFormComponent implements OnInit {
             this.movieService.saveMovie(this.movie).subscribe(success => {
                 this.loading = false;
                 this.closeModal();
-                console.log('mvsuccess', this.movieService.actionSuccess);
-                console.log('mvsuccess', success);
 
             }, error => {
                 this.loading = false;
-                console.log('error mv', error.error.message);
-            })
+            });
 
 
         }
