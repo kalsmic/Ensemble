@@ -24,6 +24,7 @@ export class MovieActorsComponent implements OnInit {
     };
     loading = false;
     isSubmitted = false;
+
     constructor(private movieService: MovieService) {
     }
 
