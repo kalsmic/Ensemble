@@ -22,7 +22,8 @@ export class MovieActorsComponent implements OnInit {
         hasNext: false,
         hasPrevious: false,
     };
-
+    loading = false;
+    isSubmitted = false;
     constructor(private movieService: MovieService) {
     }
 
@@ -32,8 +33,11 @@ export class MovieActorsComponent implements OnInit {
 
 
     getMovieActors(pageNumber: number = 0) {
+        this.isSubmitted = true;
         this.showActors = true;
+        this.loading = true;
         this.movieService.getMovieActors(this.movieId, pageNumber).subscribe((res) => {
+            this.loading = false;
             const {pagination, actors} = res;
             this.pagination = pagination;
             this.movieActors = actors;

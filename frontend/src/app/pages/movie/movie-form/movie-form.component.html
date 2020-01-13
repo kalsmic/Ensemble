@@ -47,6 +47,8 @@
             <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search actor to Actor"></ion-searchbar>
         </ion-item>
         <ion-progress-bar *ngIf="searchLoader" reversed="true" type="indeterminate"></ion-progress-bar>
+        <ion-item *ngIf="!searchLoader && isSearchSubmitted && !loading && !actorFilter.length">No actors Available
+        </ion-item>
 
 
         <ion-item-group *ngIf="actorFilter">

@@ -17,7 +17,7 @@ export class ToastService {
             color,
             duration: 3000,
         });
-        toast.present();
+        await toast.present();
     }
 
     async success(message) {

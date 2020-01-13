@@ -134,7 +134,7 @@ export class MovieService {
         return this.http.delete<any>(this.url + '/movies/' + movieId)
             .subscribe((res: any) => {
                 this.loading = false;
-                    this.toast.success(res.message);
+                return this.toast.success(res.message);
 
             });
     }

@@ -14,7 +14,8 @@
     <ion-icon color="dark" name="ribbon" slot="end"></ion-icon>
 
 </ion-button>
-
+<ion-spinner *ngIf="isSubmitted && loading" color="tertiary"></ion-spinner>
+<ion-item *ngIf="isSubmitted && !loading && !movieActors.length">No actors Available</ion-item>
 <div *ngIf="showActors">
     <app-mini-pagination
             (goToPage)="goToPage($event)"

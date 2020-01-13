@@ -26,6 +26,7 @@ export class MovieFormComponent implements OnInit {
     isSubmitted = false;
     searchLoader = false;
     loading = false;
+    isSearchSubmitted = false;
 
     constructor(
         public auth: AuthService,
@@ -79,7 +80,10 @@ export class MovieFormComponent implements OnInit {
 
     searchActor() {
         if (this.actorFilter) {
+            this.loading = true;
             this.searchLoader = true;
+            this.isSearchSubmitted = true;
+
             this.artistService.searchActor(this.actorFilter, this.movie.actor_ids).subscribe(actors => {
                 this.searchLoader = false;
                 this.filteredActors = actors;
