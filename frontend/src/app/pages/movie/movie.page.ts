@@ -4,6 +4,7 @@ import {ModalController} from '@ionic/angular';
 import {MovieService} from 'src/app/services/movie.service';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {Movie} from '../../shared/models';
+import {formatDate} from "../../shared/utils";
 
 
 @Component({
@@ -42,5 +43,7 @@ export class MoviePage implements OnInit {
     navigateToPage($event: number) {
         this.movies.getMovies($event);
     }
+
+    displayDate = (releaseDate: string) => formatDate(releaseDate, 'DD-MMMM-YYYY');
 
 }
