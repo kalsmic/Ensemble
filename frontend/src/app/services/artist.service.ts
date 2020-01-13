@@ -48,42 +48,42 @@ export class ArtistService {
         }
     }
 
-    saveArtist(artist: Actor) {
-
+    saveArtist(artist: Actor): Observable<any> {
+        this.loading = true;
         const actor = {
             name: artist.name,
             birth_date: artist.birth_date,
             gender: artist.gender
         };
         if (artist.id > 0) { // patch
-            //
-            this.http.patch(this.url + '/actors/' + artist.id, {actor})
-                .subscribe((res: any) => {
-                    if (res.success) {
+
+            return this.http.patch<any>(this.url + '/actors/' + artist.id, {actor})
+                .pipe(
+                    map((res: any) => {
                         const {id, age, name, birth_date, gender} = res.actor;
                         this.actors[id] = {id, age, name, birth_date, gender};
                         this.toast.success(res.message);
                         this.success = res.success;
-                        return res.message;
-
-                    }
-                });
+                        return {message: res.message, loading: res.success};
+                    })
+                );
 
 
         } else { // insert
             this.loading = true;
 
-            this.http.post(this.url + '/actors', {actor})
-                .subscribe((res: any) => {
-                    if (res.success) {
+            return this.http.post<any>(this.url + '/actors', {actor})
+                .pipe(
+                    map((res: any) => {
+                        this.loading = false;
                         const {id, age, name, birth_date, gender} = res.actor;
                         this.actors[id] = {id, age, name, birth_date, gender};
-
                         this.toast.success(res.message);
                         this.success = res.success;
+                        return {message: res.message, loading: res.success};
 
-                    }
-                });
+                    })
+                );
         }
 
     }
@@ -95,9 +95,8 @@ export class ArtistService {
         this.http.delete(this.url + '/actors/' + artist.id)
             .subscribe((res: any) => {
                 this.actor = res.artist;
-                this.toast.showToast(res.message, 'success');
+                this.toast.success(res.message);
                 this.success = res.success;
-
             });
     }
 

@@ -129,6 +129,7 @@ export class MovieFormComponent implements OnInit {
                 this.closeModal();
 
             }, error => {
+                this.errorMessage = error.error.message;
                 this.loading = false;
             });
 

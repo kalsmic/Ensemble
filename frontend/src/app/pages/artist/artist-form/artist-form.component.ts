@@ -17,6 +17,8 @@ export class ArtistFormComponent implements OnInit {
     actorForm: FormGroup;
     isSubmitted = false;
     disabledAction: boolean;
+    loading = false;
+    errorMessage: string;
 
     constructor(
         public auth: AuthService,
@@ -57,12 +59,15 @@ export class ArtistFormComponent implements OnInit {
     }
 
     deleteArtist() {
+        this.isSubmitted = true;
+        this.loading = true;
         this.artistService.deleteArtist(this.artist);
         this.closeModal();
     }
 
     async saveArtist() {
         this.isSubmitted = true;
+        this.loading = true;
         if (this.actorForm.valid) {
 
             const {name, birth_date, gender} = this.actorForm.value;
@@ -70,8 +75,13 @@ export class ArtistFormComponent implements OnInit {
             this.artist.name = name;
             this.artist.birth_date = formatDate(birth_date);
             this.artist.gender = gender;
-            this.artistService.saveArtist(this.artist);
-            this.closeModal();
+            this.artistService.saveArtist(this.artist).subscribe(success => {
+                this.loading = success.loading;
+                this.closeModal();
+            }, error => {
+                this.errorMessage = error.error.message;
+                this.loading = error.loading;
+            });
 
         }
     }

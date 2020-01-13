@@ -81,7 +81,7 @@ export class MovieService {
         }
     }
 
-    saveMovie(movie: Movie): Observable<boolean> {
+    saveMovie(movie: Movie): Observable<any> {
         this.loading = true;
         const movieData = {
             movie: {
@@ -100,7 +100,8 @@ export class MovieService {
                             this.toast.success(res.message);
                             const {id, title, release_date} = res.movie;
                             this.cinemas[id] = {id, title, release_date};
-                            return true;
+                            return {message: res.message, loading: res.success};
+
                         }
                     )
                 );
@@ -117,24 +118,25 @@ export class MovieService {
                             this.cinemas[id] = {id, title, release_date};
 
                             this.toast.success(res.message);
-                            return true;
+                            return {message: res.message, loading: res.success};
+
                         }
                     )
                 );
-
-
         }
 
     }
 
 
     deleteMovie(movieId: number) {
+        this.loading = true;
         delete this.cinemas[movieId];
-        this.http.delete(this.url + '/movies/' + movieId)
-            .subscribe(
-                (res: any) => {
+        return this.http.delete<any>(this.url + '/movies/' + movieId)
+            .subscribe((res: any) => {
+                this.loading = false;
                     this.toast.success(res.message);
-                });
+
+            });
     }
 
     moviesToCinemaItems(movies: Array<Movie>) {
