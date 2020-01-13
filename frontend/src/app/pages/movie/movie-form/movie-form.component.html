@@ -8,6 +8,9 @@
 
 <ion-content *ngIf='movie'>
     <form (ngSubmit)="saveMovie" [formGroup]="movieForm" novalidate>
+        <ion-item *ngIf="isSubmitted && errorMessage">
+            <ion-text color="danger">{{errorMessage}}  </ion-text>
+        </ion-item>
         <ion-item>
             <ion-label position="floating">Title:</ion-label>
             <ion-input
@@ -43,6 +46,8 @@
         <ion-item>
             <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search actor to Actor"></ion-searchbar>
         </ion-item>
+        <ion-progress-bar *ngIf="searchLoader" reversed="true" type="indeterminate"></ion-progress-bar>
+
 
         <ion-item-group *ngIf="actorFilter">
             <ion-item *ngFor="let actor of filteredActors">
@@ -97,6 +102,8 @@
                             type="submit">
                     <ion-icon name="save" slot="icon-only"></ion-icon>
                     Save
+                    <ion-spinner *ngIf="isSubmitted && loading"></ion-spinner>
+
                 </ion-button>
             </ion-col>
         </ion-row>

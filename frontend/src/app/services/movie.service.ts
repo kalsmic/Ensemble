@@ -20,6 +20,8 @@ export class MovieService {
 
     public cinemas: { [key: number]: Movie } = {};
     public pagination: Pagination;
+    public actionSuccess = false;
+    public loading = false;
 
     constructor(
         private auth: AuthService,
@@ -60,7 +62,8 @@ export class MovieService {
     }
 
 
-    saveMovie(movie: Movie) {
+    saveMovie(movie: Movie): Observable<boolean> {
+        this.loading = true;
         const movieData = {
             movie: {
                 title: movie.title,
@@ -69,31 +72,38 @@ export class MovieService {
             actor_ids: movie.actor_ids
         };
         if (movie.id >= 0) { // patch
-            this.http.patch(this.url + '/movies/' + movie.id, {...movieData})
-                .subscribe((res: any) => {
-                        if (res.success) {
+            return this.http.patch<any>(this.url + '/movies/' + movie.id, {...movieData})
+                .pipe(
+                    map(
+                        (res: any) => {
+                            this.loading = false;
+                            this.actionSuccess = true;
                             this.toast.success(res.message);
                             const {id, title, release_date} = res.movie;
                             this.cinemas[id] = {id, title, release_date};
-                            return res.message;
-
-
+                            return true;
                         }
-                });
-
+                    )
+                );
         } else { // insert
             delete movie.id;
-            this.http.post(this.url + '/movies', {...movieData})
-                .subscribe((res: any) => {
-                        if (res.success) {
+            const url = this.url + '/movies';
+            return this.http.post<any>(url, movieData)
+                .pipe(
+                    map(
+                        (res) => {
+                            this.loading = false;
+                            this.actionSuccess = true;
                             const {id, title, release_date} = res.movie;
                             this.cinemas[id] = {id, title, release_date};
 
                             this.toast.success(res.message);
-
+                            return true;
                         }
-                    }
+                    )
                 );
+
+
         }
 
     }

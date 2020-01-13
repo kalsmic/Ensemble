@@ -3,7 +3,7 @@ import {AuthService} from '../../../services/auth.service';
 import {MovieService} from '../../../services/movie.service';
 import {ModalController} from '@ionic/angular';
 import {ArtistService} from '../../../services/artist.service';
-import {Actor, Movie, MovieError} from '../../../shared/models';
+import {Actor, Movie} from '../../../shared/models';
 import {formatDate} from '../../../shared/utils';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
@@ -18,16 +18,14 @@ export class MovieFormComponent implements OnInit {
     @Input() isNew: boolean;
     @Input() movie: Movie;
     Object = Object;
-    private filteredActors: Actor[];
     private actorSearchFilter: string;
-    errors: MovieError = {
-        title: '',
-        release_date: '',
-        actors: ''
-    };
+    errorMessage: string;
     private movieForm: FormGroup;
     private disabledAction: boolean;
     private isSubmitted = false;
+    filteredActors: any;
+    private searchLoader = false;
+    private loading = false;
 
     constructor(
         public auth: AuthService,
@@ -67,7 +65,10 @@ export class MovieFormComponent implements OnInit {
         this.disabledAction = !this.auth.can('patch:movies') || !this.auth.can('post:movies');
         this.movieForm = this.formBuilder.group({
 
-            title: [{value: this.movie.title, disabled: this.disabledAction}, [Validators.required, Validators.minLength(2)]],
+            title: [{
+                value: this.movie.title,
+                disabled: this.disabledAction
+            }, [Validators.required, Validators.minLength(2)]],
             release_date: [{value: this.movie.release_date, disabled: this.disabledAction}, [Validators.required]]
         });
     }
@@ -75,9 +76,12 @@ export class MovieFormComponent implements OnInit {
     get errorControl() {
         return this.movieForm.controls;
     }
+
     searchActor() {
         if (this.actorFilter) {
+            this.searchLoader = true;
             this.artistService.searchActor(this.actorFilter, this.movie.actor_ids).subscribe(actors => {
+                this.searchLoader = false;
                 this.filteredActors = actors;
             });
         }
@@ -99,7 +103,6 @@ export class MovieFormComponent implements OnInit {
         this.movie.actors.splice(this.movie.actors.length + 1, 0, actor);
         this.movie.actor_ids.push(id);
         this.actorFilter = '';
-        this.filteredActors = [];
 
     }
 
@@ -115,17 +118,27 @@ export class MovieFormComponent implements OnInit {
 
     saveMovie() {
         this.isSubmitted = true;
+        this.loading = true;
         if (this.movieForm.valid) {
+            console.log('initial', this.movieService.actionSuccess);
 
             const {title, release_date} = this.movieForm.value;
             this.movie.title = title;
             this.movie.release_date = formatDate(release_date);
 
-            this.movieService.saveMovie(this.movie);
-            this.closeModal();
+            this.movieService.saveMovie(this.movie).subscribe(success => {
+                this.loading = false;
+                this.closeModal();
+                console.log('mvsuccess', this.movieService.actionSuccess);
+                console.log('mvsuccess', success);
+
+            }, error => {
+                this.loading = false;
+                console.log('error mv', error.error.message);
+            })
+
 
         }
-
 
     }
 

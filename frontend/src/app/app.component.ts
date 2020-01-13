@@ -11,14 +11,16 @@ import {AuthService} from './services/auth.service';
     styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+
     constructor(
         private auth: AuthService,
         private platform: Platform,
         private splashScreen: SplashScreen,
-        private statusBar: StatusBar
+        private statusBar: StatusBar,
     ) {
         this.initializeApp();
     }
+
 
     initializeApp() {
         this.platform.ready().then(() => {
@@ -30,4 +32,5 @@ export class AppComponent {
             this.auth.check_token_fragment();
         });
     }
+
 }
