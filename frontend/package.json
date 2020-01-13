@@ -6,7 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "node server.js",
-    "start:dev": "ng build && nodemon serve",
+    "start:dev": "ng build && nodemon server.js",
+    "start:serve": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
