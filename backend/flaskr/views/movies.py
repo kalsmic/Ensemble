@@ -92,6 +92,7 @@ class CreateListMovieResource(Resource):
             201,
         )
 
+
 class RetrieveUpdateDestroyMovieResource(Resource):
     @requires_auth("get:movies")
     @id_exists(entity='movie', )

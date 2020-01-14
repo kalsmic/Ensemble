@@ -16,7 +16,6 @@ def create_app(config='config.ProductionConfig'):
     with app.app_context():
         db.create_all()
 
-
     CORS(app)
     # Allow '*' for origins CORS.
     cors = CORS(app, resources={"r/*": {"origins": "*"}})
@@ -24,6 +23,7 @@ def create_app(config='config.ProductionConfig'):
     from flaskr.views import api_bp
 
     app.register_blueprint(api_bp, url_prefix="/api")
+
     @app.route('/')
     def welcome():
         return {"message": "welcome to Ensemble"}, 200

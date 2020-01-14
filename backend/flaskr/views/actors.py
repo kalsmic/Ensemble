@@ -75,7 +75,7 @@ class RetrieveUpdateDestroyActorResource(Resource):
         actor = kwargs["actor_db_object"]
 
         actor = actor_schema.dump(actor)
-        return {"success": True, "actor": actor,}, 200
+        return {"success": True, "actor": actor, }, 200
 
     @requires_auth("patch:actors")
     @id_exists(entity='actor')

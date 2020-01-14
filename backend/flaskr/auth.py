@@ -132,7 +132,7 @@ def verify_decode_jwt(token):
             abort(
                 status=401,
                 description="Incorrect claims. Please, "
-                "check the audience and issuer.",
+                            "check the audience and issuer.",
             )
         except Exception:
             abort(

@@ -70,8 +70,8 @@ class Actor(BaseModel):
         valid_ids = [
             actor.id
             for actor in db.session.query(cls)
-            .filter(cls.id.in_(actor_ids))
-            .all()
+                .filter(cls.id.in_(actor_ids))
+                .all()
         ]
 
         #  Compute difference to get ids not in db
@@ -83,8 +83,8 @@ class Actor(BaseModel):
     def search_actors(cls, search_term, actor_ids=[]):
         actors_query = (
             cls.query.filter(cls.name.ilike(f"%{search_term}%"))
-            .filter(cls.id.notin_(actor_ids))
-            .all()
+                .filter(cls.id.notin_(actor_ids))
+                .all()
         )
 
         return actors_query
@@ -132,8 +132,8 @@ class Movie(BaseModel):
     def remove_actors_from_movie(self, actor_ids):
         actors_to_delete = (
             db.session.query(MovieCrew)
-            .filter_by(movie_id=self.id)
-            .filter(MovieCrew.actor_id.notin_(actor_ids))
+                .filter_by(movie_id=self.id)
+                .filter(MovieCrew.actor_id.notin_(actor_ids))
         )
         actors_to_delete.delete(synchronize_session=False)
 
