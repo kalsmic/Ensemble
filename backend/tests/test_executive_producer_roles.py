@@ -12,7 +12,10 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             "flaskr.auth.verify_decode_jwt",
             return_value=executive_producer_payload,
         )
+        self.addCleanup(self.get_auth_header_patcher.stop)
         self.addCleanup(patcher.stop)
+
+        self.get_auth_header_patcher.start()
         self.producer_patcher = patcher.start()
 
     # get:actors
@@ -160,10 +163,14 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
     def test_can_patch_movie(self):
         movie = Movie(title="Deer Hunter", release_date="1972-01-01")
         actor = Actor(name="John Martin", gender="M", birth_date="1976-01-01")
+        actor2 = Actor(name="Jacob Martin", gender="M",
+                       birth_date="1976-01-01")
         actor.insert()
+        actor2.insert()
         movie.insert()
         MovieCrew(actor_id=actor.id, movie_id=movie.id).insert()
         actor_id = actor.id
+        actor2_id = actor2.id
 
         with self.client:
             invalid_movie_data = {"movie": {"title": 1, "release_date": ""}}
@@ -182,7 +189,8 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             )
 
             valid_data = {
-                "movie": {"title": "Genesis", "release_date": "1972-02-04"}
+                "movie": {"title": "Genesis", "release_date": "1972-02-04"},
+                "actor_ids":[actor2.id]
             }
 
             response = self.client.patch(
@@ -199,7 +207,8 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             self.assertEqual(
                 data["movie"]["title"], valid_data["movie"]["title"]
             )
-            self.assertIn(actor_id, data["movie"]["actor_ids"])
+            self.assertNotIn(actor_id, data["movie"]["actor_ids"])
+            self.assertIn(actor2_id, data["movie"]["actor_ids"])
 
     # delete: movies
     def test_can_delete_movie(self):

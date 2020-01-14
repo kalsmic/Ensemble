@@ -13,7 +13,11 @@ class CastingAssistantTestCase(EnsembleBaseTestCase):
             "flaskr.auth.verify_decode_jwt",
             return_value=casting_assistant_payload,
         )
+
+        self.addCleanup(self.get_auth_header_patcher.stop)
         self.addCleanup(patcher.stop)
+
+        self.get_auth_header_patcher.start()
         self.assistant_patcher = patcher.start()
 
     # get: actors

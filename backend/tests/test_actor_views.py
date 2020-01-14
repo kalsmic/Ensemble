@@ -17,7 +17,10 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
             "flaskr.auth.verify_decode_jwt",
             return_value=executive_producer_payload,
         )
+        self.addCleanup(self.get_auth_header_patcher.stop)
         self.addCleanup(patcher.stop)
+
+        self.get_auth_header_patcher.start()
         self.assistant_patcher = patcher.start()
 
     def test_cannot_get_actor_not_found(self):

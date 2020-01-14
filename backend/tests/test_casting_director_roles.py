@@ -17,7 +17,10 @@ class CastingDirectorTestCase(EnsembleBaseTestCase):
             "flaskr.auth.verify_decode_jwt",
             return_value=casting_director_payload,
         )
+        self.addCleanup(self.get_auth_header_patcher.stop)
         self.addCleanup(patcher.stop)
+
+        self.get_auth_header_patcher.start()
         self.director_patcher = patcher.start()
 
     # get:actors

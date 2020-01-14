@@ -52,12 +52,12 @@ class EnsembleBaseTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
 
     def setUp(self):
-        patcher = patch(
+        self.get_auth_header_patcher = patch(
             "flaskr.auth.get_token_auth_header",
             return_value=mock_get_auth_token_header,
         )
-        self.addCleanup(patcher.stop)
-        self.get_auth_header_patcher = patcher.start()
+        # self.addCleanup(patcher.stop)
+        # self.get_auth_header_patcher = patcher.start()
 
         """Define test variables and initialize app."""
         self.app = create_app("config.TestingConfig")
