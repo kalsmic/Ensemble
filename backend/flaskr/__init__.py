@@ -18,7 +18,7 @@ def create_app(config='config.ProductionConfig'):
 
     CORS(app)
     # Allow '*' for origins CORS.
-    cors = CORS(app, resources={"r/*": {"origins": "*"}})
+    CORS(app, resources={"r/*": {"origins": "*"}})
 
     from flaskr.views import api_bp
 

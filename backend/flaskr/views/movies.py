@@ -36,9 +36,15 @@ def paginate(result_query):
 
 
 class CreateListMovieResource(Resource):
+
     @requires_auth("get:movies")
     def get(self, *args, **kwargs):
-
+        """
+            GET /movies
+                - requires get:movies permission
+            :returns status code 200 and json
+                {"success": True, "movies":movies, ...pagination}
+        """
         page = request.args.get("page", 1, type=int)
 
         movie_query = Movie.query.paginate(
@@ -58,6 +64,17 @@ class CreateListMovieResource(Resource):
     @title_or_name_exists(method='post', entity='Movie', field='title')
     @validate_actor_ids
     def post(self, *args, **kwargs):
+        """
+            POST /movies
+                creates a new movie
+                requires post:movies permission
+
+            :returns status_code 201 on success and json
+                {"success": True , "movie": movie, "message": success_message }
+            :returns status_code 409 if movie already exists and json
+            :returns status_code 400 if any other database error occurs and json
+                {"success": False, "message": error_message}
+        """
         movie = kwargs["movie"]
         actor_ids = kwargs.get("actor_ids")
         actor_ids_present = kwargs["actor_ids_present"]
@@ -97,6 +114,15 @@ class RetrieveUpdateDestroyMovieResource(Resource):
     @requires_auth("get:movies")
     @id_exists(entity='movie', )
     def get(self, *args, **kwargs):
+        """
+            GET /movies/<id>
+                where <id> is the existing Movie model id
+                requires get:movies permission
+            :returns status_code 200 on success and json
+                {"success":True, 'message":success_message, "movie": movie}
+            :returns status_code 400 on failure and json
+                {"success": False, "message": error_message}
+        """
         movie = kwargs["movie_db_object"]
         movie = movie_schema.dump(movie)
 
@@ -109,6 +135,18 @@ class RetrieveUpdateDestroyMovieResource(Resource):
     @title_or_name_exists(method='patch', entity='Movie', field='title')
     @validate_actor_ids
     def patch(self, *args, **kwargs):
+        """
+            PATCH /movies/<id>
+                where <id> is the existing Movie model id
+                requires permission patch:movies
+                updates the corresponding Movie row for <id>
+            :returns status_code 200 on success and json
+                {"success": True, "message": success_message, "movie": movie }
+            :returns status_code 404 if <id> is not found and json
+            :return status_code 409 if movie title already exists on another
+            movie
+                {"success": False, "message": error_message}
+        """
         movie = kwargs["movie_db_object"]
         movie_data = kwargs["movie"]
         actor_ids = kwargs.get("actor_ids")
@@ -154,6 +192,16 @@ class RetrieveUpdateDestroyMovieResource(Resource):
     @requires_auth("delete:movies")
     @id_exists(entity='movie')
     def delete(self, *args, **kwargs):
+        """
+         DELETE /movies/<id>
+             where <id> is the existing Movie model id
+             requires delete:actors permission
+         :returns status_code 200 on success after deleting the corresponding
+             row for <id> and json
+            {"success": True, "message": success_message}
+         :returns status_code 404 error if <id> is not found
+             {"success": False, "message": error_message}
+         """
 
         movie = kwargs["movie_db_object"]
 
@@ -163,6 +211,17 @@ class RetrieveUpdateDestroyMovieResource(Resource):
 
 
 class ListMovieActorsResource(Resource):
+    """
+        GET /movie/<id>/actors
+            where <id> is the existing Movie model id
+            requires get:movies permission
+            gets a list actors attached to a movie
+        :returns status_code 200 on success and json
+            {"success":True, 'message":success_message, "actors": [{actor}],
+            pagination}
+        :returns status_code 400 on failure and json
+            {"success": False, "message": error_message}
+    """
     @requires_auth("get:movies")
     @id_exists(entity='movie')
     def get(self, *args, **kwargs):

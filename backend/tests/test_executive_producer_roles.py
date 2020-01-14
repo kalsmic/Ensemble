@@ -185,12 +185,12 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertFalse(data["success"])
             self.assertEqual(
-                data["message"],{'release_date': ['Not a valid date.']}
+                data["message"], {'release_date': ['Not a valid date.']}
             )
 
             valid_data = {
                 "movie": {"title": "Genesis", "release_date": "1972-02-04"},
-                "actor_ids":[actor2.id]
+                "actor_ids": [actor2.id]
             }
 
             response = self.client.patch(

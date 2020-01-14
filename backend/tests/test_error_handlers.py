@@ -1,5 +1,8 @@
 import json
-from unittest.mock import patch
+
+from werkzeug.exceptions import Forbidden
+
+from flaskr.auth import check_permissions
 from flaskr.views import errors
 from tests.base import EnsembleBaseTestCase
 
@@ -29,7 +32,7 @@ class EnsembleErrorHandlersTestCase(EnsembleBaseTestCase):
         )
 
     def test_500_internal_server_error(self):
-        headers ={'Authorization': 'Bearer z'}
+        headers = {'Authorization': 'Bearer z'}
         response = self.client.get("api/v1/actors", headers=headers)
         data = json.loads(response.data.decode())
 
@@ -45,20 +48,26 @@ class EnsembleErrorHandlersTestCase(EnsembleBaseTestCase):
         )
 
     def test_bad_format_header_auth(self):
-        headers ={'Authorization': 'x'}
+        headers = {'Authorization': 'x'}
         response = self.client.get("api/v1/actors", headers=headers)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
-            data["message"], "Authorization header must be in the format Bearer token"
+            data["message"],
+            "Authorization header must be in the format Bearer token"
         )
 
-
     def test_bearer_not_in_auth_header(self):
-        headers ={'Authorization': 'x z'}
+        headers = {'Authorization': 'x z'}
         response = self.client.get("api/v1/actors", headers=headers)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
             data["message"], "Authorization header must start with Bearer"
         )
+
+    def test_403_error(self):
+        with self.assertRaises(Forbidden):
+            check_permissions(["get:movies"], {})
+
+

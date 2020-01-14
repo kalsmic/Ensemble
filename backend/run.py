@@ -1,6 +1,6 @@
 from flaskr import create_app
+
 app = create_app('config.ProductionConfig')
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     app.run()
-

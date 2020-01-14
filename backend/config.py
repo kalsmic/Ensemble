@@ -1,5 +1,6 @@
 import os
 
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -10,6 +11,7 @@ class Config(object):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
     FLASK_ENV = "production"
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

@@ -12,8 +12,15 @@ from flaskr.models import db, Actor, actors_schema, actor_schema
 
 
 class CreateListActorResource(Resource):
+
     @requires_auth("get:actors")
     def get(self, *args, **kwargs):
+        """
+            GET /actors
+                - requires get:actors permission
+            :returns status code 200 and json
+                {"success": True, "actors":actors, ...pagination}
+        """
         page = request.args.get("page", 1, type=int)
 
         actor_query = Actor.query.paginate(
@@ -41,6 +48,17 @@ class CreateListActorResource(Resource):
     @validate_actor_data("post")
     @title_or_name_exists(method='post', entity='actor', field='name')
     def post(self, *args, **kwargs):
+        """
+            POST /actors
+                creates a new actor
+                requires post:actors permission
+
+            :returns status_code 201 on success and json
+                {"success": True , "actor": actor, "message": success_message }
+            :returns status_code 409 if actor already exists and json
+            :returns status_code 400 if any other database error occurs and json
+                {"success": False, "message": error_message}
+        """
         actor = kwargs["actor"]
         try:
             actor.insert()
@@ -69,13 +87,24 @@ class CreateListActorResource(Resource):
 
 
 class RetrieveUpdateDestroyActorResource(Resource):
+
     @requires_auth("get:actors")
     @id_exists(entity='actor')
     def get(self, *args, **kwargs):
+        """
+            GET /actors/<id>
+                where <id> is the existing model id
+                requires get:actors permission
+            :returns status_code 200 on success and json
+                {"success":True, 'message":success_message, "actor": actor}
+            :returns status_code 400 on failure and json
+                {"success": False, "message": error_message}
+        """
         actor = kwargs["actor_db_object"]
 
         actor = actor_schema.dump(actor)
         return {"success": True, "actor": actor, }, 200
+
 
     @requires_auth("patch:actors")
     @id_exists(entity='actor')
@@ -83,6 +112,16 @@ class RetrieveUpdateDestroyActorResource(Resource):
     @validate_actor_data("patch")
     @title_or_name_exists(method='patch', entity='actor', field='name')
     def patch(self, *args, **kwargs):
+        """
+            PATCH /actors/<id>
+                where <id> is the existing Actor model id
+                updates the corresponding Actor row for <id>
+            :returns status_code 200 on success and json
+                {"success": True, "message": success_message, "actor": actor }
+            :returns status_code 404 if <id> is not found and json
+            :return status_code 409 if actor name already exists on another actor
+                {"success": False, "message": error_message}
+        """
         actor = kwargs["actor_db_object"]
         actor_data = kwargs["actor"]
 
@@ -118,6 +157,15 @@ class RetrieveUpdateDestroyActorResource(Resource):
     @requires_auth("delete:actors")
     @id_exists(entity='actor')
     def delete(self, *args, **kwargs):
+        """
+            DELETE /actors/<id>
+                where <id> is the existing Actor model id
+                requires delete:actors permission
+            :returns status_code 200 on success after deleting the corresponding
+                row for <id> and json {"success": True, "message": success_message}
+            :returns status_code 404 error if <id> is not found
+                {"success": False, "message": error_message}
+        """
         actor = kwargs["actor_db_object"]
         try:
             actor.delete()
@@ -137,6 +185,19 @@ class SearchActorResource(Resource):
     @contains_request_data
     @validate_actor_ids
     def post(self, *args, **kwargs):
+        """
+            Post /actors/search
+                requires get:actors permission
+                :returns a list of actors
+            :param search_term string - in request Body
+            :param actor_ids in request Body,  list of Actor model ids,
+            excluded from search if present
+            :returns status_code 200 on success and json
+                {"success":True, 'message":success_message, "actors": [{actor}],
+                pagination}
+            :returns status_code 400 on failure and json
+                {"success": False, "message": error_message}
+        """
         actor_ids = kwargs.get("actor_ids", [])
         data = kwargs["data"]
 

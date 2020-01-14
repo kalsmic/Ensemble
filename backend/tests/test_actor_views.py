@@ -24,7 +24,7 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
         self.assistant_patcher = patcher.start()
 
     def test_cannot_get_actor_not_found(self):
-        response = self.client.get("api/v1/actors/100", headers=self.headers,)
+        response = self.client.get("api/v1/actors/100", headers=self.headers, )
         data = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 404)
@@ -70,7 +70,8 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Actor with specified name already exists")
+        self.assertEqual(data["message"],
+                         "Actor with specified name already exists")
 
     def test_cannot_patch_actor_not_found(self):
         response = self.client.patch(
@@ -203,6 +204,20 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
         actor_2.delete()
         actor_3.delete()
         actor_4.delete()
+
+    def test_post_actor_with_invalid_data(self):
+        response = self.client.post('/api/v1/actors')
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data.decode())
+        self.assertEqual(
+            data['message'], "Please Provide valid json data format")
+
+    def test_post_actor_without_input_data(self):
+        response = self.client.post('/api/v1/actors', data=json.dumps({}))
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data.decode())
+        self.assertEqual(
+            data['message'], "No input data provided")
 
 
 # Make the tests conveniently executable
