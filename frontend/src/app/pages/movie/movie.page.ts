@@ -4,7 +4,7 @@ import {ModalController} from '@ionic/angular';
 import {MovieService} from 'src/app/services/movie.service';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {Movie} from '../../shared/models';
-import {formatDate} from "../../shared/utils";
+import {formatDate} from '../../shared/utils';
 
 
 @Component({

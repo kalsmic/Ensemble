@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 import {ToastService} from './toast.service';
 import {map, retry} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {Movie, Pagination} from '../shared/models';
+import {initialPagination, Movie, Pagination} from '../shared/models';
 import {setPaginationDetails} from '../shared/utils';
 
 
@@ -19,7 +19,7 @@ export class MovieService {
     url = environment.apiServerUrl;
 
     public cinemas: { [key: number]: Movie } = {};
-    public pagination: Pagination;
+    public pagination: Pagination = initialPagination;
     public actionSuccess = false;
     public loading = false;
 
@@ -71,11 +71,10 @@ export class MovieService {
                 .pipe(
                     retry(3),
                     map((res) => {
-                        const movieActorResult = {
+                        return {
                             pagination: setPaginationDetails({...res}),
                             actors: res.actors
                         };
-                        return movieActorResult;
                     })
                 );
         }

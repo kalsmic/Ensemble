@@ -38,3 +38,13 @@ export interface Pagination {
     hasNext: boolean;
     hasPrevious: boolean;
 }
+
+export const initialPagination = {
+    pages: 0,
+    currentPage: 1,
+    nextPage: null,
+    previousPage: null,
+    total: 0,
+    hasNext: false,
+    hasPrevious: false
+};

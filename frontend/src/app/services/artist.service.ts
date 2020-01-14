@@ -4,7 +4,7 @@ import {AuthService} from './auth.service';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
-import {Actor, Pagination} from '../shared/models';
+import {Actor, initialPagination, Pagination} from '../shared/models';
 import {setPaginationDetails} from '../shared/utils';
 import {ToastService} from './toast.service';
 
@@ -19,7 +19,7 @@ export class ArtistService {
 
     public actors: { [key: number]: Actor } = {};
     public actor: Actor;
-    public pagination: Pagination;
+    public pagination: Pagination = initialPagination;
     public success = false;
     public loading: boolean;
 

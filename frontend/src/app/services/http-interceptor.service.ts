@@ -32,20 +32,23 @@ export class HttpInterceptorService implements HttpInterceptor {
                         console.log(`error status : ${error.status} ${error.statusText}`);
                         switch (error.status) {
                             case 401:      // Authentication, login
-                                this.router.navigateByUrl('/tabs/user-page');
+                                this.router.navigateByUrl('/tabs/user-page').then(() => {
+                                    this.authService.logout();
+                                });
                                 break;
                             case 403:     // forbidden action,
-                                this.toast.error(error.error.message);
+                                this.toast.error(error.error.message).then(() => {
+                                });
                                 break;
                             case 400:
                             case 409:
-                                this.toast.error(error.error.message);
+                                this.toast.error(error.error.message).then(() => {
+                                });
                                 break;
-
                         }
                     }
                 } else {
-                    console.error('Ooops! ,Something went wrong!');
+                    console.error('Oops! ,Something went wrong!');
                 }
 
                 return throwError(error);

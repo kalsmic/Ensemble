@@ -20,11 +20,24 @@
 </ion-header>
 
 
-<ion-content *ngIf="movies && movies.cinemas" class="ion-padding">
+<ion-content class="ion-padding">
     <ion-grid>
+        <ion-row>
+
+            <ion-col *ngIf="!movies.pagination.total"
+                     class="ion-align-items-center ion-justify-content-center ion-text-center">
+                <ion-card class="bg-white ion-padding">
+                    <ion-card-content class="ion-align-items-center ion-justify-content-center">
+                        <h1 class="ion-text-center ion-margin-bottom">
+                            <ion-text color="medium"><strong>No movies exist !</strong></ion-text>
+                        </h1>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
 
 
-        <ion-row class="ion-align-items-center">
+        <ion-row *ngIf="movies && movies.cinemas" class="ion-align-items-center">
 
             <ion-col *ngFor="let movieId of Object.keys(movies.cinemas)" size="6" size-lg="4" size-md="4" size-xs="12">
                 <ion-card>
@@ -90,9 +103,10 @@
     </ion-grid>
 </ion-content>
 
+
 <ion-footer>
     <app-pagination (goToPage)="navigateToPage($event)"
-                    *ngIf="movies.pagination"
+                    *ngIf="movies.pagination.total"
                     [pagination]="movies.pagination"
     ></app-pagination>
 </ion-footer>

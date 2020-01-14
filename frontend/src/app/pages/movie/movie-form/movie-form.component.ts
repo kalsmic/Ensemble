@@ -96,20 +96,21 @@ export class MovieFormComponent implements OnInit {
         this.actorFilter = searchTerm;
     }
 
-    customTrackBy(index: number, obj: any): any {
+    customTrackBy(index: number): any {
         return index;
     }
 
-    addActor(newActor: Actor) {
+    addActor(newActor: Actor, i) {
 
         const {id, name} = newActor;
         const actor = {actor: {id, name}};
         this.movie.actors.splice(this.movie.actors.length + 1, 0, actor);
         this.movie.actor_ids.push(id);
-
+        // remove added item from filtered results
+        this.filteredActors.splice(i, 1);
     }
 
-    removeActor(i: number, actorId: number) {
+    removeActor(i: number) {
         this.movie.actors.splice(i, 1);
         this.movie.actor_ids.splice(i, 1);
     }
@@ -128,7 +129,7 @@ export class MovieFormComponent implements OnInit {
             this.movie.title = title;
             this.movie.release_date = formatDate(release_date);
 
-            this.movieService.saveMovie(this.movie).subscribe(success => {
+            this.movieService.saveMovie(this.movie).subscribe(() => {
                 this.loading = false;
                 this.closeModal();
 

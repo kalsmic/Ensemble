@@ -1,4 +1,4 @@
-<ion-segment (ionChange)="getPageNumber($event)" *ngIf="pagination" color="secondary">
+<ion-segment (ionChange)="getPageNumber($event)" *ngIf="pagination && pagination.total" color="secondary">
 
     <ion-segment-button [disabled]="!pagination.pages" [value]=1>
         First
@@ -9,7 +9,7 @@
         Previous
         <ion-icon color="primary" name="skip-backward"></ion-icon>
     </ion-segment-button>
-    <ion-segment-button color="primary" disabled>
+    <ion-segment-button disabled>
         <ion-text color="primary">
             {{pagination.currentPage}} of {{pagination.pages}} pages
         </ion-text>

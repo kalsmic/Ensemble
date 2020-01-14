@@ -20,12 +20,12 @@ export class ToastService {
         await toast.present();
     }
 
-    async success(message) {
-        await this.showToast(message, 'dark');
+    success(message) {
+        return this.showToast(message, 'tertiary');
     }
 
-    async error(message) {
-        await this.showToast(message, 'danger');
+    error(message) {
+        return this.showToast(message, 'danger');
     }
 
 }

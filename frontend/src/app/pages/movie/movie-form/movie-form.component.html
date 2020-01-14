@@ -47,14 +47,14 @@
             <ion-searchbar (ionChange)="handleSearchBar($event)" placeholder="search actor to Actor"></ion-searchbar>
         </ion-item>
         <ion-progress-bar *ngIf="searchLoader" reversed="true" type="indeterminate"></ion-progress-bar>
-        <ion-item *ngIf="!searchLoader && isSearchSubmitted && !loading && !actorFilter.length">No actors Available
-        </ion-item>
-
 
         <ion-item-group *ngIf="actorFilter">
-            <ion-item *ngFor="let actor of filteredActors">
+            <ion-item *ngFor="let actor of filteredActors; let i = index">
                 <ion-label>  {{actor.name | uppercase}}</ion-label>
-                <ion-button (click)="addActor(actor)"> Add actor</ion-button>
+                <ion-button (click)="addActor(actor, i)"> Add actor</ion-button>
+            </ion-item>
+            <ion-item *ngIf="!filteredActors.length && isSearchSubmitted && !searchLoader">
+                No matching results found
             </ion-item>
         </ion-item-group>
 
@@ -70,7 +70,7 @@
                             <ion-icon name="people"></ion-icon>
                             <ion-label>{{movie_crew.actor.name}}</ion-label>
                             <ion-icon
-                                    (click)="removeActor(i, movie_crew.actor.id)"
+                                    (click)="removeActor(i)"
                                     [hidden]="disabledAction"
                                     color="danger"
                                     name="close-circle"
