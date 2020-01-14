@@ -1,5 +1,3 @@
-import os
-
 from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -9,11 +7,10 @@ from flaskr.models import db
 migrate = Migrate()
 
 
-def create_app(config='config'):
+def create_app(config='config.ProductionConfig'):
     app = Flask(__name__)
 
     app.config.from_object(config)
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
     db.init_app(app)
     migrate.init_app(app, db)
     with app.app_context():

@@ -67,7 +67,7 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Actor already exists")
+        self.assertEqual(data["message"], "Actor with specified name already exists")
 
     def test_cannot_patch_actor_not_found(self):
         response = self.client.patch(

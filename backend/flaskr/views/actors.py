@@ -1,21 +1,14 @@
 from flask import request
 from flask_restful import Resource
-from sqlalchemy.exc import IntegrityError
-from werkzeug.exceptions import NotFound
+from psycopg2._psycopg import DatabaseError
 
 from flaskr.auth import requires_auth
 from flaskr.helpers import (
     contains_request_data,
     validate_actor_ids,
-    actor_id_exists,
     validate_actor_data,
-)
+    title_or_name_exists, id_exists)
 from flaskr.models import db, Actor, actors_schema, actor_schema
-
-actor_not_found_response = (
-    {"success": False, "message": "Actor does not exist"},
-    404,
-)
 
 
 class CreateListActorResource(Resource):
@@ -46,18 +39,24 @@ class CreateListActorResource(Resource):
     @requires_auth("post:actors")
     @contains_request_data
     @validate_actor_data("post")
+    @title_or_name_exists(method='post', entity='actor', field='name')
     def post(self, *args, **kwargs):
-        actor_data = kwargs["actor"]
+        actor = kwargs["actor"]
         try:
-            actor = Actor(**actor_data)
             actor.insert()
 
-        except IntegrityError as err:
-            # Show Error if Actor with specified name already exists
+        except DatabaseError:
             db.session.rollback()
-            return {"success": False, "message": "Actor already exists"}, 409
-
-        result = actor_schema.dump(actor)
+            return (
+                {
+                    "success": False,
+                    "message": "Error while adding an actor",
+                },
+                400,
+            )
+        finally:
+            result = actor_schema.dump(actor)
+            db.session.close()
 
         return (
             {
@@ -71,32 +70,41 @@ class CreateListActorResource(Resource):
 
 class RetrieveUpdateDestroyActorResource(Resource):
     @requires_auth("get:actors")
-    @actor_id_exists
+    @id_exists(entity='actor')
     def get(self, *args, **kwargs):
-        actor = kwargs["actor_object"]
+        actor = kwargs["actor_db_object"]
 
         actor = actor_schema.dump(actor)
         return {"success": True, "actor": actor,}, 200
 
     @requires_auth("patch:actors")
-    @actor_id_exists
+    @id_exists(entity='actor')
     @contains_request_data
     @validate_actor_data("patch")
+    @title_or_name_exists(method='patch', entity='actor', field='name')
     def patch(self, *args, **kwargs):
-        actor = kwargs["actor_object"]
+        actor = kwargs["actor_db_object"]
         actor_data = kwargs["actor"]
 
         try:
-            actor.name = actor_data["name"]
-            actor.birth_date = actor_data["birth_date"]
-            actor.gender = actor_data["gender"]
+            actor.name = actor_data.name
+            actor.birth_date = actor_data.birth_date
+            actor.gender = actor_data.gender
+            actor.update()
 
-            db.session.commit()
-        except IntegrityError as err:
-            # Show Error if Actor with specified name already exists
-            return {"success": False, "message": "Actor already exists"}, 409
+        except DatabaseError:
+            db.session.rollback()
+            return (
+                {
+                    "success": False,
+                    "message": "Error while adding actor",
+                },
+                400,
+            )
 
-        result = actor_schema.dump(actor)
+        finally:
+            result = actor_schema.dump(actor)
+            db.session.close()
 
         return (
             {
@@ -108,15 +116,18 @@ class RetrieveUpdateDestroyActorResource(Resource):
         )
 
     @requires_auth("delete:actors")
-    @actor_id_exists
+    @id_exists(entity='actor')
     def delete(self, *args, **kwargs):
-        actor_id = kwargs["actor_id"]
+        actor = kwargs["actor_db_object"]
         try:
-            actor = Actor.query.get_or_404(actor_id)
-        except NotFound:
-            return actor_not_found_response
-
-        actor.delete()
+            actor.delete()
+        except Exception:
+            return {
+                       "success": False,
+                       "message": "error while deleting actor"
+                   }, 400
+        finally:
+            db.session.close()
 
         return {"success": 200, "message": "Actor deleted successfully"}, 200
 

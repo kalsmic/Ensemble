@@ -96,7 +96,6 @@ actor_bad_format_error = {
 }
 
 movie_format_bad_error = {
-    "title": ["Not a valid string."],
     "release_date": ["Not a valid date."],
 }
 

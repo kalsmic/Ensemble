@@ -5,10 +5,10 @@ class Config(object):
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
 
 
 class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
     FLASK_ENV = "production"
 
 class DevelopmentConfig(Config):

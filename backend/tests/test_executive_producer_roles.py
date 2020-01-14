@@ -178,11 +178,7 @@ class ExecutiveDirectorTestCase(EnsembleBaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertFalse(data["success"])
             self.assertEqual(
-                data["message"],
-                {
-                    "release_date": ["Not a valid date."],
-                    "title": ["Not a valid string."],
-                },
+                data["message"],{'release_date': ['Not a valid date.']}
             )
 
             valid_data = {

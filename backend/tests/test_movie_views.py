@@ -21,7 +21,7 @@ class EnsembleMovieTestCase(EnsembleBaseTestCase):
         self.assistant_patcher = patcher.start()
 
     def test_cannot_create_movie_with_invalid_movie_data_format(self):
-        movie = {"movie": {"title": 12, "release_date": 12,}}
+        movie = {"movie": {"title": '', "release_date": 12,}}
 
         response = self.client.post(
             "api/v1/movies", data=json.dumps(movie), headers=self.headers,
@@ -120,7 +120,7 @@ class EnsembleMovieTestCase(EnsembleBaseTestCase):
         self.assertEqual(response.status_code, 409)
         self.assertFalse(data["success"])
         self.assertDictEqual(
-            data, {"success": False, "message": "Movie already exists"}
+            data, {"success": False, "message": "Movie with specified title already exists"}
         )
 
     def test_cannot_delete_movie_not_found(self):

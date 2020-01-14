@@ -1,16 +1,15 @@
 import sys
 
-from flask import request, abort
+from flask import request
 from flask_restful import Resource
-from sqlalchemy.exc import IntegrityError
+from psycopg2._psycopg import DatabaseError
 
 from flaskr.auth import requires_auth
 from flaskr.helpers import (
     validate_actor_ids,
     validate_movie_data,
     contains_request_data,
-    movie_id_exists,
-)
+    title_or_name_exists, id_exists)
 from flaskr.models import (
     db,
     Movie,
@@ -56,6 +55,7 @@ class CreateListMovieResource(Resource):
     @requires_auth("post:movies")
     @contains_request_data
     @validate_movie_data("post")
+    @title_or_name_exists(method='post', entity='Movie', field='title')
     @validate_actor_ids
     def post(self, *args, **kwargs):
         movie = kwargs["movie"]
@@ -70,9 +70,15 @@ class CreateListMovieResource(Resource):
 
             result = movie_schema.dump(movie)
 
-        except IntegrityError:
-            # Show Error if Movie already exists
-            return {"success": False, "message": "Movie already exists"}, 409
+        except DatabaseError:
+            db.session.rollback()
+            return (
+                {
+                    "success": False,
+                    "message": "Error while adding movie",
+                },
+                400,
+            )
 
         finally:
             db.session.close()
@@ -86,49 +92,54 @@ class CreateListMovieResource(Resource):
             201,
         )
 
-
 class RetrieveUpdateDestroyMovieResource(Resource):
     @requires_auth("get:movies")
-    @movie_id_exists
+    @id_exists(entity='movie', )
     def get(self, *args, **kwargs):
-        movie = kwargs["movie_object"]
+        movie = kwargs["movie_db_object"]
         movie = movie_schema.dump(movie)
 
-        return {"success": True, "movie": movie,}, 200
+        return {"success": True, "movie": movie, }, 200
 
     @requires_auth("patch:movies")
-    @movie_id_exists
+    @id_exists(entity='movie')
     @contains_request_data
     @validate_movie_data("patch")
+    @title_or_name_exists(method='patch', entity='Movie', field='title')
     @validate_actor_ids
     def patch(self, *args, **kwargs):
-        movie = kwargs["movie_object"]
+        movie = kwargs["movie_db_object"]
         movie_data = kwargs["movie"]
         actor_ids = kwargs.get("actor_ids")
         actor_ids_present = kwargs["actor_ids_present"]
 
+        title = movie_data.title
+
+        movie.title = title
+        movie.release_date = movie_data.release_date
+
         try:
-            movie.title = movie_data.title
-            movie.release_date = movie_data.release_date
+            movie.update()
+
             if actor_ids_present:
                 movie.remove_actors_from_movie(actor_ids)
                 movie.update_movie_actors(actor_ids)
             db.session.commit()
 
             result = movie_schema.dump(movie)
-        except IntegrityError:
-            print(sys.exc_info())
+        except DatabaseError:
             db.session.rollback()
+            print(sys.exc_info())
+
             return (
                 {
                     "success": False,
-                    "message": "Movie with specified name" "already exists",
+                    "message": "Error while adding movie",
                 },
-                409,
+                400,
             )
-        except BaseException:
-            print(sys.exc_info())
-            abort(400)
+        finally:
+            db.session.close()
 
         return (
             {
@@ -140,10 +151,10 @@ class RetrieveUpdateDestroyMovieResource(Resource):
         )
 
     @requires_auth("delete:movies")
-    @movie_id_exists
+    @id_exists(entity='movie')
     def delete(self, *args, **kwargs):
 
-        movie = kwargs["movie_object"]
+        movie = kwargs["movie_db_object"]
 
         movie.delete()
 
@@ -152,6 +163,7 @@ class RetrieveUpdateDestroyMovieResource(Resource):
 
 class ListMovieActorsResource(Resource):
     @requires_auth("get:movies")
+    @id_exists(entity='movie')
     def get(self, *args, **kwargs):
         movie_id = kwargs["movie_id"]
 
@@ -159,8 +171,8 @@ class ListMovieActorsResource(Resource):
 
         movie_actors_query = (
             MovieCrew.query.filter_by(movie_id=movie_id)
-            .join(Actor)
-            .paginate(page=page, error_out=False, max_per_page=5)
+                .join(Actor)
+                .paginate(page=page, error_out=False, max_per_page=5)
         )
 
         result = paginate(movie_actors_query)

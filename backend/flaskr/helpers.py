@@ -7,6 +7,21 @@ from werkzeug.exceptions import NotFound
 from flaskr.models import Actor, actor_schema, movie_schema, Movie
 from flaskr.models import actor_ids_schema
 
+entities = {
+    "actor": {
+        "model": Actor,
+        "unique": "name",
+        "schema": actor_schema,
+        "fields": ["name", "gender", "birth_date"]
+    },
+    "movie": {
+        "model": Movie,
+        "unique": "title",
+        "schema": movie_schema,
+        "fields": ["title", "release_date"]
+    }
+}
+
 
 def validate_actor_ids(func):
     @wraps(func)
@@ -42,7 +57,7 @@ def validate_actor_ids(func):
                 {
                     "success": "False",
                     "message": f"Actors with Ids {invalid_actor_ids} do "
-                    f"not exist",
+                               f"not exist",
                 },
                 400,
             )
@@ -78,18 +93,48 @@ def contains_request_data(func):
     return wrapper
 
 
-def actor_id_exists(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        actor_id = kwargs["actor_id"]
+'''
+id_exists(entity)
+    Checks if the id in the query params of the specified entity(model) 
+    exists in the db
+    If id exists:
+      the db_object the specified id is injected into the response
+    else:
+       a 404 error is returned
+    EXAMPLE   
+        for @id_exists(entity="actor")
+            endpoints
+                PATCH /actors/{id}, DELETE /actors/{id}, GET /actors/{id}
+            returns f(*args, **kwargs, actor_db_object = Actor_Object(id)
+                accessed as kwargs['actor_db_object']
+        for @id_exists(entity="movie")
+            endpoints
+                PATCH /movies/{id}, DELETE /movies/{id}, GET /movies/{id}, 
+                GET /movies/{id}/actors 
+            returns f(*args, **kwargs, movie_db_object = Movie_Object(id)
+                accessed as kwargs['movie_db_object']
+'''
 
-        try:
-            actor_object = Actor.query.get_or_404(actor_id)
-        except NotFound:
-            return {"success": False, "message": "Actor does not exist"}, 404
-        return func(*args, **kwargs, actor_object=actor_object)
 
-    return wrapper
+def id_exists(entity):
+    def id_exists_decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            primary_id = kwargs[f"{entity}_id"]
+            model = entities[entity]["model"]
+            try:
+                entity_object = model.query.get_or_404(primary_id)
+                entity_object_dict = {f"{entity}_db_object": entity_object}
+            except NotFound:
+                return {
+                           "success": False,
+                           "message": f"{entity.capitalize()} does not exist"
+                       }, 404
+            return func(*args, **kwargs, **entity_object_dict)
+
+        return wrapper
+
+    return id_exists_decorator
 
 
 def validate_actor_data(method="post"):
@@ -105,7 +150,7 @@ def validate_actor_data(method="post"):
                         "success": False,
                         "message": "provide correct data format",
                         "format": "{actor: {name: string, birth_date: YYYY-MM-DD, gender: "
-                        "one of M or F}",
+                                  "one of M or F}",
                     },
                     422,
                 )
@@ -115,7 +160,7 @@ def validate_actor_data(method="post"):
                 "gender": actor_data.get("gender"),
             }
             if method == "patch":
-                actor_object = kwargs["actor_object"]
+                actor_object = kwargs["actor_db_object"]
                 actor = {
                     "name": actor_data.get("name", actor_object.name),
                     "birth_date": actor_data.get(
@@ -125,7 +170,7 @@ def validate_actor_data(method="post"):
                 }
 
             try:
-                actor_schema.load(actor)
+                actor = actor_schema.load(actor)
             except ValidationError as err:
                 # Show Errors if validation fails
                 return {"success": False, "message": err.messages}, 400
@@ -135,6 +180,82 @@ def validate_actor_data(method="post"):
         return wrapper
 
     return validate_actor_data_decorator
+
+
+'''
+title_or_name_exists(method='post', entity='actor', field='name')
+    Checks the provided unique field value does not already exist in the the db
+    if method is patch and not post, the record with specified id is 
+    excluded from the check
+    
+    if any record exists:
+        a 409 conflict error is returned
+    else:
+        execution continues in the decorated function/endpoint
+
+    EXAMPLE   
+        for (method='post', entity='actor', field='name')
+            endpoints
+                PATCH /actors/{id}, POST /actors
+            check made against name
+        for (method='post', entity='movie', field='title')
+            endpoints
+                PATCH /movies/{id}, POST /movies
+            check made against title   
+'''
+
+
+def title_or_name_exists(method='post', entity='actor', field='name'):
+    def title_or_name_exists_decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            exists_query = None
+            if entity == 'actor':
+                actor_name_from_req_body = kwargs['actor'].name
+
+                exists_query = Actor.query.filter(
+                    Actor.name.ilike(actor_name_from_req_body)
+                )
+
+            elif entity == 'Movie':
+                movie_title_from_req_body = kwargs['movie'].title
+
+                exists_query = Movie.query.filter(
+                    Movie.title.ilike(movie_title_from_req_body)
+                )
+
+            # check unique field against other records except the current one
+            # Reason: for update the Artist name or Movie title must not be
+            # the same as any in the db
+            if method == 'patch' and entity == 'actor':
+
+                actor_object_in_db = kwargs['actor_db_object']
+                actor_id = actor_object_in_db.id
+                exists_query = exists_query.filter(Actor.id != actor_id)
+
+            elif method == 'patch' and entity == 'Movie':
+
+                movie_object_in_db = kwargs['movie_db_object']
+                movie_id = movie_object_in_db.id
+                exists_query = exists_query.filter(Movie.id != movie_id)
+
+            count = exists_query.count()
+
+            if count:
+                return (
+                    {
+                        "success": False,
+                        "message":
+                            f"{entity.capitalize()} with specified "
+                            f"{field} already exists",
+                    },
+                    409,
+                )
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return title_or_name_exists_decorator
 
 
 def validate_movie_data(method="post"):
@@ -158,7 +279,7 @@ def validate_movie_data(method="post"):
             release_date = movie_data.get("release_date")
 
             if method == "patch":
-                movie_object = kwargs["movie_object"]
+                movie_object = kwargs["movie_db_object"]
                 title = movie_data.get("title", movie_object.title)
                 release_date = movie_data.get(
                     "release_date",
@@ -166,6 +287,7 @@ def validate_movie_data(method="post"):
                 )
 
             try:
+                title = str(title).strip()
                 movie = movie_schema.load(
                     {"title": title, "release_date": release_date}
                 )
@@ -178,17 +300,3 @@ def validate_movie_data(method="post"):
         return wrapper
 
     return validate_movie_data_decorator
-
-
-def movie_id_exists(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        movie_id = kwargs["movie_id"]
-
-        try:
-            movie_object = Movie.query.get_or_404(movie_id)
-        except NotFound:
-            return {"success": False, "message": "Movie does not exist"}, 404
-        return func(*args, **kwargs, movie_object=movie_object)
-
-    return wrapper
