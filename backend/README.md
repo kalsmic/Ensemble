@@ -30,17 +30,21 @@ pip install -r requirements.txt
 
 ## Running the server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
+From within the `backend` directory first ensure you are working using your
+ created virtual environment.
 
 Each time you open a new terminal session, run:
 
 ```bash
-export FLASK_APP=api.py;
+export FLASK_APP="flaskr:create_app('config.DevelopmentConfig')"
 ```
 Also set the following eenvironmental variable for Auth0
 ```bash
 export AUTH0_DOMAIN='your_auth0_domain'
 export API_AUDIENCE='auth0_audience'
+export DATABASE_URI_DEV='developmenent_db_uri"
+export DATABASE_URI='your_production_db'
+export DATABASE_URI_TEST='your_test_db'
 ```
 
 To run the server, execute:
@@ -91,4 +95,16 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Sign into each account and make note of the JWT.
 - Import the postman collection `./backend/Ensemble.postman_collection.json`
 - Right-clicking the collection folder ,select edit and navigate to the variables tab, update the JWT token for the three different roles i.e Casting Assistant, Casting Director and Executive Producer.
-- Run the collection and correct any errors.
+- Run the collection to test the endpoints
+
+
+8.Testing with pytest
+
+- You can also run unit tests by opening your terminal
+- To run tests with pytest, simply run `pytest` in the terminal
+- If your prefer running with unittest, run `python -m unittest`
+- to run tests with coverage, run `pytest --cov flaskr`
+
+
+9.Testing a live project
+- The backend has been deployed to heroku platform [http://ensemble-movies.herokuapp.com/api/v1](http://ensemble-movies.herokuapp.com/api/v1)
