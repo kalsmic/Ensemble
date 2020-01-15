@@ -1,1127 +1,1196 @@
 {
-  "info": {
-    "_postman_id": "e7bce471-3ac7-4700-bdc6-bff7562d3d56",
-    "name": "Ensemble",
-    "description": "Ensemble is a  Casting Agency which models a company that is responsible for creating movies and managing and assigning actors to those movies.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Casting Assistant",
-      "item": [
-        {
-          "name": "GET Actors",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"value contains actors array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).to.be.an('array');",
-                  "});",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of Actors"
-          },
-          "response": []
-        },
-        {
-          "name": "GET movies",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"value contains actors array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).to.be.an('array');",
-                  "});",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of movies"
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "d2dba65a-20b5-43a3-b167-41b8ddce7488",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to edit",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits a movie"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "614ef723-4a91-45e5-8c38-0d7395e2ce00",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to delete",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ""
-              ]
-            },
-            "description": "Creates a new movie"
-          },
-          "response": []
-        },
-        {
-          "name": "CREATE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors"
-              ]
-            },
-            "description": "Creates a new Actor"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f26cb32b-5d2a-4326-bb37-6d6f7060c632",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits details of an actor"
-          },
-          "response": []
-        }
-      ],
-      "description": "Casting Assistant\nCan view actors and movies",
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "CASTING_ASSISTANT_JWT",
-            "type": "string"
-          }
-        ]
-      },
-      "protocolProfileBehavior": {}
-    },
-    {
-      "name": "Casting Director",
-      "item": [
-        {
-          "name": "GET Actors",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of Actors"
-          },
-          "response": []
-        },
-        {
-          "name": "GET movies",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"value contains actors array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).to.be.an('array');",
-                  "});",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of movies"
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "d2dba65a-20b5-43a3-b167-41b8ddce7488",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to edit",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits a movie"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "614ef723-4a91-45e5-8c38-0d7395e2ce00",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to delete",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ""
-              ]
-            },
-            "description": "Creates a new movie"
-          },
-          "response": []
-        },
-        {
-          "name": "CREATE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"value contains actors array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).to.be.an('array')",
-                  "});",
-                  "",
-                  "pm.test(\"value contains actors array of one\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).length === 1;",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors"
-              ]
-            },
-            "description": "Creates a new Actor"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f26cb32b-5d2a-4326-bb37-6d6f7060c632",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits details of an actor"
-          },
-          "response": []
-        }
-      ],
-      "description": "Casting Director\n- All permissions a Casting Assistant has and…\n- Add or delete an actor from the database\n- Modify actors or movies\n",
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "CASTING_DIRECTOR_JWT",
-            "type": "string"
-          }
-        ]
-      },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "id": "b424da3d-414e-4cc9-854f-403aec1675a6",
-            "type": "text/javascript",
-            "exec": [
-              ""
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "id": "72be57f2-1c74-46ca-a4fb-9787cad97ff0",
-            "type": "text/javascript",
-            "exec": [
-              ""
-            ]
-          }
-        }
-      ],
-      "protocolProfileBehavior": {}
-    },
-    {
-      "name": "Executive Producer",
-      "item": [
-        {
-          "name": "GET Actors",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of Actors"
-          },
-          "response": []
-        },
-        {
-          "name": "GET movies",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"value contains movies array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.movies).to.be.an('array');",
-                  "});",
-                  "",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies"
-              ]
-            },
-            "description": "Fetches a list of movies"
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "d2dba65a-20b5-43a3-b167-41b8ddce7488",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to edit",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits a movie"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "614ef723-4a91-45e5-8c38-0d7395e2ce00",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/:movie_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ":movie_id"
-              ],
-              "variable": [
-                {
-                  "description": "id of movie to delete",
-                  "key": "movie_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "POST Movie",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"value contains movies array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.movies).to.be.an('array')",
-                  "});",
-                  "",
-                  "pm.test(\"value contains movies array of one\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.movies).length === 1;",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/movies/",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "movies",
-                ""
-              ]
-            },
-            "description": "Creates a new movie"
-          },
-          "response": []
-        },
-        {
-          "name": "CREATE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "",
-                  "pm.test(\"value contains actors array\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).to.be.an('array')",
-                  "});",
-                  "",
-                  "pm.test(\"value contains actors array of one\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.actors).length === 1;",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors"
-              ]
-            },
-            "description": "Creates a new Actor"
-          },
-          "response": []
-        },
-        {
-          "name": "DELETE Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "EDIT Actor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "f26cb32b-5d2a-4326-bb37-6d6f7060c632",
-                "exec": [
-                  "pm.test(\"Status code is 401\", function () {",
-                  "    pm.response.to.have.status(401);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{HOST}}/api/v1/actors/:actor_id",
-              "host": [
-                "{{HOST}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "actors",
-                ":actor_id"
-              ],
-              "variable": [
-                {
-                  "key": "actor_id",
-                  "value": ""
-                }
-              ]
-            },
-            "description": "Edits details of an actor"
-          },
-          "response": []
-        }
-      ],
-      "description": "Executive Producer\n-\tAll permissions a Casting Director has and…\n-\tAdd or delete a movie from the database",
-      "auth": {
-        "type": "bearer",
-        "bearer": [
-          {
-            "key": "token",
-            "value": "EXECUTIVE_PRODUCER_JWT",
-            "type": "string"
-          }
-        ]
-      },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "id": "b424da3d-414e-4cc9-854f-403aec1675a6",
-            "type": "text/javascript",
-            "exec": [
-              ""
-            ]
-          }
-        },
-        {
-          "listen": "test",
-          "script": {
-            "id": "72be57f2-1c74-46ca-a4fb-9787cad97ff0",
-            "type": "text/javascript",
-            "exec": [
-              ""
-            ]
-          }
-        }
-      ],
-      "protocolProfileBehavior": {}
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "id": "a18617a1-c3db-4e68-85b7-715db9f045fa",
-        "type": "text/javascript",
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "id": "6c77fc74-d087-4efc-aa7b-c59876f48742",
-        "type": "text/javascript",
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "id": "d7747122-67ef-4cd6-acf6-798956b72659",
-      "key": "CASTING_ASSISTANT_JWT",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "id": "ec24d50f-6135-4c88-8d70-b8d215af0c27",
-      "key": "CASTING_DIRECTOR_JWT",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "id": "48006fdf-012d-4398-9a10-e3aa7a1cf60c",
-      "key": "EXECUTIVE_PRODUCER_JWT",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "id": "c28a8fb5-8fed-4bda-ad93-2ad18c07f32f",
-      "key": "HOST",
-      "value": "localhost:5000",
-      "type": "string"
-    }
-  ],
-  "protocolProfileBehavior": {}
+	"info": {
+		"_postman_id": "a1154d31-a0af-4604-b502-81b82065643a",
+		"name": "Ensemble Casting Agency",
+		"description": "Ensemble is a  Casting Agency which models a company that is responsible for creating movies and managing and assigning actors to those movies.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Casting Assistant",
+			"item": [
+				{
+					"name": "Get actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actors array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.actors).to.be.an('array');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CASTING_ASSISTANT_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Fetches a list of Actors"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actors specific actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CASTING_ASSISTANT_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors/:id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors",
+								":id"
+							],
+							"variable": [
+								{
+									"description": "Id of actor to fetch",
+									"key": "id",
+									"value": ""
+								}
+							]
+						},
+						"description": "Fetches a list of Actors"
+					},
+					"response": []
+				},
+				{
+					"name": "Get movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actors array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CASTING_ASSISTANT_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies"
+							]
+						},
+						"description": "Fetches a list of movies"
+					},
+					"response": []
+				},
+				{
+					"name": "Get specific movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{CASTING_ASSISTANT_JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies/:movie_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies",
+								":movie_id"
+							],
+							"variable": [
+								{
+									"key": "movie_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Fetches a list of movies"
+					},
+					"response": []
+				}
+			],
+			"description": "Casting Assistant\nCan view actors and movies",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "CASTING_ASSISTANT_JWT",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9a63cd8f-e862-4e73-ad60-f3da9438c3f1",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7367dda-c1b8-4097-898d-4ee9d2b091a2",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Casting Director",
+			"item": [
+				{
+					"name": "GET Actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies"
+							]
+						},
+						"description": "Fetches a list of Actors"
+					},
+					"response": []
+				},
+				{
+					"name": "GET movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains actors array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies"
+							]
+						},
+						"description": "Fetches a list of movies"
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"iifawmes\",\n\t\"age\": \"33\",\n\t\"gender\": \"M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Creates a new Actor"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors/:actor_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors",
+								":actor_id"
+							],
+							"variable": [
+								{
+									"key": "actor_id",
+									"value": "",
+									"description": "id of actor to delete"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f26cb32b-5d2a-4326-bb37-6d6f7060c632",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors/:actor_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors",
+								":actor_id"
+							],
+							"variable": [
+								{
+									"key": "actor_id",
+									"value": ""
+								}
+							]
+						},
+						"description": "Edits details of an actor"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies",
+								""
+							]
+						},
+						"description": "Creates a new movie"
+					},
+					"response": []
+				}
+			],
+			"description": "Casting Director\n- All permissions a Casting Assistant has and…\n- Add or delete an actor from the database\n- Modify actors or movies\n",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{CASTING_DIRECTOR_JWT}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b424da3d-414e-4cc9-854f-403aec1675a6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "72be57f2-1c74-46ca-a4fb-9787cad97ff0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Executive Producer",
+			"item": [
+				{
+					"name": "CREATE Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"actor\": {\n        \"birth_date\": \"1990-02-02\",\n        \"gender\": \"M\",\n        \"name\": \"Micheal\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Creates a new Actor"
+					},
+					"response": []
+				},
+				{
+					"name": "GET Actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Fetches a list of Actors"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"search_term\": \"arthur\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Fetches a list of Actors"
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f26cb32b-5d2a-4326-bb37-6d6f7060c632",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"actor\": {\n        \"birth_date\": \"1990-02-02\",\n        \"gender\": \"M\",\n        \"name\": \"Gerald\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors/:actor_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors",
+								":actor_id"
+							],
+							"variable": [
+								{
+									"key": "actor_id",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Edits details of an actor"
+					},
+					"response": []
+				},
+				{
+					"name": "GET movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"value contains movies array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.movies).to.be.an('array');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies"
+							]
+						},
+						"description": "Fetches a list of movies"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"movie\": {\n\t\t\"title\": \"New Movie title\",\n\t\t\"release_date\": \"2019-02-25\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies"
+							]
+						},
+						"description": "Creates a new movie"
+					},
+					"response": []
+				},
+				{
+					"name": "get Movie Actors",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"movie\": {\n\t\t\"title\": \"New Movie title\",\n\t\t\"release_date\": \"2019-02-25\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies/:movie_id/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies",
+								":movie_id",
+								"actors"
+							],
+							"variable": [
+								{
+									"key": "movie_id",
+									"value": "",
+									"description": "id of movie whose actors you want to fetch"
+								}
+							]
+						},
+						"description": "Creates a new movie"
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d2dba65a-20b5-43a3-b167-41b8ddce7488",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"movie\": {\n\t\t\"title\": \"New Movie title\",\n\t\t\"release_date\": \"2019-02-25\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies/:movie_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies",
+								":movie_id"
+							],
+							"variable": [
+								{
+									"description": "id of movie to edit",
+									"key": "movie_id",
+									"value": ""
+								}
+							]
+						},
+						"description": "Edits a movie"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors/:actor_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors",
+								":actor_id"
+							],
+							"variable": [
+								{
+									"key": "actor_id",
+									"value": "",
+									"description": "id of actor to delete"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "614ef723-4a91-45e5-8c38-0d7395e2ce00",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/movies/:movie_id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"movies",
+								":movie_id"
+							],
+							"variable": [
+								{
+									"description": "id of movie to delete",
+									"key": "movie_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Executive Producer\n-\tAll permissions a Casting Director has and…\n-\tAdd or delete a movie from the database",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{EXECUTIVE_PRODUCER_JWT}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b424da3d-414e-4cc9-854f-403aec1675a6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "72be57f2-1c74-46ca-a4fb-9787cad97ff0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a18617a1-c3db-4e68-85b7-715db9f045fa",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6c77fc74-d087-4efc-aa7b-c59876f48742",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "8a7ea67b-b733-4a6e-98ff-0fe94ebd61d8",
+			"key": "CASTING_ASSISTANT_JWT",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"type": "string"
+		},
+		{
+			"id": "a9658215-4489-4455-85b1-e42f4cf17baa",
+			"key": "CASTING_DIRECTOR_JWT",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"type": "string"
+		},
+		{
+			"id": "701beea8-b6a5-46f8-8d98-132b011b2669",
+			"key": "EXECUTIVE_PRODUCER_JWT",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"type": "string"
+		},
+		{
+			"id": "7edfb25f-1f0c-48d6-a767-22eb836f43a9",
+			"key": "HOST",
+			"value": "{{HEROKU_HOST}}",
+			"type": "string"
+		},
+		{
+			"id": "d8f78265-532e-4109-93d9-4922bdab3666",
+			"key": "HEROKU_HOST",
+			"value": "ensemble-movies.herokuapp.com",
+			"type": "string"
+		},
+		{
+			"id": "a32a5dcf-721a-4583-bf33-d88d26c64095",
+			"key": "LOCAL_HOST",
+			"value": "127.0.0.1:5000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
 }
