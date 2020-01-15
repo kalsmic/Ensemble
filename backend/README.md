@@ -118,6 +118,8 @@ The `--reload` flag will detect file changes and restart the server automaticall
    - Alternatively you can also run the collection as is, since I have
     already provided tokens for testing for each user role category.
    - Run the collection to test the endpoints
+   >_tip_: To ensure that the tests run correctly please update the ids for
+    resources that require accessing a specific record by id
 
 9. Testing with pytest
 
