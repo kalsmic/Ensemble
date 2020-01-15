@@ -45,6 +45,10 @@ export class HttpInterceptorService implements HttpInterceptor {
                                 this.toast.error(error.error.message).then(() => {
                                 });
                                 break;
+                            case 500:
+                                this.toast.error('Something went wrong, make sure you are connected').then(() => {
+                                });
+                                break;
                         }
                     }
                 } else {

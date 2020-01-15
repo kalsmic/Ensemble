@@ -33,13 +33,14 @@ export class ArtistService {
 
     getArtists(page?: number) {
         if (this.auth.can('get:actors')) {
+            this.loading = true;
             let url = this.url + '/actors';
             if (page) {
                 url = url + '?page=' + page;
             }
             this.http.get(url)
                 .subscribe((res: any) => {
-
+                    this.loading = false;
                     this.actors = [];
                     this.artistsToItems(res.actors);
                     this.pagination = setPaginationDetails(res);
@@ -60,6 +61,7 @@ export class ArtistService {
             return this.http.patch<any>(this.url + '/actors/' + artist.id, {actor})
                 .pipe(
                     map((res: any) => {
+                        this.loading = false;
                         const {id, age, name, birth_date, gender} = res.actor;
                         this.actors[id] = {id, age, name, birth_date, gender};
                         this.toast.success(res.message);
@@ -70,8 +72,6 @@ export class ArtistService {
 
 
         } else { // insert
-            this.loading = true;
-
             return this.http.post<any>(this.url + '/actors', {actor})
                 .pipe(
                     map((res: any) => {
@@ -94,6 +94,7 @@ export class ArtistService {
         delete this.actors[artist.id];
         this.http.delete(this.url + '/actors/' + artist.id)
             .subscribe((res: any) => {
+                this.loading = false;
                 this.actor = res.artist;
                 this.toast.success(res.message);
                 this.success = res.success;
@@ -111,6 +112,7 @@ export class ArtistService {
             .pipe(
                 retry(3),
                 map((res) => {
+                    this.loading = false;
                     const {actors} = res;
                     return actors;
                 })

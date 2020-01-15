@@ -24,7 +24,7 @@
     <ion-grid>
         <ion-row>
 
-            <ion-col *ngIf="!movies.pagination.total"
+            <ion-col *ngIf="!Object.keys(movies.cinemas).length && !movies.loading"
                      class="ion-align-items-center ion-justify-content-center ion-text-center">
                 <ion-card class="bg-white ion-padding">
                     <ion-card-content class="ion-align-items-center ion-justify-content-center">

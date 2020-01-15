@@ -35,10 +35,12 @@ export class MovieService {
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
 
         if (this.auth.can('get:movies')) {
+            this.loading = true;
             return this.http.get<any>(url)
                 .pipe(
                     retry(3),
                     map((res) => {
+                        this.loading = false;
                         const {movies} = res;
                         this.cinemas = [];
                         this.moviesToCinemaItems(movies);
@@ -50,10 +52,12 @@ export class MovieService {
 
     getMovie(movieId: string | number): Observable<Movie> {
         if (this.auth.can('get:movies')) {
+            this.loading = true;
             return this.http.get<any>(this.url + '/movies/' + movieId)
                 .pipe(
                     retry(3),
                     map((res) => {
+                        this.loading = false;
                         const {movie} = res;
                         return movie;
                     })
@@ -67,10 +71,12 @@ export class MovieService {
         const url = page ? this.url + '/movies/' + movieId + '/actors?page=' + page : this.url + '/movies/' + movieId + '/actors';
 
         if (this.auth.can('get:movies')) {
+            this.loading = true;
             return this.http.get<any>(url)
                 .pipe(
                     retry(3),
                     map((res) => {
+                        this.loading = false;
                         return {
                             pagination: setPaginationDetails({...res}),
                             actors: res.actors
@@ -105,6 +111,7 @@ export class MovieService {
                     )
                 );
         } else { // insert
+
             delete movie.id;
             const url = this.url + '/movies';
             return this.http.post<any>(url, movieData)
