@@ -41,6 +41,7 @@ import {HttpInterceptorService} from './services/http-interceptor.service';
         MovieService,
         ToastService,
         AuthGuard,
+
         {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],

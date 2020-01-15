@@ -8,8 +8,9 @@ import {MoviePage} from './movie.page';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 import {PaginationModule} from '../pagination/pagination.module';
 import {MatDatepickerModule} from '@angular/material';
-import {MovieActorsComponent} from "./movie-actors/movie-actors.component";
-import {MiniPaginationComponent} from "../mini-pagination/mini-pagination.component";
+import {MovieActorsComponent} from './movie-actors/movie-actors.component';
+import {MiniPaginationComponent} from '../mini-pagination/mini-pagination.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 
 const routes: Routes = [
@@ -30,7 +31,8 @@ const routes: Routes = [
         IonicModule,
         PaginationModule,
         ReactiveFormsModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+        MatFormFieldModule
 
 
     ],

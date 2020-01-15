@@ -76,6 +76,8 @@ export class AuthService {
         this.payload = null;
         this.set_jwt();
         this.isLoggedIn = false;
+        this.router.navigate(['/tabs/user-page']);
+
     }
 
     can(permission: string) {

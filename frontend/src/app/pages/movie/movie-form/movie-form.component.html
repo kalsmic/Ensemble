@@ -30,14 +30,12 @@
 
         <ion-item>
             <ion-label position="floating">Release Date</ion-label>
-            <ion-datetime
-                    displayFormat="MMM DD, YYYY"
+            <ion-input
                     formControlName="release_date"
-                    name='release_date'
-                    pickerFormat="YYYY-MM-DD"
-                    placeholder="Select Date"
-            >
-            </ion-datetime>
+                    name="title" placeholder="release date"
+                    type='date'>
+            </ion-input>
+
             <ion-text *ngIf="isSubmitted && errorControl.release_date.errors?.required" color="danger">
                 Release date is required
             </ion-text>

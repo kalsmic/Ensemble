@@ -33,8 +33,12 @@
     </ion-card>
     <ion-progress-bar reversed="true" type="indeterminate"></ion-progress-bar>
     <ion-card *ngIf="!auth.token" class="ion-justify-content-around  ion-padding">
-        <ion-card-title color="primary">Alternative Fake login for testing purposes</ion-card-title>
-        <ion-text color="tertiary">You can click on any of the roles to login and test as the given user</ion-text>
+        <ion-card-title class="ion-text-center" color="primary">
+            Authenticated users roles for quick testing
+        </ion-card-title>
+        <ion-card-subtitle class="ion-text-center" color="tertiary">
+            <i>You can click on any of the roles to login and test as the given user</i>
+        </ion-card-subtitle>
 
         <ion-segment (ionChange)="auth.getFakeAuthToken($event)">
             <ion-segment-button value="assistant">
@@ -47,6 +51,7 @@
                 <ion-label color="primary">Executive Producer</ion-label>
             </ion-segment-button>
         </ion-segment>
+
     </ion-card>
 
 
