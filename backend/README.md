@@ -115,6 +115,8 @@ The `--reload` flag will detect file changes and restart the server automaticall
    - Sign into each account and make note of the JWT.
    - Import the postman collection `./backend/Ensemble.postman_collection.json`
    - Right-clicking the collection folder ,select edit and navigate to the variables tab, update the JWT token for the three different roles i.e Casting Assistant, Casting Director and Executive Producer.
+   - Alternatively you can also run the collection as is, since I have
+    already provided tokens for testing for each user role category.
    - Run the collection to test the endpoints
 
 9. Testing with pytest
