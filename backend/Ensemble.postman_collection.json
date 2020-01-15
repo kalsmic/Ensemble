@@ -36,16 +36,6 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{CASTING_ASSISTANT_JWT}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -80,79 +70,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Actors specific actor",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{CASTING_ASSISTANT_JWT}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{HOST}}/api/v1/actors/:id",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"actors",
-								":id"
-							],
-							"variable": [
-								{
-									"description": "Id of actor to fetch",
-									"key": "id",
-									"value": ""
-								}
-							]
-						},
-						"description": "Fetches a list of Actors"
-					},
-					"response": []
-				},
-				{
 					"name": "Get movies",
 					"event": [
 						{
@@ -176,16 +93,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{CASTING_ASSISTANT_JWT}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -202,59 +109,6 @@
 						"description": "Fetches a list of movies"
 					},
 					"response": []
-				},
-				{
-					"name": "Get specific movie",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "519e79ad-5da4-4eac-8826-b4323da413bb",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{CASTING_ASSISTANT_JWT}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{HOST}}/api/v1/movies/:movie_id",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"movies",
-								":movie_id"
-							],
-							"variable": [
-								{
-									"key": "movie_id",
-									"value": "1"
-								}
-							]
-						},
-						"description": "Fetches a list of movies"
-					},
-					"response": []
 				}
 			],
 			"description": "Casting Assistant\nCan view actors and movies",
@@ -263,7 +117,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "CASTING_ASSISTANT_JWT",
+						"value": "{{CASTING_ASSISTANT_JWT}}",
 						"type": "string"
 					}
 				]
@@ -296,6 +150,65 @@
 			"name": "Casting Director",
 			"item": [
 				{
+					"name": "CREATE Actor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"data = pm.response.json();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "Value contains invalid newline characters.",
+								"key": "Authorization",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"actor\": {\n        \"birth_date\": \"1990-02-02\",\n        \"gender\": \"M\",\n        \"name\": \"James Junior J\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/actors",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"actors"
+							]
+						},
+						"description": "Creates a new Actor"
+					},
+					"response": []
+				},
+				{
 					"name": "GET Actors",
 					"event": [
 						{
@@ -318,14 +231,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/movies",
+							"raw": "{{HOST}}/api/v1/actors",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"movies"
+								"actors"
 							]
 						},
 						"description": "Fetches a list of Actors"
@@ -374,63 +287,12 @@
 					"response": []
 				},
 				{
-					"name": "CREATE Actor",
+					"name": "EDIT Movie",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "f96b76b0-79ac-4644-9e6d-148750a0cd2e",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
-									"    pm.response.to.have.status(201);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\": \"iifawmes\",\n\t\"age\": \"33\",\n\t\"gender\": \"M\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{HOST}}/api/v1/actors",
-							"host": [
-								"{{HOST}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"actors"
-							]
-						},
-						"description": "Creates a new Actor"
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE Actor",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
+								"id": "d2dba65a-20b5-43a3-b167-41b8ddce7488",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
@@ -441,27 +303,44 @@
 						}
 					],
 					"request": {
-						"method": "DELETE",
-						"header": [],
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"movie\": {\n\t\t\"title\": \"New Movie title\",\n\t\t\"release_date\": \"2019-02-25\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/actors/:actor_id",
+							"raw": "{{HOST}}/api/v1/movies/:movie_id",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"actors",
-								":actor_id"
+								"movies",
+								":movie_id"
 							],
 							"variable": [
 								{
-									"key": "actor_id",
-									"value": "",
-									"description": "id of actor to delete"
+									"description": "id of movie to edit",
+									"key": "movie_id",
+									"value": "1"
 								}
 							]
-						}
+						},
+						"description": "Edits a movie"
 					},
 					"response": []
 				},
@@ -523,15 +402,15 @@
 					"response": []
 				},
 				{
-					"name": "POST Movie",
+					"name": "DELETE Actor",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "b10a4af1-8a4e-439a-9668-fd46598ac1b2",
+								"id": "f14bc93e-977e-4051-8735-9e2e39fd2b2a",
 								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -539,28 +418,27 @@
 						}
 					],
 					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
+						"method": "DELETE",
+						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/movies/",
+							"raw": "{{HOST}}/api/v1/actors/:actor_id",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"movies",
-								""
+								"actors",
+								":actor_id"
+							],
+							"variable": [
+								{
+									"key": "actor_id",
+									"value": "15",
+									"description": "id of actor to delete"
+								}
 							]
-						},
-						"description": "Creates a new movie"
+						}
 					},
 					"response": []
 				}
@@ -1156,37 +1034,37 @@
 	],
 	"variable": [
 		{
-			"id": "8a7ea67b-b733-4a6e-98ff-0fe94ebd61d8",
+			"id": "e901bbb5-e7c7-49f2-bb85-8003d2739cfb",
 			"key": "CASTING_ASSISTANT_JWT",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiQWc5bWo0Nm1GSTNncFY2R0E5WmVZellrM3ZEZTkwczNAY2xpZW50cyIsImF1ZCI6ImVuc2VtYmxlLXBybyIsImlhdCI6MTU3OTA4NDI1MiwiZXhwIjoxNTgxNjc2MjUyLCJhenAiOiJBZzltajQ2bUZJM2dwVjZHQTlaZVl6WWszdkRlOTBzMyIsInNjb3BlIjoiZ2V0OmFjdG9ycyBnZXQ6bW92aWVzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOlsiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiXX0.gdniP8vaDPx8zg_BlP-qRbTSayvs-S215JVkMg9WDe5vNETHs1MfdS5v9NaR4-a2RQRrpxi_iLaU7f26K13_xX2upbxikDAna819XadX45ezmaeCtjs0vOXClOkGbzQyZ68BeFHBG6Nxoq8ft7k6lBJcm0miB-jKFDNuABs9rl4nwYTL25OqzXfyhs42Yc-O5nkAE4_ZL5SjPlOktInMO389Oru6fOp2xkIrO1dYnQ4Ek84lMN0FP6OFIeRmIYjysYRwZH7oZagEHL1rpVQNowGxBkEMaAtyReKcQLPfiODmN5okIuEBKqF_3x9PcLJogeJ3ootVUeNs_K5BGfiU8Q",
 			"type": "string"
 		},
 		{
-			"id": "a9658215-4489-4455-85b1-e42f4cf17baa",
+			"id": "c2d79c8f-8906-4c76-838f-7529e52a9a79",
 			"key": "CASTING_DIRECTOR_JWT",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiQWc5bWo0Nm1GSTNncFY2R0E5WmVZellrM3ZEZTkwczNAY2xpZW50cyIsImF1ZCI6ImVuc2VtYmxlLXBybyIsImlhdCI6MTU3OTA4NDQ1NCwiZXhwIjoxNTgxNjc2NDU0LCJhenAiOiJBZzltajQ2bUZJM2dwVjZHQTlaZVl6WWszdkRlOTBzMyIsInNjb3BlIjoicG9zdDphY3RvcnMgcGF0Y2g6YWN0b3JzIHBhdGNoOm1vdmllcyBnZXQ6YWN0b3JzIGdldDptb3ZpZXMgZGVsZXRlOmFjdG9ycyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsInBlcm1pc3Npb25zIjpbInBvc3Q6YWN0b3JzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIl19.WEfHWtoV2IHBOIE7yVtrhWq-4YMyWwnvm6yO-th2JDiCzOYdLbiRDdQda-G3oD05TYS62wiORf31Gly9NCxzR-2kORCcX3TnvSl9wGixPy1iUnf1s6Fzgt6TvE2L0qaAmkq03uLm0xcFVTtSP9m6jEkYPmopcYvCWmRku9Nlz1GR6AmWcStVtLQPXoFXskCj5Bb_sDw8ay3JSmMC52EZeU-Dq2n9bGUL8o8VfDNvnAA2L_ojVyuwlMjnK9BnXXEhVaeNOFQ_Em1AH4qaE1Y7ISgkoSjr90HEFkZvrtSc98vSeyemuApofmCYmlpWb1eavqvKILSWq6a_OU7rnIVelg",
 			"type": "string"
 		},
 		{
-			"id": "701beea8-b6a5-46f8-8d98-132b011b2669",
+			"id": "bdfea728-e7f8-475f-9dc8-949db51f6807",
 			"key": "EXECUTIVE_PRODUCER_JWT",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMTQ1Nzk3MTc3ODc5MzE4Mzg3NzAiLCJhdWQiOlsiZW5zZW1ibGUtcHJvIiwiaHR0cHM6Ly9kZXYtMDA4a3htOHUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTA3NDkwOSwiZXhwIjoxNTc5MDgyMTA5LCJhenAiOiJKb05Gd2xEenRDNHlKT2N5NHBMeTRFT2RIMHlZYWdKMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwicGF0Y2g6YWN0b3JzIiwicGF0Y2g6bW92aWVzIiwicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyJdfQ.gSt7fpCkmrsVLprWm0xzQUxOr3yz7qLJaDJaUihN_TORx6pu6PN1SKfSbRoRQQxaGGsFmPPREfRPZ-s-VZ3B0OBn2cI2LpIc7veAMbxuHPqcO5IB26gll7536B5fSJUzIvXnuOMZgZle8YPpwxrE1CPHUHVZi9E8l4TCJTnmJBuO9pUHsHk-gtrepHaPvls4oy5KN0Mm4k3qOCjce-XpHG3wtaoJg7JqPAyAgxYeFtAD_xgFFWAKD23WaLwQEkze0Yb0A5QF8VtJIdOnnvyC-bg9AMMJN6ersqeWrIWrLujkjjpyLp9EAVucQk26qxWe1Da-MmHEzdgrnFeoF5XQjQ",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJVWkROVVl4TmpCRU5qY3dPVEJCTmpKRE56RkZNa0pGTTBWRFEwUXlNVE00TVRoRU4wSTRRUSJ9.eyJpc3MiOiJodHRwczovL2Rldi0wMDhreG04dS5hdXRoMC5jb20vIiwic3ViIjoiQWc5bWo0Nm1GSTNncFY2R0E5WmVZellrM3ZEZTkwczNAY2xpZW50cyIsImF1ZCI6ImVuc2VtYmxlLXBybyIsImlhdCI6MTU3OTA4NDMzMiwiZXhwIjoxNTgxNjc2MzMyLCJhenAiOiJBZzltajQ2bUZJM2dwVjZHQTlaZVl6WWszdkRlOTBzMyIsInNjb3BlIjoicG9zdDphY3RvcnMgcG9zdDptb3ZpZXMgcGF0Y2g6YWN0b3JzIHBhdGNoOm1vdmllcyBnZXQ6YWN0b3JzIGdldDptb3ZpZXMgZGVsZXRlOmFjdG9ycyBkZWxldGU6bW92aWVzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOlsicG9zdDphY3RvcnMiLCJwb3N0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwiZGVsZXRlOmFjdG9ycyIsImRlbGV0ZTptb3ZpZXMiXX0.iMmz3rX6nUqR6qrv7kkiVWNd_4hsLZFa1KyGfJEFhMmGscmhatvRdZWhbQd3xsFcl3Zir98jh9fk0-VxkjGeCGTgdTTSkDpP2fREE4_SJ2e_tgayrrBYX3IydPgEdi_LXwD1vM9E8E45-1cHw0ez_w33Hv9cvRXjN4dHIb_Cqej0IFlPY1YshOyqWa6m2JBk-z-lqULnTcRgAe5a-qQ4VW4OBd47wKbrryU1xY4p45KNrBPjcqfmdfeikgmvWMxjC0B1psRBu6qnMikQXqWJfrdXugw6tdIJF7EOKJvbUG_vJ2DgpuDnCuW91CvsPjgpvxjGuGdF161GrsWa_eV1gA",
 			"type": "string"
 		},
 		{
-			"id": "7edfb25f-1f0c-48d6-a767-22eb836f43a9",
+			"id": "55fee343-0911-4801-9cf1-f75964a73e64",
 			"key": "HOST",
-			"value": "{{HEROKU_HOST}}",
+			"value": "{{LOCAL_HOST}}",
 			"type": "string"
 		},
 		{
-			"id": "d8f78265-532e-4109-93d9-4922bdab3666",
+			"id": "c6eaba97-1966-4b5c-9cdd-c6add213d25b",
 			"key": "HEROKU_HOST",
 			"value": "ensemble-movies.herokuapp.com",
 			"type": "string"
 		},
 		{
-			"id": "a32a5dcf-721a-4583-bf33-d88d26c64095",
+			"id": "bcf8fde6-9815-4f27-808a-c16354e57e0e",
 			"key": "LOCAL_HOST",
 			"value": "127.0.0.1:5000",
 			"type": "string"
