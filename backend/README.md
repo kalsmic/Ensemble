@@ -38,11 +38,13 @@ Each time you open a new terminal session, run:
 ```bash
 export FLASK_APP="flaskr:create_app('config.DevelopmentConfig')"
 ```
-Also set the following eenvironmental variable for Auth0
+
+Also set the following environmental variable for Auth0
+
 ```bash
 export AUTH0_DOMAIN='your_auth0_domain'
 export API_AUDIENCE='auth0_audience'
-export DATABASE_URI_DEV='developmenent_db_uri"
+export DATABASE_URI_DEV='developmenent_db_uri'
 export DATABASE_URI='your_production_db'
 export DATABASE_URI_TEST='your_test_db'
 ```
@@ -89,22 +91,39 @@ The `--reload` flag will detect file changes and restart the server automaticall
         - All permissions a Casting Director has and…
         - Add or delete a movie from the database
 
-7. Test your endpoints with [Postman](https://getpostman.com).
+7. Endpoints
 
-- Register 3 users - assign the Casting Assistant role to the first,Casting Director to the second and Executive Producer to the third
-- Sign into each account and make note of the JWT.
-- Import the postman collection `./backend/Ensemble.postman_collection.json`
-- Right-clicking the collection folder ,select edit and navigate to the variables tab, update the JWT token for the three different roles i.e Casting Assistant, Casting Director and Executive Producer.
-- Run the collection to test the endpoints
+    | Functionality            | Endpoint                      | Casting assistant  |  Casting Director  | Executive Producer |
+    | ------------------------ | ----------------------------- | :----------------: | :----------------: | :----------------: |
+    | Fetches a list of actors | GET /actors                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+    | Fetches a list of movies | GET /movies                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+    | Fetches a specific actor | GET /actors/&lt;id&gt;        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+    | Fetches a specific movie | GET /movies/&lt;id&gt;        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+    | Search an Actor          | POST /actors                  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+    | Creates an actor         | POST /actor                   |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
+    | Fetches Movie actors     | GET /movies/&lt;id&gt;/actors |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
+    | Patches an actor         | PATCH /actors/&lt;id&gt;      |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
+    | Delete an Actor          | DELETE /actors/&lt;id&gt;     |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
+    | Creates a movie          | POST /movies                  |        :x:         |        :x:         | :heavy_check_mark: |
+    | Deletes a movie          | DELETE /movies/&lt;id&gt;     |        :x:         |        :x:         | :heavy_check_mark: |
 
+    >_tip_: The endpoints are prefixed with  **api/v1** i.e GET actors **/api/v1/actors**
 
-8.Testing with pytest
+8. Test your endpoints with [Postman](https://getpostman.com).
 
-- You can also run unit tests by opening your terminal
-- To run tests with pytest, simply run `pytest` in the terminal
-- If your prefer running with unittest, run `python -m unittest`
-- to run tests with coverage, run `pytest --cov flaskr`
+   - Register 3 users - assign the Casting Assistant role to the first,Casting Director to the second and Executive Producer to the third
+   - Sign into each account and make note of the JWT.
+   - Import the postman collection `./backend/Ensemble.postman_collection.json`
+   - Right-clicking the collection folder ,select edit and navigate to the variables tab, update the JWT token for the three different roles i.e Casting Assistant, Casting Director and Executive Producer.
+   - Run the collection to test the endpoints
 
+9. Testing with pytest
 
-9.Testing a live project
-- The backend has been deployed to heroku platform [http://ensemble-movies.herokuapp.com/api/v1](http://ensemble-movies.herokuapp.com/api/v1)
+   - You can also run unit tests by opening your terminal
+   - To run tests with pytest, simply run `pytest` in the terminal
+   - If your prefer running with unittest, run `python -m unittest`
+   - to run tests with coverage, run `pytest --cov flaskr`
+
+10. Testing a live project
+
+    - The backend has been deployed to heroku platform [http://ensemble-movies.herokuapp.com/api/v1](http://ensemble-movies.herokuapp.com/api/v1)
