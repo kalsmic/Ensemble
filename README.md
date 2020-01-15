@@ -8,6 +8,8 @@ This project has been created to demonstrate my newly learned skulls to create a
 
 ### Backend
 
+[![Build Status](https://travis-ci.org/kalsmic/Ensemble.svg?branch=master)](https://travis-ci.org/kalsmic/Ensemble) [![Coverage Status](https://coveralls.io/repos/github/kalsmic/Ensemble/badge.svg?branch=master)](https://coveralls.io/github/kalsmic/Ensemble?branch=master)
+
 The `./backend` has been built with  Flask and SQLAlchemy ORM. Auth0 has also been integrated for authentication to restrict access to the endpoints.
 
 [View the README.md within ./backend for more details.](./backend/README.md)
