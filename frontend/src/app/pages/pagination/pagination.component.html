@@ -1,0 +1,28 @@
+<ion-segment (ionChange)="getPageNumber($event)" *ngIf="pagination && pagination.total" color="secondary">
+
+    <ion-segment-button [disabled]="!pagination.pages" [value]=1>
+        First
+        <ion-icon color="primary" name="rewind"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button [disabled]="!pagination.hasPrevious"
+                        [value]="pagination.previousPage">
+        Previous
+        <ion-icon color="primary" name="skip-backward"></ion-icon>
+    </ion-segment-button>
+    <ion-segment-button disabled>
+        <ion-text color="primary">
+            {{pagination.currentPage}} of {{pagination.pages}} pages
+        </ion-text>
+    </ion-segment-button>
+
+    <ion-segment-button [disabled]="!pagination.hasNext"
+                        [value]="pagination.nextPage">
+        Next
+        <ion-icon color="primary" name="skip-forward"></ion-icon>
+
+    </ion-segment-button>
+    <ion-segment-button [disabled]="!pagination.pages" [value]="pagination.pages">
+        Last
+        <ion-icon color="primary" name="fastforward"></ion-icon>
+    </ion-segment-button>
+</ion-segment>

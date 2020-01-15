@@ -1,0 +1,43 @@
+<ion-button (click)="getMovieActors()" *ngIf="!showActors">
+    <ion-icon color="dark" name="people" slot="start"></ion-icon>
+    <ion-item>
+        <ion-label>Show Actors</ion-label>
+    </ion-item>
+    <ion-icon color="dark" name="ribbon" slot="end"></ion-icon>
+
+</ion-button>
+<ion-button (click)="showActors=!showActors" *ngIf="showActors">
+    <ion-icon color="dark" name="people" slot="start"></ion-icon>
+    <ion-item>
+        <ion-label>Hide Actors</ion-label>
+    </ion-item>
+    <ion-icon color="dark" name="ribbon" slot="end"></ion-icon>
+
+</ion-button>
+<ion-spinner *ngIf="isSubmitted && loading" color="tertiary"></ion-spinner>
+<ion-item *ngIf="isSubmitted && !loading && !movieActors.length">No actors Available</ion-item>
+<div *ngIf="showActors">
+    <app-mini-pagination
+            (goToPage)="goToPage($event)"
+            *ngIf="pagination"
+            [pagination]="pagination"
+            paginationPosition="top"
+
+    ></app-mini-pagination>
+    <ion-list class="ion-padding">
+        <ion-item *ngFor="let movieActor of movieActors">{{movieActor.actor.name}}</ion-item>
+    </ion-list>
+    <app-mini-pagination
+            (goToPage)="goToPage($event)"
+            *ngIf="pagination"
+            [pagination]="pagination"
+            paginationPosition="bottom"
+
+    ></app-mini-pagination>
+    <!-- start movie actors pagination-->
+    <!--    <ion-tabs *ngIf="movieActors && pagination.total > 5">-->
+
+    <!-- end movie actors pagination-->
+
+
+</div>

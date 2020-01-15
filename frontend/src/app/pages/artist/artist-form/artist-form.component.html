@@ -1,0 +1,72 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title *ngIf="isNew">Add New Actor</ion-title>
+        <ion-title *ngIf="!isNew">Edit Actor</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf='artist'>
+
+    <form (ngSubmit)="saveArtist" [formGroup]="actorForm" novalidate>
+        <ion-item *ngIf="isSubmitted && errorMessage">
+            <ion-text color="danger">{{errorMessage}}  </ion-text>
+        </ion-item>
+
+        <ion-item>
+            <ion-label position="floating">Name:</ion-label>
+            <ion-input formControlName="name"
+                       name="name" placeholder="name"
+                       type="text"></ion-input>
+        </ion-item>
+        <span *ngIf="isSubmitted && errorControl.name.errors?.required" class="ion-padding ion-color-danger">
+            Name is required.
+          </span>
+        <span *ngIf="isSubmitted && errorControl.name.errors?.minlength" class="ion-padding ion-color-danger">
+            Name should be min 2 chars long.
+          </span>
+
+        <ion-item>
+            <ion-label position="floating">Birth Date</ion-label>
+
+            <ion-input
+                    formControlName="birth_date"
+                    name="title" placeholder="birth date"
+                    type='date'>
+            </ion-input>
+        </ion-item>
+        <ion-radio-group formControlName="gender">
+            <ion-list-header>
+                <ion-label>Gender</ion-label>
+            </ion-list-header>
+
+            <ion-item>
+                <ion-label>Female</ion-label>
+                <ion-radio slot="start" value="F"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Male</ion-label>
+                <ion-radio slot="start" value="M"></ion-radio>
+            </ion-item>
+        </ion-radio-group>
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="deleteArtist()" [disabled]="isNew || !auth.can('delete:actors')" color="danger">
+                    Delete
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button (click)="closeModal()">Cancel</ion-button>
+            </ion-col>
+            <ion-col>
+
+                <ion-button (click)="saveArtist()" [disabled]="!auth.can('patch:actors') || !auth.can('post:actors')"
+                            color="secondary">
+                    <ion-icon name="save" slot="icon-only"></ion-icon>
+                    Save
+                    <ion-spinner *ngIf="isSubmitted && loading"></ion-spinner>
+                </ion-button>
+            </ion-col>
+        </ion-row>
+
+    </form>
+</ion-content>

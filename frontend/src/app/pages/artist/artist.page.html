@@ -1,0 +1,129 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title slot='secondary'>Actors</ion-title>
+    </ion-toolbar>
+    <ion-toolbar>
+        <ion-tabs>
+            <ion-tab-bar slot="bottom">
+                <ion-tab-button
+                        (click)="openArtistForm()"
+                        [disabled]="!auth.can('post:actors')">
+                    <ion-icon name="add-circle"></ion-icon>
+                    <ion-label>New Actor</ion-label>
+                </ion-tab-button>
+                <ion-text color="secondary"> |</ion-text>
+                <ion-tab-button [disabled]="!auth.can('get:movies')" href="/tabs/movies">
+                    <ion-icon name="film"></ion-icon>
+                    <ion-label>Movies</ion-label>
+                </ion-tab-button>
+            </ion-tab-bar>
+        </ion-tabs>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+    <ion-grid>
+        <ion-row>
+            <ion-col *ngIf="!Object.keys(artists.actors).length && !artists.loading"
+                     class="ion-align-items-center ion-justify-content-center ion-text-center">
+                <ion-card class="bg-white ion-padding">
+                    <ion-card-content class="ion-align-items-center ion-justify-content-center">
+                        <h1 class="ion-text-center ion-margin-bottom">
+                            <ion-text color="medium"><strong>No actors exist !</strong></ion-text>
+                        </h1>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+
+
+        <ion-row *ngIf="artists && artists.actors" class="ion-align-items-center">
+
+            <ion-col *ngFor="let artist of Object.keys(artists.actors)" size="6" size-lg="4" size-md="4" size-xs="12">
+                <ion-card>
+                    <ion-card-header>
+                        <ion-item color="dark">
+                            <ion-label slot="start">
+                                {{artists.actors[artist].name}}
+                            </ion-label>
+                        </ion-item>
+                    </ion-card-header>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col>
+                                <ion-item>Name</ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label>{{artists.actors[artist].name}}</ion-label>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col>
+                                <ion-item>Age</ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label>{{artists.actors[artist].age}} yrs</ion-label>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label>Gender</ion-label>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label>
+                                        <ion-icon *ngIf="artists.actors[artist].gender ==='F'" name="female"></ion-icon>
+                                        <ion-icon *ngIf="artists.actors[artist].gender ==='M'" name="male"></ion-icon>
+                                        {{artists.actors[artist].gender}}
+                                    </ion-label>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-icon name="ribbon" slot="start"></ion-icon>
+                                    Actions
+                                </ion-item>
+                            </ion-col>
+
+                            <ion-col>
+                                <ion-item>
+                                    <ion-button (click)="openArtistForm(artists.actors[artist])"
+                                                [disabled]="!auth.can('patch:actors') &&  !auth.can('delete:actors')"
+                                    >
+                                        <ion-icon name="md-open" slot="icon-only"></ion-icon
+                                        >
+                                        Edit
+                                    </ion-button>
+                                    <ion-button (click)="artists.deleteArtist(artists.actors[artist])"
+                                                [disabled]="!auth.can('delete:actors')" color="danger"
+                                    >
+                                        <ion-icon name="trash" slot="icon-only"></ion-icon
+                                        >
+                                        Delete
+                                    </ion-button>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+
+                    </ion-grid>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<ion-footer>
+    <app-pagination
+            (goToPage)="navigateToPage($event)"
+            [pagination]="artists.pagination"
+    ></app-pagination>
+</ion-footer>

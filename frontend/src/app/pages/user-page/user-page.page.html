@@ -1,0 +1,61 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>Home</ion-title>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="ion-padding">
+    <div>
+        <img alt="favicon" src="assets/icon/favicon.png"/>
+    </div>
+
+    <ion-card class="bg-white ion-padding ion-no-margin">
+        <ion-card-content>
+            <h1 class="ion-margin-bottom">
+                <ion-text color="primary"><strong>Ensemble Casting Agency</strong></ion-text>
+            </h1>
+
+            <p class="ion-margin-bottom">
+                Ensemble is a casting Agency which models a company that is responsible for creating movies and managing
+                and assigning actors to those movies.
+            </p>
+
+        </ion-card-content>
+
+        <ion-button *ngIf="!auth.token" [href]="loginURL" class="ion-padding">Log In</ion-button>
+        <ion-button (click)="auth.logout()" *ngIf="auth.token">Log Out</ion-button>
+
+
+    </ion-card>
+    <ion-progress-bar reversed="true" type="indeterminate"></ion-progress-bar>
+    <ion-card *ngIf="!auth.token" class="ion-justify-content-around  ion-padding">
+        <ion-card-title class="ion-text-center" color="primary">
+            Authenticated users roles for quick testing
+        </ion-card-title>
+        <ion-card-subtitle class="ion-text-center" color="tertiary">
+            <i>You can click on any of the roles to login and test as the given user</i>
+        </ion-card-subtitle>
+
+        <ion-segment (ionChange)="auth.getFakeAuthToken($event)">
+            <ion-segment-button value="assistant">
+                <ion-label color="primary">Casting Assistant</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="director">
+                <ion-label color="primary">Casting Director</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="producer">
+                <ion-label color="primary">Executive Producer</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+
+    </ion-card>
+
+
+    <ion-progress-bar reversed="true" type="indeterminate"></ion-progress-bar>
+
+
+</ion-content>
