@@ -123,7 +123,14 @@ def id_exists(entity):
             primary_id = kwargs[f"{entity}_id"]
             model = entities[entity]["model"]
             try:
-                entity_object = model.query.get_or_404(primary_id)
+                entity_object = model.query
+
+                # Do not return soft deleted actors
+                if entity == 'actor':
+                    entity_object = entity_object.filter_by(deleted=False)
+
+                entity_object = entity_object.filter_by(
+                    id=primary_id).first_or_404()
                 entity_object_dict = {f"{entity}_db_object": entity_object}
             except NotFound:
                 return {

@@ -2,7 +2,7 @@ import json
 import unittest
 from unittest.mock import patch
 
-from flaskr.models import Actor
+from flaskr.models import Actor, Movie, MovieCrew
 from tests.base import (
     EnsembleBaseTestCase,
     actor_bad_format_error,
@@ -101,15 +101,23 @@ class EnsembleActorTestCase(EnsembleBaseTestCase):
         self.assertFalse(data["success"])
         self.assertDictEqual(data["message"], actor_bad_format_error)
 
-    def test_cannot_delete_actor_not_found(self):
+    def test_soft_delete_assigned_to_atlease_one_movie(self):
+        actor = Actor(name='Emmanuel Matembu', gender="m",
+                      birth_date='2005-02-02')
+        actor.insert()
+        movie = Movie(title="my movie", release_date="2006-09-08")
+        movie.insert()
+
+        MovieCrew(movie_id=movie.id, actor_id=actor.id).insert()
+
         response = self.client.delete(
-            "api/v1/actors/100", headers=self.headers,
+            f"api/v1/actors/{actor.id}", headers=self.headers,
         )
         data = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 404)
-        self.assertFalse(data["success"])
-        self.assertEqual(data["message"], "Actor does not exist")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(data["success"])
+        self.assertEqual(data["message"], "Actor has been soft deleted")
 
     def test_search_actor_without_search_term(self):
         response = self.client.post(

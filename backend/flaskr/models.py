@@ -32,6 +32,7 @@ class Actor(BaseModel):
     name = db.Column(db.String(250), nullable=False, unique=True)
     gender = db.Column(db.String(250), nullable=False)
     birth_date = db.Column(db.Date, nullable=False)
+    deleted = db.Column(db.Boolean(), default=False)
 
     movie_ids = db.relationship("Movie", secondary="movie_crew")
 
@@ -83,6 +84,7 @@ class Actor(BaseModel):
     def search_actors(cls, search_term, actor_ids=[]):
         actors_query = (
             cls.query.filter(cls.name.ilike(f"%{search_term}%"))
+                .filter(cls.deleted.is_(False))
                 .filter(cls.id.notin_(actor_ids))
                 .all()
         )

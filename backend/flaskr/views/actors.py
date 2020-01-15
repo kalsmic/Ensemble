@@ -23,7 +23,7 @@ class CreateListActorResource(Resource):
         """
         page = request.args.get("page", 1, type=int)
 
-        actor_query = Actor.query.paginate(
+        actor_query = Actor.query.filter_by(deleted=False).paginate(
             page=page, error_out=False, max_per_page=6
         )
 
@@ -167,17 +167,24 @@ class RetrieveUpdateDestroyActorResource(Resource):
                 {"success": False, "message": error_message}
         """
         actor = kwargs["actor_db_object"]
+        message = "Actor permanently deleted"
+        assigned_to_movies = actor.movie_ids
+
         try:
-            actor.delete()
-        except Exception:
+            if assigned_to_movies:
+                actor.deleted = True
+                message = "Actor has been soft deleted"
+            elif not assigned_to_movies:
+                actor.delete()
+            db.session.commit()
+        except DatabaseError:
             return {
                        "success": False,
-                       "message": "error while deleting actor"
-                   }, 400
+                       "message": "error while deleting actor"}, 400
         finally:
             db.session.close()
 
-        return {"success": 200, "message": "Actor deleted successfully"}, 200
+        return {"success": 200, "message": message}, 200
 
 
 class SearchActorResource(Resource):

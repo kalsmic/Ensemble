@@ -100,7 +100,7 @@ class CastingDirectorTestCase(EnsembleBaseTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
-        self.assertEqual(data["message"], "Actor deleted successfully")
+        self.assertEqual(data["message"], "Actor permanently deleted")
         self.assertIsNone(Actor.query.get(actor.id))
 
     # post: movies
