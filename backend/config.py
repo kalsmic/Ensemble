@@ -17,7 +17,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     FLASK_ENV = "development"
-    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_ECHO = True
     DEVELOPMENT = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI_DEV")
 
