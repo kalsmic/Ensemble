@@ -1,5 +1,7 @@
 # Ensemble Backend
 
+[![Build Status](https://travis-ci.org/kalsmic/Ensemble.svg?branch=master)](https://travis-ci.org/kalsmic/Ensemble) [![Coverage Status](https://coveralls.io/repos/github/kalsmic/Ensemble/badge.svg?branch=master)](https://coveralls.io/github/kalsmic/Ensemble?branch=master)
+
 ## Getting Started
 
 ### Installing Dependencies
