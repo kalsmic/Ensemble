@@ -1,12 +1,13 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment';
-import {AuthService} from './auth.service';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
-import {Actor, initialPagination, Pagination} from '../shared/models';
-import {setPaginationDetails} from '../shared/utils';
-import {ToastService} from './toast.service';
+
+import {environment} from '../../../environments/environment';
+import {AuthService} from '../../core/auth.service';
+import {ToastService} from '../../core/toast.service';
+import {Actor, initialPagination, Pagination} from '../../shared/models';
+import {setPaginationDetails} from '../../shared/utils';
 
 
 @Injectable({
@@ -31,7 +32,7 @@ export class ArtistService {
     }
 
 
-    getArtists(page?: number) {
+    getArtists = (page?: number) => {
         if (this.auth.can('get:actors')) {
             this.loading = true;
             let url = this.url + '/actors';
@@ -49,46 +50,20 @@ export class ArtistService {
         }
     }
 
-    saveArtist(artist: Actor): Observable<any> {
+    saveArtist = (artist: Actor): Observable<any> => {
         this.loading = true;
-        const actor = {
-            name: artist.name,
-            birth_date: artist.birth_date,
-            gender: artist.gender
-        };
-        if (artist.id > 0) { // patch
+        const {id: actorId, name, birth_date, gender} = artist;
+        const actor = {name, birth_date, gender};
 
-            return this.http.patch<any>(this.url + '/actors/' + artist.id, {actor})
-                .pipe(
-                    map((res: any) => {
-                        this.loading = false;
-                        const {id, age, name, birth_date, gender} = res.actor;
-                        this.actors[id] = {id, age, name, birth_date, gender};
-                        this.toast.success(res.message);
-                        this.success = res.success;
-                        return {message: res.message, loading: res.success};
-                    })
-                );
-
-
+        if (actorId > 0) { // patch
+            return this.patchActor(actorId, actor);
         } else { // insert
-            return this.http.post<any>(this.url + '/actors', {actor})
-                .pipe(
-                    map((res: any) => {
-                        this.loading = false;
-                        const {id, age, name, birth_date, gender} = res.actor;
-                        this.actors[id] = {id, age, name, birth_date, gender};
-                        this.toast.success(res.message);
-                        this.success = res.success;
-                        return {message: res.message, loading: res.success};
-
-                    })
-                );
+            return this.postActor(actor);
         }
 
     }
 
-    deleteArtist(artist: Actor) {
+    deleteArtist = (artist: Actor) => {
         this.loading = true;
 
         delete this.actors[artist.id];
@@ -102,7 +77,7 @@ export class ArtistService {
     }
 
 
-    searchActor(searchTerm: string, actorIds = []): Observable<Actor[]> {
+    searchActor = (searchTerm: string, actorIds = []): Observable<Actor[]> => {
         this.loading = true;
 
         const url = this.url + '/actors/search';
@@ -120,9 +95,33 @@ export class ArtistService {
     }
 
 
-    artistsToItems(artists: Array<Actor>) {
+    artistsToItems = (artists: Array<Actor>) => {
         for (const artist of artists) {
             this.actors[artist.id] = artist;
         }
     }
+    private postActor = (actor) => this.http.post<any>(this.url + '/actors', {actor})
+        .pipe(
+            map((res: any) => {
+                this.loading = false;
+                const {id, age, name, birth_date, gender} = res.actor;
+                this.actors[id] = {id, age, name, birth_date, gender};
+                this.toast.success(res.message);
+                this.success = res.success;
+                return {message: res.message, loading: res.success};
+
+            })
+        )
+
+    private patchActor = (actorId, actor) => this.http.patch<any>(this.url + '/actors/' + actorId, {actor})
+        .pipe(
+            map((res: any) => {
+                this.loading = false;
+                const {id, age, name, birth_date, gender} = res.actor;
+                this.actors[id] = {id, age, name, birth_date, gender};
+                this.toast.success(res.message);
+                this.success = res.success;
+                return {message: res.message, loading: res.success};
+            })
+        )
 }

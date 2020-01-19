@@ -1,16 +1,15 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDatepickerModule} from '@angular/material';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import {RouterModule, Routes} from '@angular/router';
 
-import {IonicModule} from '@ionic/angular';
-import {MoviePage} from './movie.page';
-import {MovieFormComponent} from './movie-form/movie-form.component';
-import {PaginationModule} from '../pagination/pagination.module';
-import {MatDatepickerModule} from '@angular/material';
-import {MovieActorsComponent} from './movie-actors/movie-actors.component';
+import {CoreModule} from '../../core/core.module';
 import {MiniPaginationComponent} from '../mini-pagination/mini-pagination.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {PaginationModule} from '../pagination/pagination.module';
+import {MovieActorsComponent} from './movie-actors/movie-actors.component';
+import {MovieFormComponent} from './movie-form/movie-form.component';
+import {MoviePage} from './movie.page';
 
 
 const routes: Routes = [
@@ -25,10 +24,9 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        CommonModule,
         FormsModule,
+        CoreModule,
         RouterModule.forChild(routes),
-        IonicModule,
         PaginationModule,
         ReactiveFormsModule,
         MatDatepickerModule,

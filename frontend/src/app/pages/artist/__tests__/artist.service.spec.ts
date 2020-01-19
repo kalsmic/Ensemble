@@ -1,10 +1,10 @@
-import {TestBed} from '@angular/core/testing';
-
-import {ArtistService} from '../artist.service';
 import {HttpClientModule} from '@angular/common/http';
+import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {ToastService} from '../toast.service';
-import {AuthService} from '../auth.service';
+
+import {AuthService} from '../../../core/auth.service';
+import {ToastService} from '../../../core/toast.service';
+import {ArtistService} from '../artist.service';
 
 describe('ArtistService', () => {
     let service: ArtistService;

@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment';
-import {AuthService} from './auth.service';
-
 import {HttpClient} from '@angular/common/http';
-import {ToastService} from './toast.service';
-import {map, retry} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {initialPagination, Movie, Pagination} from '../shared/models';
-import {setPaginationDetails} from '../shared/utils';
+import {map, retry} from 'rxjs/operators';
+
+import {environment} from '../../../environments/environment';
+import {AuthService} from '../../core/auth.service';
+import {ToastService} from '../../core/toast.service';
+import {initialPagination, Movie, Pagination} from '../../shared/models';
+import {setPaginationDetails} from '../../shared/utils';
 
 
 @Injectable({
@@ -30,7 +30,7 @@ export class MovieService {
     ) {
     }
 
-    getMovies(page?: number): Observable<void> {
+    getMovies = (page?: number): Observable<void> => {
 
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
 
@@ -50,7 +50,7 @@ export class MovieService {
         }
     }
 
-    getMovie(movieId: string | number): Observable<Movie> {
+    getMovie = (movieId: string | number): Observable<Movie> => {
         if (this.auth.can('get:movies')) {
             this.loading = true;
             return this.http.get<any>(this.url + '/movies/' + movieId)
@@ -66,7 +66,7 @@ export class MovieService {
     }
 
 
-    getMovieActors(movieId: string | number, page?: number): Observable<any> {
+    getMovieActors = (movieId: string | number, page?: number): Observable<any> => {
 
         const url = page ? this.url + '/movies/' + movieId + '/actors?page=' + page : this.url + '/movies/' + movieId + '/actors';
 
@@ -86,7 +86,7 @@ export class MovieService {
         }
     }
 
-    saveMovie(movie: Movie): Observable<any> {
+    saveMovie = (movie: Movie): Observable<any> => {
         this.loading = true;
         const movieData = {
             movie: {
@@ -95,46 +95,18 @@ export class MovieService {
             },
             actor_ids: movie.actor_ids
         };
+
         if (movie.id >= 0) { // patch
-            return this.http.patch<any>(this.url + '/movies/' + movie.id, {...movieData})
-                .pipe(
-                    map(
-                        (res: any) => {
-                            this.loading = false;
-                            this.actionSuccess = true;
-                            this.toast.success(res.message);
-                            const {id, title, release_date} = res.movie;
-                            this.cinemas[id] = {id, title, release_date};
-                            return {message: res.message, loading: res.success};
-
-                        }
-                    )
-                );
+            const movieId = movie.id;
+            return this.patchMovie(movieId, movieData);
         } else { // insert
-
             delete movie.id;
-            const url = this.url + '/movies';
-            return this.http.post<any>(url, movieData)
-                .pipe(
-                    map(
-                        (res) => {
-                            this.loading = false;
-                            this.actionSuccess = true;
-                            const {id, title, release_date} = res.movie;
-                            this.cinemas[id] = {id, title, release_date};
-
-                            this.toast.success(res.message);
-                            return {message: res.message, loading: res.success};
-
-                        }
-                    )
-                );
+            return this.postMovie(movieData);
         }
-
     }
 
 
-    deleteMovie(movieId: number) {
+    deleteMovie = (movieId: number) => {
         this.loading = true;
         delete this.cinemas[movieId];
         return this.http.delete<any>(this.url + '/movies/' + movieId)
@@ -145,9 +117,34 @@ export class MovieService {
             });
     }
 
-    moviesToCinemaItems(movies: Array<Movie>) {
+    moviesToCinemaItems = (movies: Array<Movie>) => {
         for (const movie of movies) {
             this.cinemas[movie.id] = movie;
         }
     }
+
+    private postMovie = (movieData) => this.http.post<any>(this.url + '/movies', movieData)
+        .pipe(
+            map((res) => {
+                this.loading = false;
+                this.actionSuccess = true;
+                const {id, title, release_date} = res.movie;
+                this.cinemas[id] = {id, title, release_date};
+
+                this.toast.success(res.message);
+                return {message: res.message, loading: res.success};
+            })
+        )
+
+    private patchMovie = (movieId, movieData) => this.http.patch<any>(this.url + '/movies/' + movieId, movieData)
+        .pipe(
+            map((res: any) => {
+                this.loading = false;
+                this.actionSuccess = true;
+                this.toast.success(res.message);
+                const {id, title, release_date} = res.movie;
+                this.cinemas[id] = {id, title, release_date};
+                return {message: res.message, loading: res.success};
+            })
+        )
 }

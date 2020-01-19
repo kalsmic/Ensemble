@@ -1,16 +1,15 @@
-import {IonicModule} from '@ionic/angular';
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {IonicModule} from '@ionic/angular';
 
-import {TabsPageRoutingModule} from './tabs.router.module';
-
+import {CoreModule} from '../../core/core.module';
 import {TabsPage} from './tabs.page';
+import {TabsPageRoutingModule} from './tabs.router.module';
 
 @NgModule({
     imports: [
         IonicModule,
-        CommonModule,
+        CoreModule,
         FormsModule,
         TabsPageRoutingModule,
     ],

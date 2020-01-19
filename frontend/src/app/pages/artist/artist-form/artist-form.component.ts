@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ArtistService} from 'src/app/services/artist.service';
-import {AuthService} from 'src/app/services/auth.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
+import {AuthService} from 'src/app/core/auth.service';
+import {ArtistService} from 'src/app/pages/artist/artist.service';
 import {Actor} from '../../../shared/models';
 import {formatDate} from '../../../shared/utils';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-artist-form',
@@ -48,8 +48,8 @@ export class ArtistFormComponent implements OnInit {
                 value: this.artist.name,
                 disabled: this.disabledAction
             }, [Validators.required, Validators.minLength(2)]],
-            gender: [{value: this.artist.gender, disabled: this.disabledAction}, [Validators.required,]],
-            birth_date: [{value: this.artist.birth_date, disabled: this.disabledAction}, [Validators.required,]],
+            gender: [{value: this.artist.gender, disabled: this.disabledAction}, [Validators.required, ]],
+            birth_date: [{value: this.artist.birth_date, disabled: this.disabledAction}, [Validators.required, ]],
         });
     }
 

@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AuthService} from '../../../services/auth.service';
-import {MovieService} from '../../../services/movie.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {ArtistService} from '../../../services/artist.service';
+import {AuthService} from '../../../core/auth.service';
 import {Actor, Movie} from '../../../shared/models';
 import {formatDate} from '../../../shared/utils';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ArtistService} from '../../artist/artist.service';
+import {MovieService} from '../movie.service';
 
 
 @Component({
@@ -115,8 +115,8 @@ export class MovieFormComponent implements OnInit {
         this.movie.actor_ids.splice(i, 1);
     }
 
-    closeModal() {
-        this.modalCtrl.dismiss();
+    async closeModal() {
+        await this.modalCtrl.dismiss();
     }
 
 
@@ -131,7 +131,7 @@ export class MovieFormComponent implements OnInit {
 
             this.movieService.saveMovie(this.movie).subscribe(() => {
                 this.loading = false;
-                this.closeModal();
+                return this.closeModal();
 
             }, error => {
                 this.errorMessage = error.error.message;
@@ -145,7 +145,7 @@ export class MovieFormComponent implements OnInit {
 
     deleteClickedMovie() {
         this.movieService.deleteMovie(this.movie.id);
-        this.closeModal();
+        return this.closeModal();
     }
 
 
