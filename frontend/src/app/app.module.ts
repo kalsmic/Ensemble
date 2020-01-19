@@ -1,23 +1,19 @@
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouteReuseStrategy} from '@angular/router';
 
-import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
+import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 
-import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AuthService} from './services/auth.service';
-import {ArtistService} from './services/artist.service';
-import {MovieService} from './services/movie.service';
-
-
-import {FormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {ToastService} from './services/toast.service';
-import {AuthGuard} from './shared/auth.guard';
+import {AppComponent} from './app.component';
+import {CoreModule} from './core/core.module';
+import {ArtistService} from './pages/artist/artist.service';
+import {MovieService} from './pages/movie/movie.service';
 import {HttpInterceptorService} from './services/http-interceptor.service';
 
 @NgModule({
@@ -27,20 +23,16 @@ import {HttpInterceptorService} from './services/http-interceptor.service';
         BrowserModule,
         FormsModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         IonicModule.forRoot(),
         AppRoutingModule,
-        BrowserAnimationsModule,
-
-
+        CoreModule
     ],
     providers: [
         StatusBar,
         SplashScreen,
-        AuthService,
         ArtistService,
         MovieService,
-        ToastService,
-        AuthGuard,
 
         {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}

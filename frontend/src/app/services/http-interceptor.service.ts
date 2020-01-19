@@ -1,10 +1,11 @@
-import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {AuthService} from './auth.service';
-import {Router} from '@angular/router';
-import {ToastService} from './toast.service';
+
+import {AuthService} from '../core/auth.service';
+import {ToastService} from '../core/toast.service';
 
 @Injectable({
     providedIn: 'root'

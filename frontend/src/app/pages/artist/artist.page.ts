@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from 'src/app/services/auth.service';
 import {ModalController} from '@ionic/angular';
-import {ArtistService} from 'src/app/services/artist.service';
-import {ArtistFormComponent} from './artist-form/artist-form.component';
+
+import {AuthService} from 'src/app/core/auth.service';
+import {ArtistService} from 'src/app/pages/artist/artist.service';
 import {Actor} from '../../shared/models';
+import {ArtistFormComponent} from './artist-form/artist-form.component';
 
 
 @Component({

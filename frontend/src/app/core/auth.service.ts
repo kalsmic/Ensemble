@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../environments/environment';
-import {JwtHelperService} from '@auth0/angular-jwt';
 
-import {fakeTokens} from '../shared/__mocks__/tokens';
 import {Router} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {environment} from '../../environments/environment';
 
 const JWTS_LOCAL_KEY = 'JWTS_LOCAL_KEY';
 
@@ -14,8 +13,6 @@ const JWTS_LOCAL_KEY = 'JWTS_LOCAL_KEY';
 export class AuthService {
 
 
-    constructor(private router: Router) {
-    }
     url = environment.auth0.url;
     audience = environment.auth0.audience;
     clientId = environment.auth0.clientId;
@@ -23,6 +20,9 @@ export class AuthService {
     token: string;
     payload: any;
     public isLoggedIn: boolean;
+
+    constructor(private router: Router) {
+    }
 
     build_login_link(callbackPath = '') {
         let link = 'https://';
@@ -96,13 +96,6 @@ export class AuthService {
             this.logout();
         }
         return this.isLoggedIn;
-    }
-
-    getFakeAuthToken($event) {
-        const role = $event.target.value;
-        this.token = fakeTokens[role];
-        this.set_jwt();
-        this.router.navigate(['/tabs/actors']);
     }
 
 }
