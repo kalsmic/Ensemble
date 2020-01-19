@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MovieService} from '../../../services/movie.service';
-import {MovieActor, Pagination} from '../../../shared/models';
+
 import {environment} from '../../../../environments/environment';
+import {MovieActor, Pagination} from '../../../shared/models';
+import {MovieService} from '../movie.service';
 
 @Component({
     selector: 'app-movie-actors',

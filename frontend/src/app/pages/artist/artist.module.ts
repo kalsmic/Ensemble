@@ -1,14 +1,13 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule, Routes} from '@angular/router';
 
-import {IonicModule} from '@ionic/angular';
+import {CoreModule} from '../../core/core.module';
+import {PaginationModule} from '../pagination/pagination.module';
+import {ArtistFormComponent} from './artist-form/artist-form.component';
 
 
 import {ArtistPage} from './artist.page';
-import {ArtistFormComponent} from './artist-form/artist-form.component';
-import {PaginationModule} from '../pagination/pagination.module';
 
 const routes: Routes = [
     {
@@ -21,12 +20,11 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        CommonModule,
         FormsModule,
-        IonicModule,
+        CoreModule,
         RouterModule.forChild(routes),
         PaginationModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
 
     ],
     entryComponents: [ArtistFormComponent],

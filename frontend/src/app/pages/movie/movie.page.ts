@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from 'src/app/services/auth.service';
 import {ModalController} from '@ionic/angular';
-import {MovieService} from 'src/app/services/movie.service';
-import {MovieFormComponent} from './movie-form/movie-form.component';
+
+import {AuthService} from 'src/app/core/auth.service';
+import {MovieService} from 'src/app/pages/movie/movie.service';
 import {Movie} from '../../shared/models';
 import {formatDate} from '../../shared/utils';
+import {MovieFormComponent} from './movie-form/movie-form.component';
 
 
 @Component({
@@ -23,11 +24,9 @@ export class MoviePage implements OnInit {
     ) {
     }
 
-    ngOnInit() {
-        this.movies.getMovies().subscribe();
-    }
+    ngOnInit = () => this.movies.getMovies().subscribe();
 
-    async openMovieForm(activeMovie: Movie = null) {
+    openMovieForm = async (activeMovie: Movie = null) => {
         if (!this.auth.can('get:movies')) {
             return;
         }
@@ -40,9 +39,7 @@ export class MoviePage implements OnInit {
         return await modal.present();
     }
 
-    navigateToPage($event: number) {
-        this.movies.getMovies($event);
-    }
+    navigateToPage = ($event: number) => this.movies.getMovies($event);
 
     displayDate = (releaseDate: string) => formatDate(releaseDate, 'DD-MMMM-YYYY');
 

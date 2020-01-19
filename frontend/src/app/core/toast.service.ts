@@ -21,11 +21,11 @@ export class ToastService {
     }
 
     success(message) {
-        return this.showToast(message, 'tertiary');
+        this.showToast(message, 'tertiary').then();
     }
 
     error(message) {
-        return this.showToast(message, 'danger');
+        return this.showToast(message, 'danger').then();
     }
 
 }
