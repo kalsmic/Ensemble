@@ -100,6 +100,7 @@ export class ArtistService {
             this.actors[artist.id] = artist;
         }
     }
+
     private postActor = (actor) => this.http.post<any>(this.url + '/actors', {actor})
         .pipe(
             map((res: any) => {

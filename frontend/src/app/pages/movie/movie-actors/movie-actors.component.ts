@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+
 import {environment} from '../../../../environments/environment';
 import {MovieActor, Pagination} from '../../../shared/models';
 import {MovieService} from '../movie.service';

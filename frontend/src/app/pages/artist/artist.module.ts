@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule, Routes} from '@angular/router';
+
 import {CoreModule} from '../../core/core.module';
 import {PaginationModule} from '../pagination/pagination.module';
 import {ArtistFormComponent} from './artist-form/artist-form.component';
