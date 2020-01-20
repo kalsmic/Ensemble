@@ -17,7 +17,7 @@ export class AuthService {
     audience = environment.auth0.audience;
     clientId = environment.auth0.clientId;
     callbackURL = environment.auth0.callbackURL;
-    token: string;
+    token: string = localStorage.getItem(JWTS_LOCAL_KEY) || null;
     payload: any;
     public isLoggedIn: boolean;
 
@@ -36,7 +36,7 @@ export class AuthService {
     }
 
     // invoked in app.component on load
-    check_token_fragment() {
+    checkTokenFragment = () => {
         // parse the fragment
         const fragment = window.location.hash.substr(1).split('&')[0].split('=');
         // check if the fragment includes the access token
@@ -44,54 +44,57 @@ export class AuthService {
             // add the access token to the jwt
             this.token = fragment[1];
             // save jwts to localstore
-            this.set_jwt();
+            this.setJWT();
         }
     }
 
-    set_jwt() {
+    setJWT = () => {
         localStorage.setItem(JWTS_LOCAL_KEY, this.token);
         if (this.token) {
             this.decodeJWT(this.token);
         }
     }
 
-    load_jwts() {
+    loadJWTs = () => {
         this.token = localStorage.getItem(JWTS_LOCAL_KEY) || null;
         if (this.token) {
             this.decodeJWT(this.token);
         }
     }
 
-    activeJWT() {
+    activeJWT = () => {
         return this.token;
     }
 
-    decodeJWT(token: string) {
+    decodeJWT = (token: string = this.token) => {
         const jwtservice = new JwtHelperService();
         this.payload = jwtservice.decodeToken(token);
+        return this.payload;
     }
 
-    logout() {
+    logout = () => {
         this.token = '';
         this.payload = null;
-        this.set_jwt();
+        this.setJWT();
         this.isLoggedIn = false;
         this.router.navigate(['/tabs/user-page']);
 
     }
 
-    can(permission: string) {
+    can = (permission: string) => {
+        this.payload = this.decodeJWT();
         return this.payload && this.payload.permissions && this.payload.permissions.length &&
             this.payload.permissions.indexOf(permission) >= 0;
     }
 
-    isTokenExpired() {
+    isTokenExpired = () => {
         const jwtHelperService = new JwtHelperService();
         return jwtHelperService.isTokenExpired(this.activeJWT());
     }
 
-    isAuthenticated() {
+    isAuthenticated = () => {
         this.isLoggedIn = !this.isTokenExpired();
+
         if (!this.isLoggedIn) {
             this.logout();
         }

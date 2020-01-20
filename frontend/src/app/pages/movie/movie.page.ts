@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {ModalController, PopoverController} from '@ionic/angular';
 
 import {AuthService} from 'src/app/core/auth.service';
 import {MovieService} from 'src/app/pages/movie/movie.service';
-import {Movie} from '../../shared/models';
+import {initialPagination, Movie, Pagination} from '../../shared/models';
 import {formatDate} from '../../shared/utils';
+import {MovieActorsComponent} from './movie-actors/movie-actors.component';
 import {MovieFormComponent} from './movie-form/movie-form.component';
 
 
@@ -14,24 +15,29 @@ import {MovieFormComponent} from './movie-form/movie-form.component';
     styleUrls: ['./movie.page.scss'],
 })
 export class MoviePage implements OnInit {
-    Object = Object;
     movie: Movie;
+    movies: Movie[];
+    pagination: Pagination = initialPagination;
+    loading = true;
 
     constructor(
-        public auth: AuthService,
-        private modalCtrl: ModalController,
-        public movies: MovieService,
+        public authService: AuthService,
+        private modalController: ModalController,
+        public movieService: MovieService,
+        public popoverController: PopoverController,
     ) {
     }
 
-    ngOnInit = () => this.movies.getMovies().subscribe();
+    ngOnInit() {
+        this.getMovies();
+    }
 
     openMovieForm = async (activeMovie: Movie = null) => {
-        if (!this.auth.can('get:movies')) {
+        if (!this.authService.can('get:movies')) {
             return;
         }
 
-        const modal = await this.modalCtrl.create({
+        const modal = await this.modalController.create({
             component: MovieFormComponent,
             componentProps: {movie: activeMovie, isNew: !activeMovie}
         });
@@ -39,7 +45,28 @@ export class MoviePage implements OnInit {
         return await modal.present();
     }
 
-    navigateToPage = ($event: number) => this.movies.getMovies($event);
+    getMovies = (page?: number) => {
+        this.loading = true;
+        this.movieService.getMovies(page).subscribe(
+            (movies: Movie[]) => {
+                this.pagination = this.movieService.pagination;
+                this.movies = movies;
+                this.loading = false;
+            }
+        );
+
+
+    }
+
+    presentActorsPopover = async (movieId: number) => {
+        const popover = await this.popoverController.create({
+            component: MovieActorsComponent,
+            componentProps: {movieId, showActors: true},
+        });
+        return await popover.present();
+    }
+
+    navigateToPage = ($event: number) => this.getMovies($event);
 
     displayDate = (releaseDate: string) => formatDate(releaseDate, 'DD-MMMM-YYYY');
 

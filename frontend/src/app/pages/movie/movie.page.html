@@ -5,12 +5,12 @@
     <ion-toolbar>
         <ion-tabs>
             <ion-tab-bar slot="bottom">
-                <ion-tab-button (click)="openMovieForm()" [disabled]="!auth.can('post:movies')">
+                <ion-tab-button (click)="openMovieForm()" [disabled]="!authService.can('post:movies')">
                     <ion-icon name="add-circle"></ion-icon>
                     <ion-label>New Movie</ion-label>
                 </ion-tab-button>
                 <ion-text color="secondary"> |</ion-text>
-                <ion-tab-button [disabled]="!auth.can('get:actors')" href="/tabs/actors">
+                <ion-tab-button [disabled]="!authService.can('get:actors')" href="/tabs/actors">
                     <ion-icon name="people"></ion-icon>
                     <ion-label>Actors</ion-label>
                 </ion-tab-button>
@@ -24,7 +24,7 @@
     <ion-grid>
         <ion-row>
 
-            <ion-col *ngIf="!Object.keys(movies.cinemas).length && !movies.loading"
+            <ion-col *ngIf="!movies && !loading"
                      class="ion-align-items-center ion-justify-content-center ion-text-center">
                 <ion-card class="bg-white ion-padding">
                     <ion-card-content class="ion-align-items-center ion-justify-content-center">
@@ -36,15 +36,17 @@
             </ion-col>
         </ion-row>
 
+        <ion-row *ngIf="movies" class="ion-align-items-center">
+            <ion-col *ngFor="let movie of movies" class="ion-justify-content-around ion-wrap" size="6" size-lg="4"
+                     size-md="4"
+                     size-xs="12"
+            >
 
-        <ion-row *ngIf="movies && movies.cinemas" class="ion-align-items-center">
-
-            <ion-col *ngFor="let movieId of Object.keys(movies.cinemas)" size="6" size-lg="4" size-md="4" size-xs="12">
                 <ion-card>
                     <ion-card-header>
                         <ion-item color="dark">
                             <ion-label>
-                                {{movies.cinemas[movieId].title}}
+                                {{movie.title}}
                             </ion-label>
                         </ion-item>
                     </ion-card-header>
@@ -55,7 +57,7 @@
                             </ion-col>
                             <ion-col>
                                 <ion-item>
-                                    <ion-label> {{movies.cinemas[movieId].title}}</ion-label>
+                                    <ion-label> {{movie.title}}</ion-label>
                                 </ion-item>
                             </ion-col>
                         </ion-row>
@@ -66,7 +68,7 @@
                             <ion-col>
                                 <ion-item>
                                     <ion-label>
-                                        {{displayDate(movies.cinemas[movieId].release_date)}} </ion-label>
+                                        {{displayDate(movie.release_date)}} </ion-label>
                                 </ion-item>
                             </ion-col>
 
@@ -75,24 +77,18 @@
                         <ion-row>
                             <ion-col>
                                 <ion-button
-                                        (click)="openMovieForm(movies.cinemas[movieId])"
-                                        [disabled]="!auth.can('patch:movies') || !auth.can('delete:movies')"
+                                        (click)="openMovieForm(movie)"
+                                        [disabled]="!authService.can('patch:movies') || !authService.can('delete:movies')"
+                                        matTooltip="Edit Movie"
+
                                 >
-                                    <ion-icon color="dark" name="film" slot="start"></ion-icon>
-                                    <ion-item>
-                                        <ion-label>Edit</ion-label>
-                                    </ion-item>
-                                    <ion-icon color="dark" name="md-open" slot="end"></ion-icon>
-
+                                    <ion-icon color="info" name="md-open"></ion-icon>
                                 </ion-button>
-                            </ion-col>
-                        </ion-row>
-                        <ion-row>
-
-                            <ion-col>
-                                <app-movie-actors
-                                        [movieId]="movieId"
-                                ></app-movie-actors>
+                                <ion-button (click)="presentActorsPopover(movie.id)"
+                                            matTooltip="Show Actors"
+                                >
+                                    <ion-icon color="info" name="ribbon"></ion-icon>
+                                </ion-button>
                             </ion-col>
                         </ion-row>
 
@@ -106,7 +102,7 @@
 
 <ion-footer>
     <app-pagination (goToPage)="navigateToPage($event)"
-                    *ngIf="movies.pagination.total"
-                    [pagination]="movies.pagination"
+                    *ngIf="pagination.total"
+                    [pagination]="pagination"
     ></app-pagination>
 </ion-footer>
