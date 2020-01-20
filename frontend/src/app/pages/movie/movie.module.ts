@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatDatepickerModule} from '@angular/material';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule, Routes} from '@angular/router';
 
 import {CoreModule} from '../../core/core.module';
@@ -13,13 +12,7 @@ import {MoviePage} from './movie.page';
 
 
 const routes: Routes = [
-    {
-        path: '',
-        component: MoviePage,
-
-    }
-
-
+    {path: '', component: MoviePage,},
 ];
 
 @NgModule({
@@ -29,12 +22,11 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         PaginationModule,
         ReactiveFormsModule,
-        MatDatepickerModule,
-        MatFormFieldModule
+        MatTooltipModule
 
 
     ],
-    entryComponents: [MovieFormComponent],
+    entryComponents: [MovieFormComponent, MovieActorsComponent],
     declarations: [MoviePage, MovieFormComponent, MovieActorsComponent, MiniPaginationComponent
     ]
 })

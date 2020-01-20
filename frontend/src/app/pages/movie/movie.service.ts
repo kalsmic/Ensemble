@@ -6,7 +6,7 @@ import {map, retry} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {AuthService} from '../../core/auth.service';
 import {ToastService} from '../../core/toast.service';
-import {initialPagination, Movie, Pagination} from '../../shared/models';
+import {Movie, Pagination} from '../../shared/models';
 import {setPaginationDetails} from '../../shared/utils';
 
 
@@ -19,7 +19,7 @@ export class MovieService {
     url = environment.apiServerUrl;
 
     public cinemas: { [key: number]: Movie } = {};
-    public pagination: Pagination = initialPagination;
+    public pagination: Pagination;
     public actionSuccess = false;
     public loading = false;
 
@@ -30,7 +30,7 @@ export class MovieService {
     ) {
     }
 
-    getMovies = (page?: number): Observable<void> => {
+    getMovies = (page?: number): Observable<Movie[]> => {
 
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
 
@@ -39,12 +39,10 @@ export class MovieService {
             return this.http.get<any>(url)
                 .pipe(
                     retry(3),
-                    map((res) => {
+                    map((res: any) => {
                         this.loading = false;
-                        const {movies} = res;
-                        this.cinemas = [];
-                        this.moviesToCinemaItems(movies);
                         this.pagination = setPaginationDetails({...res});
+                        return res.movies;
                     })
                 );
         }
@@ -58,8 +56,7 @@ export class MovieService {
                     retry(3),
                     map((res) => {
                         this.loading = false;
-                        const {movie} = res;
-                        return movie;
+                        return res.movie;
                     })
                 );
         }
@@ -115,12 +112,6 @@ export class MovieService {
                 return this.toast.success(res.message);
 
             });
-    }
-
-    moviesToCinemaItems = (movies: Array<Movie>) => {
-        for (const movie of movies) {
-            this.cinemas[movie.id] = movie;
-        }
     }
 
     private postMovie = (movieData) => this.http.post<any>(this.url + '/movies', movieData)

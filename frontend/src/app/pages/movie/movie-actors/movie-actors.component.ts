@@ -13,7 +13,7 @@ export class MovieActorsComponent implements OnInit {
     movieActors: MovieActor[] = [];
     @Input() movieId: string;
     url = environment.apiServerUrl;
-    showActors = false;
+    @Input() showActors = false;
     pagination: Pagination = {
         pages: 0,
         currentPage: 0,
@@ -31,6 +31,7 @@ export class MovieActorsComponent implements OnInit {
 
 
     ngOnInit() {
+        this.getMovieActors();
     }
 
 
