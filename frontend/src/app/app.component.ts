@@ -29,8 +29,8 @@ export class AppComponent {
             this.splashScreen.hide();
 
             // perform authentication actions
-            this.auth.load_jwts();
-            this.auth.check_token_fragment();
+            this.auth.loadJWTs();
+            this.auth.checkTokenFragment();
         });
     }
 
