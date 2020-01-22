@@ -1,56 +1,51 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-
 import {Platform} from '@ionic/angular';
 
 import {AppComponent} from './app.component';
-import {
-    mockPlatform,
-    mockPlatformReady,
-    mockRouter,
-    mockSplashScreen,
-    mockStatusBar
-} from './shared/__mocks__/index.spec';
+import {AuthService} from './core/auth.service';
+import {authServiceMethodsSpy, platformReadySpy, platformSpy, splashScreenSpy, statusBarSpy} from './shared/__mocks__';
 
 describe('AppComponent', () => {
+  let
+      component: AppComponent,
+      fixture: ComponentFixture<AppComponent>;
 
-    let statusBarSpy, splashScreenSpy, platformSpy, routerSpy;
+  beforeEach(async(() => {
 
-    beforeEach(async(() => {
-        statusBarSpy = mockStatusBar;
-        splashScreenSpy = mockSplashScreen;
-        platformSpy = mockPlatform;
-        routerSpy = mockRouter;
+    TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
-        TestBed.configureTestingModule({
-            declarations: [AppComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            providers: [
-                {provide: StatusBar, useValue: statusBarSpy},
-                {provide: SplashScreen, useValue: splashScreenSpy},
-                {provide: Platform, useValue: platformSpy},
-                {provide: Router, useValue: routerSpy},
-            ],
-        }).compileComponents();
-    }));
+      providers: [
+        {provide: StatusBar, useValue: statusBarSpy},
+        {provide: SplashScreen, useValue: splashScreenSpy},
+        {provide: Platform, useValue: platformSpy},
+        {provide: AuthService, useValue: authServiceMethodsSpy}
+      ]
+    }).compileComponents();
+  }));
 
-    it('should create the app', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.debugElement.componentInstance;
-        expect(app).toBeTruthy();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should initialize the app', async () => {
-        TestBed.createComponent(AppComponent);
-        expect(platformSpy.ready).toHaveBeenCalled();
-        await mockPlatformReady;
-        expect(statusBarSpy.styleDefault).toHaveBeenCalled();
-        expect(splashScreenSpy.hide).toHaveBeenCalled();
-    });
 
-    // TODO: add more tests!
+  it('should create the app', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should initialize the app', async () => {
+    TestBed.createComponent(AppComponent);
+    expect(platformSpy.ready).toHaveBeenCalled();
+    await platformReadySpy();
+    expect(statusBarSpy.styleDefault).toHaveBeenCalled();
+    expect(splashScreenSpy.hide).toHaveBeenCalled();
+  });
 
 });

@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/kalsmic/Ensemble/tree/master.svg?style=svg)](https://circleci.com/gh/kalsmic/Ensemble/tree/master)
+
 # Ensemble Casting Agency Frontend
 
 ## Getting Setup

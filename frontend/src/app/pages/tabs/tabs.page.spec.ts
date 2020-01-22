@@ -1,7 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {mockRouter} from '../../shared/__mocks__/index.spec';
+import {routerSpy} from '../../shared/__mocks__';
 
 import {TabsPage} from './tabs.page';
 
@@ -13,7 +13,7 @@ describe('TabsPage', () => {
         TestBed.configureTestingModule({
             declarations: [TabsPage],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            providers: [{provide: Router, useValue: mockRouter}]
+            providers: [{provide: Router, useValue: routerSpy}]
         }).compileComponents();
     }));
 
