@@ -1,4 +1,5 @@
-import * as moment from 'moment';
+// @ts-ignore
+import moment from 'moment';
 
 export const formatDate = (dateString: string, format = 'YYYY-MM-DD') => {
     return moment(dateString).format(format).toString();

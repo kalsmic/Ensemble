@@ -1,12 +1,12 @@
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {mockRouter} from '../shared/__mocks__/index.spec';
+import {routerSpy} from '../shared/__mocks__';
 
 import {HttpInterceptorService} from './http-interceptor.service';
 
 describe('HttpInterceptorService', () => {
     beforeEach(() => TestBed.configureTestingModule({
-        providers: [{provide: Router, useValue: mockRouter}]
+        providers: [{provide: Router, useValue: routerSpy}]
     }));
 
     it('should be created', () => {
