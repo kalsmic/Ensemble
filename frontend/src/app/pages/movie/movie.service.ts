@@ -25,7 +25,7 @@ export class MovieService {
 
     constructor(
         private auth: AuthService,
-        private http: HttpClient,
+        private httpClient: HttpClient,
         private toast: ToastService
     ) {
     }
@@ -36,7 +36,7 @@ export class MovieService {
 
         if (this.auth.can('get:movies')) {
             this.loading = true;
-            return this.http.get<any>(url)
+            return this.httpClient.get<any>(url)
                 .pipe(
                     retry(3),
                     map((res: any) => {
@@ -51,7 +51,7 @@ export class MovieService {
     getMovie = (movieId: string | number): Observable<Movie> => {
         if (this.auth.can('get:movies')) {
             this.loading = true;
-            return this.http.get<any>(this.url + '/movies/' + movieId)
+            return this.httpClient.get<any>(this.url + '/movies/' + movieId)
                 .pipe(
                     retry(3),
                     map((res) => {
@@ -69,7 +69,7 @@ export class MovieService {
 
         if (this.auth.can('get:movies')) {
             this.loading = true;
-            return this.http.get<any>(url)
+            return this.httpClient.get<any>(url)
                 .pipe(
                     retry(3),
                     map((res) => {
@@ -106,7 +106,7 @@ export class MovieService {
     deleteMovie = (movieId: number) => {
         this.loading = true;
         delete this.cinemas[movieId];
-        return this.http.delete<any>(this.url + '/movies/' + movieId)
+        return this.httpClient.delete<any>(this.url + '/movies/' + movieId)
             .subscribe((res: any) => {
                 this.loading = false;
                 return this.toast.success(res.message);
@@ -114,7 +114,7 @@ export class MovieService {
             });
     }
 
-    private postMovie = (movieData) => this.http.post<any>(this.url + '/movies', movieData)
+    private postMovie = (movieData) => this.httpClient.post<any>(this.url + '/movies', movieData)
         .pipe(
             map((res) => {
                 this.loading = false;
@@ -127,7 +127,7 @@ export class MovieService {
             })
         )
 
-    private patchMovie = (movieId, movieData) => this.http.patch<any>(this.url + '/movies/' + movieId, movieData)
+    private patchMovie = (movieId, movieData) => this.httpClient.patch<any>(this.url + '/movies/' + movieId, movieData)
         .pipe(
             map((res: any) => {
                 this.loading = false;

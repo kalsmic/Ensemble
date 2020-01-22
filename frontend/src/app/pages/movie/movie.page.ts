@@ -22,7 +22,7 @@ export class MoviePage implements OnInit {
 
     constructor(
         public authService: AuthService,
-        private modalController: ModalController,
+        public modalController: ModalController,
         public movieService: MovieService,
         public popoverController: PopoverController,
     ) {
@@ -39,6 +39,9 @@ export class MoviePage implements OnInit {
 
         const modal = await this.modalController.create({
             component: MovieFormComponent,
+            backdropDismiss: false,
+            showBackdrop: true,
+            animated: true,
             componentProps: {movie: activeMovie, isNew: !activeMovie}
         });
 
