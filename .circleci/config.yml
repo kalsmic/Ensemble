@@ -29,4 +29,4 @@ jobs:
           key: v1-dependencies-{{ checksum "frontend/package.json" }}
 
       # run tests!
-      - run: cd frontend && npm test:ci
+      - run: cd frontend && npm run test:ci
