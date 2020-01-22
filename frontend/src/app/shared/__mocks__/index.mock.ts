@@ -25,6 +25,8 @@ export const authServiceMethodsSpy = {
 export class AuthServiceSpy {
 
     can = mockFn();
+    activeJWT = mockFn();
+    logout = mockFn();
 }
 
 export const dummyMovies = [
@@ -61,12 +63,18 @@ export class MovieServiceSpy {
     deleteMovie = mockFn();
 }
 
+
 @Injectable()
 export class ArtistServiceSpy {
     getArtists = mockFn();
     deleteArtist = mockFn();
-    saveArtist = mockFn().mockReturnValue(observableOf({
-        loading: {}
+    saveArtist = mockFn().mockReturnValue(
+        observableOf({loading: {}})
+    );
+    sA = mockFn(() => ({
+        subscribe: mockFn().mockReturnValue(observableOf({
+            error: {message: 'Actor already exists'}
+        }))
     }));
 }
 
@@ -76,4 +84,3 @@ export const modalControllerSpy = {
 
 };
 
-/* @ts-ignore */

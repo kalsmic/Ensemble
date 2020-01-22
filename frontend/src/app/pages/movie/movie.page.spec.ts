@@ -6,7 +6,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {AngularDelegate, ModalController, PopoverController} from '@ionic/angular';
 
 import {AuthService} from '../../core/auth.service';
-import {AuthServiceSpy, MovieServiceSpy} from '../../shared/__mocks__';
+import {AuthServiceSpy, MovieServiceSpy} from '../../shared/__mocks__/index.mock';
 import {MoviePage} from './movie.page';
 import {MovieService} from './movie.service';
 

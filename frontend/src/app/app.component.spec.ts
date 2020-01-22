@@ -7,7 +7,13 @@ import {Platform} from '@ionic/angular';
 
 import {AppComponent} from './app.component';
 import {AuthService} from './core/auth.service';
-import {authServiceMethodsSpy, platformReadySpy, platformSpy, splashScreenSpy, statusBarSpy} from './shared/__mocks__';
+import {
+  authServiceMethodsSpy,
+  platformReadySpy,
+  platformSpy,
+  splashScreenSpy,
+  statusBarSpy
+} from './shared/__mocks__/index.mock';
 
 describe('AppComponent', () => {
   let
@@ -27,12 +33,15 @@ describe('AppComponent', () => {
         {provide: AuthService, useValue: authServiceMethodsSpy}
       ]
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }));
+
+  afterEach(() => {
+    fixture.destroy();
+    jest.restoreAllMocks();
   });
 
 

@@ -1,6 +1,6 @@
 import {inject, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {routerSpy} from '../shared/__mocks__';
+import {routerSpy} from '../shared/__mocks__/index.mock';
 
 import {AuthGuard} from './auth.guard';
 

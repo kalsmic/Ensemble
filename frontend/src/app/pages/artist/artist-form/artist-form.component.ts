@@ -7,6 +7,7 @@ import {ArtistService} from 'src/app/pages/artist/artist.service';
 import {Actor} from '../../../shared/models';
 import {formatDate} from '../../../shared/utils';
 
+
 @Component({
     selector: 'app-artist-form',
     templateUrl: './artist-form.component.html',
