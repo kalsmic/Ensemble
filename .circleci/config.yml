@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:10-browsers
+      - image: circleci/node:10.18.0-stretch
 
     working_directory: ~/repo
     command: COPY
@@ -29,4 +29,4 @@ jobs:
           key: v1-dependencies-{{ checksum "frontend/package.json" }}
 
       # run tests!
-      - run: cd frontend && npm test
+      - run: cd frontend && npm test:ci
