@@ -30,3 +30,6 @@ jobs:
 
       # run tests!
       - run: cd frontend && npm run test:ci
+
+      - store_artifacts:
+          path: coverage
