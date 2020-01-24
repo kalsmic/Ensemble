@@ -27,6 +27,8 @@ export class AuthServiceSpy {
     can = mockFn();
     activeJWT = mockFn();
     logout = mockFn();
+    isAuthenticated = mockFn();
+
 }
 
 export const dummyMovies = [
@@ -84,3 +86,19 @@ export const modalControllerSpy = {
 
 };
 
+export const paginationMock = {
+    pages: 0,
+    current_page: 1,
+    next_num: null,
+    prev_num: null,
+    total: 0,
+    has_next: false,
+    has_prev: false
+};
+
+
+@Injectable()
+export class MockToastService {
+    success = mockFn();
+    error = mockFn();
+}
