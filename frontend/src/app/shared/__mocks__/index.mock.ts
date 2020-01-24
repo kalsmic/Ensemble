@@ -36,8 +36,8 @@ export const dummyMovies = [
 ];
 
 export const actors = [
-    {id: 1, name: 'actor Name', age: 12},
-    {id: 2, name: 'Actor z', age: 34}
+    {id: 1, name: 'actor Name', age: 12, gender: 'm', birth_date: '2005-01-01'},
+    {id: 2, name: 'Actor z', age: 34, gender: 'f', birth_date: '2006-01-01'}
 ];
 
 @Injectable()

@@ -70,7 +70,6 @@ export class ArtistService {
         this.http.delete(this.url + '/actors/' + artist.id)
             .subscribe((res: any) => {
                 this.loading = false;
-                this.actor = res.artist;
                 this.toast.success(res.message);
                 this.success = res.success;
             });
