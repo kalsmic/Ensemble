@@ -12,8 +12,6 @@ import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
-import {ArtistService} from './pages/artist/artist.service';
-import {MovieService} from './pages/movie/movie.service';
 import {HttpInterceptorService} from './services/http-interceptor.service';
 
 @NgModule({
@@ -31,8 +29,6 @@ import {HttpInterceptorService} from './services/http-interceptor.service';
     providers: [
         StatusBar,
         SplashScreen,
-        ArtistService,
-        MovieService,
 
         {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}

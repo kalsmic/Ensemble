@@ -21,10 +21,9 @@ export class AuthService {
     payload: any;
     public isLoggedIn: boolean;
 
-    constructor(private router: Router) {
-    }
+    constructor(private router: Router) {}
 
-    build_login_link(callbackPath = '') {
+    buildLoginLink = (callbackPath = '') => {
         let link = 'https://';
         link += this.url + '.auth0.com';
         link += '/authorize?';

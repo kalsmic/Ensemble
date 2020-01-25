@@ -14,7 +14,7 @@ export const platformSpy = {
 
 export const routerSpy = {navigate: mockFn()};
 export const authServiceMethodsSpy = {
-    build_login_link: mockFn().mockImplementation(() => ''),
+    buildLoginLink: mockFn().mockImplementation(() => ''),
     loadJWTs: () => mockFn().mockImplementation(() => {
     }),
     checkTokenFragment: () => mockFn().mockImplementation(() => {
@@ -24,10 +24,24 @@ export const authServiceMethodsSpy = {
 @Injectable()
 export class AuthServiceSpy {
 
+    payload ={
+        permissions:[
+            'get:actors',
+            'post:actors',
+            'patch:actors',
+            'delete:actors',
+            'get:movies',
+            'post:movies',
+            'patch:movies',
+            'delete:movies'
+        ]
+    }
+
     can = mockFn();
     activeJWT = mockFn();
     logout = mockFn();
     isAuthenticated = mockFn();
+    decodeJWT = mockFn();
 
 }
 
