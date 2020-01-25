@@ -25,7 +25,7 @@ packaging==19.2
 pluggy==0.13.1
 psycopg2-binary==2.8.4
 py==1.8.1
-pycryptodome==3.3.1
+pycryptodome==3.9.4
 pyparsing==2.4.6
 pytest==5.3.2
 pytest-cov==2.8.1
