@@ -3,9 +3,8 @@ import {getTestBed, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 
 import {environment} from '../../../environments/environment';
-import {AuthService} from '../../core/auth.service';
 import {ToastService} from '../../core/toast.service';
-import {AuthServiceSpy, MockToastService, paginationMock, routerSpy} from '../../shared/__mocks__/index.mock';
+import { MockToastService, paginationMock, routerSpy} from '../../shared/__mocks__/index.mock';
 import {initialPagination, Movie} from '../../shared/models';
 
 import {MovieService} from './movie.service';
@@ -25,7 +24,7 @@ describe('MovieService', () => {
     const url = environment.apiServerUrl;
 
 
-    let movieService: MovieService, authService: AuthService, toast: ToastService;
+    let movieService: MovieService, toast: ToastService;
 
 
     beforeEach(() => {
@@ -35,7 +34,6 @@ describe('MovieService', () => {
                 providers: [
                     MovieService,
                     {provide: Router, useValue: routerSpy},
-                    {provide: AuthService, useValue: AuthServiceSpy},
                     {provide: ToastService, useValue: MockToastService},
                 ]
             }
@@ -45,8 +43,6 @@ describe('MovieService', () => {
 
         movieService = testBed.get(MovieService);
         httpMock = testBed.get(HttpTestingController);
-        authService = testBed.get(AuthService);
-        authService.can = jest.fn().mockReturnValue(true);
         toast = testBed.get(ToastService);
         toast.success = jest.fn();
 

@@ -24,7 +24,6 @@ export class MovieService {
     public loading = false;
 
     constructor(
-        private auth: AuthService,
         private httpClient: HttpClient,
         private toast: ToastService
     ) {
@@ -34,32 +33,28 @@ export class MovieService {
 
         const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
 
-        if (this.auth.can('get:movies')) {
-            this.loading = true;
-            return this.httpClient.get<any>(url)
-                .pipe(
-                    retry(3),
-                    map((res: any) => {
-                        this.loading = false;
-                        this.pagination = setPaginationDetails({...res});
-                        return res.movies;
-                    })
-                );
-        }
+        this.loading = true;
+        return this.httpClient.get<any>(url)
+            .pipe(
+                retry(3),
+                map((res: any) => {
+                    this.loading = false;
+                    this.pagination = setPaginationDetails({...res});
+                    return res.movies;
+                })
+            );
     }
 
     getMovie = (movieId: string | number): Observable<Movie> => {
-        if (this.auth.can('get:movies')) {
-            this.loading = true;
-            return this.httpClient.get<any>(this.url + '/movies/' + movieId)
-                .pipe(
-                    retry(3),
-                    map((res) => {
-                        this.loading = false;
-                        return res.movie;
-                    })
-                );
-        }
+        this.loading = true;
+        return this.httpClient.get<any>(this.url + '/movies/' + movieId)
+            .pipe(
+                retry(3),
+                map((res) => {
+                    this.loading = false;
+                    return res.movie;
+                })
+            );
     }
 
 
@@ -67,20 +62,18 @@ export class MovieService {
 
         const url = page ? this.url + '/movies/' + movieId + '/actors?page=' + page : this.url + '/movies/' + movieId + '/actors';
 
-        if (this.auth.can('get:movies')) {
-            this.loading = true;
-            return this.httpClient.get<any>(url)
-                .pipe(
-                    retry(3),
-                    map((res) => {
-                        this.loading = false;
-                        return {
-                            pagination: setPaginationDetails({...res}),
-                            actors: res.actors
-                        };
-                    })
-                );
-        }
+        this.loading = true;
+        return this.httpClient.get<any>(url)
+            .pipe(
+                retry(3),
+                map((res) => {
+                    this.loading = false;
+                    return {
+                        pagination: setPaginationDetails({...res}),
+                        actors: res.actors
+                    };
+                })
+            );
     }
 
     saveMovie = (movie: Movie): Observable<any> => {
