@@ -17,6 +17,7 @@ The `./backend` has been built with  Flask and SQLAlchemy ORM. Auth0 has also be
 ### Frontend
 
 [![CircleCI](https://circleci.com/gh/kalsmic/Ensemble/tree/master.svg?style=svg)](https://circleci.com/gh/kalsmic/Ensemble/tree/master)
+[![codecov](https://codecov.io/gh/kalsmic/Ensemble/branch/master/graph/badge.svg)](https://codecov.io/gh/kalsmic/Ensemble)
 
 The `./frontend` has been built with Angular  and Ionic to consume the data from the Flask server.
 

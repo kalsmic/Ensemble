@@ -38,3 +38,4 @@ jobs:
 #
       - codecov/upload:
           file: ./bin/codecov -f coverage/*.json
+          flags: frontend
