@@ -21,7 +21,10 @@ export class AuthService {
     payload: any;
     public isLoggedIn: boolean;
 
-    constructor(private router: Router) {}
+    constructor(
+        private router: Router,
+        private jwtHelperService: JwtHelperService) {
+    }
 
     buildLoginLink = (callbackPath = '') => {
         let link = 'https://';
@@ -66,8 +69,7 @@ export class AuthService {
     }
 
     decodeJWT = (token: string = this.token) => {
-        const jwtservice = new JwtHelperService();
-        this.payload = jwtservice.decodeToken(token);
+        this.payload = this.jwtHelperService.decodeToken(token);
         return this.payload;
     }
 
@@ -87,8 +89,7 @@ export class AuthService {
     }
 
     isTokenExpired = () => {
-        const jwtHelperService = new JwtHelperService();
-        return jwtHelperService.isTokenExpired(this.activeJWT());
+        return this.jwtHelperService.isTokenExpired(this.activeJWT());
     }
 
     isAuthenticated = () => {
