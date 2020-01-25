@@ -7,7 +7,7 @@ import {AngularDelegate, ModalController} from '@ionic/angular';
 
 import {AuthService} from 'src/app/core/auth.service';
 import {ArtistService} from 'src/app/pages/artist/artist.service';
-import {ArtistServiceSpy, AuthServiceSpy, modalControllerSpy} from '../../shared/__mocks__';
+import {ArtistServiceSpy, AuthServiceSpy, modalControllerSpy} from '../../shared/__mocks__/index.mock';
 import {ArtistPage} from './artist.page';
 
 describe('ArtistPage', () => {
@@ -34,6 +34,8 @@ describe('ArtistPage', () => {
 
   afterEach(() => {
     fixture.destroy();
+    jest.clearAllMocks();
+
   });
 
   it('should run #constructor()', async () => {
@@ -51,6 +53,14 @@ describe('ArtistPage', () => {
     await component.openArtistForm();
     expect(component.auth.can).toHaveBeenCalled();
     expect(component.modalCtrl.create).toHaveBeenCalled();
+  });
+
+  it('should not run #openAArtistForm if not permitted', async () => {
+    component.modalCtrl = modalControllerSpy;
+    component.auth.can.mockReturnValue(false);
+    await component.openArtistForm();
+    expect(component.auth.can).toHaveBeenCalled();
+    expect(component.modalCtrl.create).not.toHaveBeenCalled();
   });
 
   it('should run #navigateToPage()', async () => {

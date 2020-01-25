@@ -6,7 +6,7 @@ import {AngularDelegate, ModalController} from '@ionic/angular';
 import {of as observableOf} from 'rxjs';
 
 import {AuthService} from '../../../core/auth.service';
-import {ArtistServiceSpy, AuthServiceSpy, MovieServiceSpy} from '../../../shared/__mocks__';
+import {ArtistServiceSpy, AuthServiceSpy, MovieServiceSpy} from '../../../shared/__mocks__/index.mock';
 import {ArtistService} from '../../artist/artist.service';
 import {MovieService} from '../movie.service';
 import {MovieFormComponent} from './movie-form.component';
@@ -39,6 +39,7 @@ describe('MovieFormComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
+    jest.resetAllMocks();
   });
 
   it('should run #constructor()', async () => {

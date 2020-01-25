@@ -5,7 +5,6 @@ import {ToastController} from '@ionic/angular';
     providedIn: 'root'
 })
 export class ToastService {
-    toastRef;
 
     constructor(private toastController: ToastController) {
     }
