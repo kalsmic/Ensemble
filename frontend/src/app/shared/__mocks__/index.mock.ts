@@ -21,21 +21,23 @@ export const authServiceMethodsSpy = {
     })
 };
 
+export const mockedPayload = {
+    permissions: [
+        'get:actors',
+        'post:actors',
+        'patch:actors',
+        'delete:actors',
+        'get:movies',
+        'post:movies',
+        'patch:movies',
+        'delete:movies'
+    ]
+};
+
 @Injectable()
 export class AuthServiceSpy {
 
-    payload ={
-        permissions:[
-            'get:actors',
-            'post:actors',
-            'patch:actors',
-            'delete:actors',
-            'get:movies',
-            'post:movies',
-            'patch:movies',
-            'delete:movies'
-        ]
-    }
+    payload = mockedPayload;
 
     can = mockFn();
     activeJWT = mockFn();
@@ -116,3 +118,9 @@ export class MockToastService {
     success = mockFn();
     error = mockFn();
 }
+
+
+export const MockJwtHelperService = {
+    isTokenExpired: mockFn().mockReturnValue(true),
+    decodeToken: mockFn().mockReturnValue(mockedPayload)
+};
