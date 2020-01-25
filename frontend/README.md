@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/kalsmic/Ensemble/tree/master.svg?style=svg)](https://circleci.com/gh/kalsmic/Ensemble/tree/master)
+[![codecov](https://codecov.io/gh/kalsmic/Ensemble/branch/master/graph/badge.svg)](https://codecov.io/gh/kalsmic/Ensemble)
 
 # Ensemble Casting Agency Frontend
 
