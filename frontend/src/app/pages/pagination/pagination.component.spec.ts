@@ -1,5 +1,5 @@
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {IonicModule} from '@ionic/angular';
 
 import {PaginationComponent} from './pagination.component';
 
@@ -10,7 +10,7 @@ describe('PaginationComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [PaginationComponent],
-            imports: [IonicModule.forRoot()]
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(PaginationComponent);
@@ -20,5 +20,14 @@ describe('PaginationComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should run #getPageNumber()', async () => {
+        const mockEvent = {target: {value: 1}};
+        component.goToPage.emit = jest.fn();
+
+        component.getPageNumber(mockEvent);
+        expect(component.goToPage.emit).toHaveBeenCalled();
+        expect(component.goToPage.emit).toHaveBeenCalledWith(1);
     });
 });
