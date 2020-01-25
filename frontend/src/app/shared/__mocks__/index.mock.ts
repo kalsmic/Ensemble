@@ -25,6 +25,10 @@ export const authServiceMethodsSpy = {
 export class AuthServiceSpy {
 
     can = mockFn();
+    activeJWT = mockFn();
+    logout = mockFn();
+    isAuthenticated = mockFn();
+
 }
 
 export const dummyMovies = [
@@ -32,8 +36,8 @@ export const dummyMovies = [
 ];
 
 export const actors = [
-    {id: 1, name: 'actor Name', age: 12},
-    {id: 2, name: 'Actor z', age: 34}
+    {id: 1, name: 'actor Name', age: 12, gender: 'm', birth_date: '2005-01-01'},
+    {id: 2, name: 'Actor z', age: 34, gender: 'f', birth_date: '2006-01-01'}
 ];
 
 @Injectable()
@@ -61,12 +65,18 @@ export class MovieServiceSpy {
     deleteMovie = mockFn();
 }
 
+
 @Injectable()
 export class ArtistServiceSpy {
     getArtists = mockFn();
     deleteArtist = mockFn();
-    saveArtist = mockFn().mockReturnValue(observableOf({
-        loading: {}
+    saveArtist = mockFn().mockReturnValue(
+        observableOf({loading: {}})
+    );
+    sA = mockFn(() => ({
+        subscribe: mockFn().mockReturnValue(observableOf({
+            error: {message: 'Actor already exists'}
+        }))
     }));
 }
 
@@ -76,4 +86,19 @@ export const modalControllerSpy = {
 
 };
 
-/* @ts-ignore */
+export const paginationMock = {
+    pages: 0,
+    current_page: 1,
+    next_num: null,
+    prev_num: null,
+    total: 0,
+    has_next: false,
+    has_prev: false
+};
+
+
+@Injectable()
+export class MockToastService {
+    success = mockFn();
+    error = mockFn();
+}

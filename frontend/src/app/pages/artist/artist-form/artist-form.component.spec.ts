@@ -2,9 +2,10 @@ import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AngularDelegate, ModalController} from '@ionic/angular';
+
 import {AuthService} from 'src/app/core/auth.service';
 import {ArtistService} from 'src/app/pages/artist/artist.service';
-import {ArtistServiceSpy, AuthServiceSpy, modalControllerSpy} from '../../../shared/__mocks__';
+import {ArtistServiceSpy, AuthServiceSpy, modalControllerSpy} from '../../../shared/__mocks__/index.mock';
 import {ArtistFormComponent} from './artist-form.component';
 
 describe('ArtistFormComponent', () => {
@@ -51,11 +52,7 @@ describe('ArtistFormComponent', () => {
     });
 
     it('should run #ngOnInit()', async () => {
-        component.artist = component.artist || {};
-        component.artist.name = 'name';
-        component.artist.gender = 'gender';
-        component.artist.birth_date = 'birth_date';
-        component.formBuilder = component.formBuilder || {};
+        component.isNew = true;
         component.formBuilder.group = jest.fn();
         component.ngOnInit();
         expect(component.auth.can).toHaveBeenCalled();
@@ -85,6 +82,7 @@ describe('ArtistFormComponent', () => {
 
         component.closeModal = jest.fn();
         await component.saveArtist();
+
         expect(component.artistService.saveArtist).toHaveBeenCalled();
         expect(component.closeModal).toHaveBeenCalled();
     });

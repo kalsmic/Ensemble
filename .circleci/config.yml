@@ -1,35 +1,41 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-
-version: 2
+# # Javascript Node CircleCI 2.1 configuration file
+# #
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.5
 jobs:
   build:
     docker:
-      # specify the version you desire here
+#       # specify the version you desire here
       - image: circleci/node:10.18.0-stretch
+#
+    working_directory: ~/repo/frontend
 
-    working_directory: ~/repo
-    command: COPY
-
+#     command: COPY
+#
     steps:
-      - checkout
-      # Download and cache dependencies
+      - checkout:
+          path: ~/repo
+#       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "frontend/package.json" }}
-            # fallback to using the latest cache if no exacfrot match is found
+            - v1-dependencies-{{ checksum "package.json" }}
+# #             # fallback to using the latest cache if no exacfrot match is found
             - v1-dependencies-
-
-
-      - run: cd frontend && npm install
-
+      - run:
+          name: Install npm dependencies
+          command: npm install
+#
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "frontend/package.json" }}
-
-      # run tests!
-      - run: cd frontend && npm run test:ci
-
-      - store_artifacts:
-          path: coverage
+          key: v1-dependencies-{{ checksum "package.json" }}
+#
+#       # run tests!
+      - run:
+          name: Test
+          command: npm run test:ci
+#
+      - codecov/upload:
+          file: ./bin/codecov -f coverage/*.json
+          flags: frontend

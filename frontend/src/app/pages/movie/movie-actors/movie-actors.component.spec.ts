@@ -2,7 +2,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import {MovieServiceSpy} from '../../../shared/__mocks__';
+import {MovieServiceSpy} from '../../../shared/__mocks__/index.mock';
 import {MovieService} from '../movie.service';
 import {MovieActorsComponent} from './movie-actors.component';
 
@@ -26,6 +26,7 @@ describe('MovieActorsComponent', () => {
     }));
     afterEach(() => {
         fixture.destroy();
+        jest.resetAllMocks();
     });
 
 

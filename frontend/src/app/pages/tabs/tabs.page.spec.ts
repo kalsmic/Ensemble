@@ -1,7 +1,7 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {routerSpy} from '../../shared/__mocks__';
+import {routerSpy} from '../../shared/__mocks__/index.mock';
 
 import {TabsPage} from './tabs.page';
 
