@@ -21,7 +21,7 @@ export class MoviePage implements OnInit {
     loading = true;
 
     constructor(
-        private authService: AuthService,
+        public authService: AuthService,
         private modalController: ModalController,
         private movieService: MovieService,
         private popoverController: PopoverController,

@@ -87,6 +87,8 @@ export class ArtistServiceSpy {
             actor: actors[0]
         })
     );
+
+    searchActor = () => observableOf([...actors]);
 }
 
 export const modalControllerSpy = {
