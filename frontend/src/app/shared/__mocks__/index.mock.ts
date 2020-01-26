@@ -13,12 +13,12 @@ export const platformSpy = {
 };
 
 export const routerSpy = {navigate: mockFn()};
+
 export const authServiceMethodsSpy = {
     buildLoginLink: mockFn().mockImplementation(() => ''),
-    loadJWTs: () => mockFn().mockImplementation(() => {
-    }),
-    checkTokenFragment: () => mockFn().mockImplementation(() => {
-    })
+    loadJWTs: () => mockFn(),
+    checkTokenFragment: mockFn(),
+    can: mockFn()
 };
 
 export const mockedPayload = {
@@ -34,17 +34,11 @@ export const mockedPayload = {
     ]
 };
 
+
 @Injectable()
 export class AuthServiceSpy {
-
-    payload = mockedPayload;
-
-    can = mockFn();
-    activeJWT = mockFn();
-    logout = mockFn();
-    isAuthenticated = mockFn();
-    decodeJWT = mockFn();
-
+    token: '';
+    can = mockFn().mockReturnValue(true);
 }
 
 export const dummyMovies = [
@@ -81,19 +75,18 @@ export class MovieServiceSpy {
     deleteMovie = mockFn();
 }
 
-
 @Injectable()
 export class ArtistServiceSpy {
     getArtists = mockFn();
     deleteArtist = mockFn();
+
     saveArtist = mockFn().mockReturnValue(
-        observableOf({loading: {}})
+        observableOf({
+            loading: false,
+            message: 'Actor added successfully',
+            actor: actors[0]
+        })
     );
-    sA = mockFn(() => ({
-        subscribe: mockFn().mockReturnValue(observableOf({
-            error: {message: 'Actor already exists'}
-        }))
-    }));
 }
 
 export const modalControllerSpy = {
