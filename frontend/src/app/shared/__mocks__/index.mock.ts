@@ -39,6 +39,7 @@ export const mockedPayload = {
 export class AuthServiceSpy {
     token: '';
     can = mockFn().mockReturnValue(true);
+    logout = mockFn();
 }
 
 export const dummyMovies = [
@@ -119,3 +120,10 @@ export const MockJwtHelperService = {
     isTokenExpired: mockFn().mockReturnValue(true),
     decodeToken: mockFn().mockReturnValue(mockedPayload)
 };
+
+Injectable();
+
+export class MockRouter {
+    navigate = mockFn();
+    navigateByUrl = mockFn().mockResolvedValueOnce(mockFn());
+}
