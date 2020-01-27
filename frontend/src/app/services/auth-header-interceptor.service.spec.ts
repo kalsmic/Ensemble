@@ -1,39 +1,27 @@
 import {HttpRequest} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {of as ObservableOf} from 'rxjs';
-import {AuthService} from '../core/auth.service';
-import {ToastService} from '../core/toast.service';
-import {AuthServiceSpy, routerSpy} from '../shared/__mocks__/index.mock';
 
-import {HttpInterceptorService} from './http-interceptor.service';
+import {AuthService} from '../core/auth.service';
+import {AuthServiceSpy} from '../shared/__mocks__/index.mock';
+import {AuthHeaderInterceptorService} from './auth-header-interceptor.service';
 
 describe('HttpInterceptorService', () => {
-    const toastServiceSpy = {
-        error: jest.fn().mockReturnValue({
-            then() {
-            }
-        })
-    };
 
     let
-        interceptor: HttpInterceptorService,
-        authService: AuthService,
-        router: Router;
+        interceptor: AuthHeaderInterceptorService,
+        authService: AuthService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                {provide: Router, useValue: routerSpy},
+                AuthHeaderInterceptorService,
                 {provide: AuthService, useValue: AuthServiceSpy},
-                {provide: ToastService, useValue: AuthServiceSpy},
 
             ]
         });
 
-        interceptor = TestBed.get(HttpInterceptorService);
+        interceptor = TestBed.get(AuthHeaderInterceptorService);
         authService = TestBed.get(AuthService);
-        router = TestBed.get(Router);
     });
 
     afterEach(() => {
@@ -50,12 +38,11 @@ describe('HttpInterceptorService', () => {
         const reqMock = new HttpRequest('GET', url);
 
         const next = {
-            handle: jest.fn(() => ObservableOf({}))
+            handle: jest.fn()
         };
 
         jest.spyOn(reqMock, 'clone');
 
-        // @ts-ignore
         interceptor.intercept(reqMock, next);
         expect(next.handle).toHaveBeenCalled();
         expect(reqMock.clone).toHaveBeenCalledWith(
