@@ -43,7 +43,7 @@ describe('MovieFormComponent', () => {
 
   afterEach(() => {
     fixture.destroy();
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should run #constructor()', async () => {

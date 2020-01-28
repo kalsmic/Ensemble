@@ -4,7 +4,6 @@ import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-import {AuthService} from '../../core/auth.service';
 import {ToastService} from '../../core/toast.service';
 import {Movie, Pagination} from '../../shared/models';
 import {setPaginationDetails} from '../../shared/utils';
@@ -29,9 +28,9 @@ export class MovieService {
     ) {
     }
 
-    getMovies = (page?: number): Observable<Movie[]> => {
+    getMovies = (page: number = 1): Observable<Movie[]> => {
 
-        const url = page ? this.url + '/movies?page=' + page : this.url + '/movies';
+        const url = this.url + '/movies?page=' + page;
 
         this.loading = true;
         return this.httpClient.get<any>(url)
@@ -58,9 +57,9 @@ export class MovieService {
     }
 
 
-    getMovieActors = (movieId: string | number, page?: number): Observable<any> => {
+    getMovieActors = (movieId: string | number, page: number = 1): Observable<any> => {
 
-        const url = page ? this.url + '/movies/' + movieId + '/actors?page=' + page : this.url + '/movies/' + movieId + '/actors';
+        const url = this.url + '/movies/' + movieId + '/actors?page=' + page;
 
         this.loading = true;
         return this.httpClient.get<any>(url)

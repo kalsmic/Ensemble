@@ -45,7 +45,7 @@ describe('ArtistService', () => {
     });
 
     it('should run #getArtists', () => {
-        service.getArtists(1);
+        service.getArtists();
         const req = httpMock.expectOne(`${url}/actors?page=1`);
         expect(req.request.method).toBe('GET');
         req.flush({actors, ...paginationMock});
