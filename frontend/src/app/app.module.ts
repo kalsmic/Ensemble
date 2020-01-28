@@ -13,6 +13,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
 import {AuthHeaderInterceptorService} from './services/auth-header-interceptor.service';
+import {HttpErrorInterceptorService} from './services/http-error-interceptor.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -31,6 +32,7 @@ import {AuthHeaderInterceptorService} from './services/auth-header-interceptor.s
         SplashScreen,
 
         {provide: HTTP_INTERCEPTORS, useClass: AuthHeaderInterceptorService, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorService, multi: true},
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]

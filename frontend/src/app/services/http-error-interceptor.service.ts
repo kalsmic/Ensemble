@@ -49,7 +49,7 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
                     }
                 }
 
-                return throwError(error.error || error.statusText);
+                return throwError(error.error);
             })
         );
 
