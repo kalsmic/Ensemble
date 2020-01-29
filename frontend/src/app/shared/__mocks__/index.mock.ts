@@ -115,14 +115,7 @@ export class MockToastService {
     error = mockFn();
 }
 
-
-export const MockJwtHelperService = {
-    isTokenExpired: mockFn().mockReturnValue(true),
-    decodeToken: mockFn().mockReturnValue(mockedPayload)
-};
-
-Injectable();
-
+@Injectable()
 export class MockRouter {
     navigate = mockFn();
     navigateByUrl = mockFn().mockResolvedValueOnce(mockFn());

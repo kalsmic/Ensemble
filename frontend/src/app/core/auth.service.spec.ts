@@ -1,7 +1,7 @@
 import {getTestBed, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {mockedPayload, MockJwtHelperService, routerSpy} from '../shared/__mocks__/index.mock';
+import {mockedPayload, routerSpy} from '../shared/__mocks__/index.mock';
 
 import {AuthService} from './auth.service';
 
@@ -16,13 +16,15 @@ describe('AuthService', () => {
         TestBed.configureTestingModule({
             providers: [
                 {provide: Router, useValue: routerSpy},
-                {provide: JwtHelperService, useValue: MockJwtHelperService},
             ]
         });
 
         authService = getTestBed().get(AuthService);
         router = getTestBed().get(Router);
-        jwtHelperService = getTestBed().get(JwtHelperService);
+        jwtHelperService = authService.jwtHelperService;
+        jwtHelperService.decodeToken = jest.fn().mockReturnValue(mockedPayload);
+        jwtHelperService.isTokenExpired = jest.fn().mockReturnValue(true);
+
 
     });
 

@@ -55,6 +55,6 @@ describe('AppComponent', () => {
     await platformReadySpy();
     expect(statusBarSpy.styleDefault).toHaveBeenCalled();
     expect(splashScreenSpy.hide).toHaveBeenCalled();
-  });
+  }, 1000);
 
 });

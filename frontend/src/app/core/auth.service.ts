@@ -20,11 +20,9 @@ export class AuthService {
     token: string = localStorage.getItem(JWTS_LOCAL_KEY) || null;
     payload: any;
     public isLoggedIn: boolean;
+    jwtHelperService = new JwtHelperService();
 
-    constructor(
-        private router: Router,
-        private jwtHelperService: JwtHelperService) {
-    }
+    constructor(private router: Router) {}
 
     buildLoginLink = (callbackPath = '') => {
         let link = 'https://';

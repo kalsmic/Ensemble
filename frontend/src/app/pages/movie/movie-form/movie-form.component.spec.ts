@@ -46,24 +46,24 @@ describe('MovieFormComponent', () => {
     jest.clearAllMocks();
   });
 
-  it('should run #constructor()', async () => {
+  it('should run #constructor()', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should run SetterDeclaration #actorFilter', async () => {
+  it('should run SetterDeclaration #actorFilter', () => {
     component.actorFilter = 'My actor';
     component.searchActor = jest.fn();
     expect(component.actorSearchFilter).toBe('My actor');
   });
 
-  it('should run GetterDeclaration #errorControl', async () => {
+  it('should run GetterDeclaration #errorControl', () => {
     component.movieForm = component.movieForm || {};
     component.movieForm.controls = 'controls';
     const errorControl = component.errorControl;
     expect(errorControl).toBe('controls');
   });
 
-  it('should run #ngOnInit()', async () => {
+  it('should run #ngOnInit()', () => {
     component.isNew = true;
 
     component.formBuilder = component.formBuilder || {};
@@ -81,7 +81,7 @@ describe('MovieFormComponent', () => {
 
   });
 
-  it('should run #ngOnInit() for new', async () => {
+  it('should run #ngOnInit() for new', () => {
     component.isNew = false;
 
     component.formBuilder = component.formBuilder || {};
@@ -94,14 +94,14 @@ describe('MovieFormComponent', () => {
   });
 
 
-  it('should run #searchActor() on setting actorFilter', async () => {
+  it('should run #searchActor() on setting actorFilter', () => {
     component.searchActor = jest.fn();
     component.actorFilter = 'my actor';
 
     expect(component.searchActor).toHaveBeenCalled();
   });
 
-  it('should run #searchActor()', async () => {
+  it('should run #searchActor()', () => {
     artistService.searchActor = jest.fn();
     component.actorFilter = '';
 
@@ -109,7 +109,7 @@ describe('MovieFormComponent', () => {
     expect(component.filteredActors).toBeUndefined();
   });
 
-  it('should run #handleSearchBar()', async () => {
+  it('should run #handleSearchBar()', () => {
     component.searchActor = jest.fn();
     component.handleSearchBar({target: {value: 'my search term'}});
 
@@ -118,12 +118,12 @@ describe('MovieFormComponent', () => {
     expect(component.searchActor).toHaveBeenCalledTimes(1);
   });
 
-  it('should run #customTrackBy()', async () => {
+  it('should run #customTrackBy()', () => {
     const trackIndex = component.customTrackBy(2);
     expect(trackIndex).toBe(2);
   });
 
-  it('should run #addActor()', async () => {
+  it('should run #addActor()', () => {
     const actor = {id: 4, name: 'Emma'};
     component.movie = component.movie || {};
     component.movie.actors = [];
@@ -137,7 +137,7 @@ describe('MovieFormComponent', () => {
     expect(component.movie.actors.length).toEqual(1);
   });
 
-  it('should run #removeActor()', async () => {
+  it('should run #removeActor()', () => {
     component.movie = component.movie || {};
 
     component.movie.actor_ids = [4];
@@ -153,9 +153,9 @@ describe('MovieFormComponent', () => {
     component.modalCtrl.dismiss = jest.fn();
     await component.closeModal();
     expect(component.modalCtrl.dismiss).toHaveBeenCalled();
-  });
+  }, 1000);
 
-  it('should run #saveMovie()', async () => {
+  it('should run #saveMovie()', () => {
     component.movieForm = component.movieForm || {};
     component.movieForm.valid = 'valid';
     component.movieForm.value = mockedMovie;
@@ -174,7 +174,7 @@ describe('MovieFormComponent', () => {
     expect(movieService.saveMovie).not.toBeCalled();
   });
 
-  it('should run return error on #saveMovie() failure', async () => {
+  it('should run return error on #saveMovie() failure', () => {
 
     const errorResponse = {error: {message: 'error message'}, loading: false};
     const spy = jest.spyOn(movieService, 'saveMovie');
@@ -199,6 +199,6 @@ describe('MovieFormComponent', () => {
     await component.deleteClickedMovie();
     expect(component.movieService.deleteMovie).toHaveBeenCalled();
     expect(component.closeModal).toHaveBeenCalled();
-  });
+  }, 1000);
 
 });
