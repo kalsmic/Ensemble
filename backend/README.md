@@ -127,7 +127,3 @@ The `--reload` flag will detect file changes and restart the server automaticall
    - To run tests with pytest, simply run `pytest` in the terminal
    - If your prefer running with unittest, run `python -m unittest`
    - to run tests with coverage, run `pytest --cov flaskr`
-
-10. Testing a live project
-
-    - The backend has been deployed to heroku platform [http://ensemble-movies.herokuapp.com/api/v1](http://ensemble-movies.herokuapp.com/api/v1)

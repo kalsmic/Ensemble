@@ -13,36 +13,33 @@ export const platformSpy = {
 };
 
 export const routerSpy = {navigate: mockFn()};
+
 export const authServiceMethodsSpy = {
     buildLoginLink: mockFn().mockImplementation(() => ''),
-    loadJWTs: () => mockFn().mockImplementation(() => {
-    }),
-    checkTokenFragment: () => mockFn().mockImplementation(() => {
-    })
+    loadJWTs: () => mockFn(),
+    checkTokenFragment: mockFn(),
+    can: mockFn()
 };
+
+export const mockedPayload = {
+    permissions: [
+        'get:actors',
+        'post:actors',
+        'patch:actors',
+        'delete:actors',
+        'get:movies',
+        'post:movies',
+        'patch:movies',
+        'delete:movies'
+    ]
+};
+
 
 @Injectable()
 export class AuthServiceSpy {
-
-    payload ={
-        permissions:[
-            'get:actors',
-            'post:actors',
-            'patch:actors',
-            'delete:actors',
-            'get:movies',
-            'post:movies',
-            'patch:movies',
-            'delete:movies'
-        ]
-    }
-
-    can = mockFn();
-    activeJWT = mockFn();
+    token: '';
+    can = mockFn().mockReturnValue(true);
     logout = mockFn();
-    isAuthenticated = mockFn();
-    decodeJWT = mockFn();
-
 }
 
 export const dummyMovies = [
@@ -79,19 +76,20 @@ export class MovieServiceSpy {
     deleteMovie = mockFn();
 }
 
-
 @Injectable()
 export class ArtistServiceSpy {
     getArtists = mockFn();
     deleteArtist = mockFn();
+
     saveArtist = mockFn().mockReturnValue(
-        observableOf({loading: {}})
+        observableOf({
+            loading: false,
+            message: 'Actor added successfully',
+            actor: actors[0]
+        })
     );
-    sA = mockFn(() => ({
-        subscribe: mockFn().mockReturnValue(observableOf({
-            error: {message: 'Actor already exists'}
-        }))
-    }));
+
+    searchActor = () => observableOf([...actors]);
 }
 
 export const modalControllerSpy = {
@@ -115,4 +113,17 @@ export const paginationMock = {
 export class MockToastService {
     success = mockFn();
     error = mockFn();
+}
+
+
+export const MockJwtHelperService = {
+    isTokenExpired: mockFn().mockReturnValue(true),
+    decodeToken: mockFn().mockReturnValue(mockedPayload)
+};
+
+Injectable();
+
+export class MockRouter {
+    navigate = mockFn();
+    navigateByUrl = mockFn().mockResolvedValueOnce(mockFn());
 }

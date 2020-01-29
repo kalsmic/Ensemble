@@ -69,5 +69,3 @@ class EnsembleErrorHandlersTestCase(EnsembleBaseTestCase):
     def test_403_error(self):
         with self.assertRaises(Forbidden):
             check_permissions(["get:movies"], {})
-
-

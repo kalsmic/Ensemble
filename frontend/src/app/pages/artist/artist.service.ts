@@ -4,7 +4,6 @@ import {Observable} from 'rxjs';
 import {map, retry} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-import {AuthService} from '../../core/auth.service';
 import {ToastService} from '../../core/toast.service';
 import {Actor, initialPagination, Pagination} from '../../shared/models';
 import {setPaginationDetails} from '../../shared/utils';
@@ -25,29 +24,23 @@ export class ArtistService {
     public loading: boolean;
 
     constructor(
-        private auth: AuthService,
         private http: HttpClient,
         private toast: ToastService
     ) {
     }
 
 
-    getArtists = (page?: number) => {
-        if (this.auth.can('get:actors')) {
-            this.loading = true;
-            let url = this.url + '/actors';
-            if (page) {
-                url = url + '?page=' + page;
-            }
-            this.http.get(url)
-                .subscribe((res: any) => {
-                    this.loading = false;
-                    this.actors = [];
-                    this.artistsToItems(res.actors);
-                    this.pagination = setPaginationDetails(res);
-                });
+    getArtists = (page: number = 1) => {
+        this.loading = true;
+        const url = this.url + '/actors' + '?page=' + page;
 
-        }
+        this.http.get(url)
+            .subscribe((res: any) => {
+                this.loading = false;
+                this.actors = [];
+                this.artistsToItems(res.actors);
+                this.pagination = setPaginationDetails(res);
+            });
     }
 
     saveArtist = (artist: Actor): Observable<any> => {

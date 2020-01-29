@@ -23,13 +23,6 @@ The `./frontend` has been built with Angular  and Ionic to consume the data from
 
 [View the README.md within ./frontend for more details.](./frontend/README.md)
 
-### Deployments
-
-The projects have been deployed to heroku.
-
-- frontend - [link to live application](https://ensemble-pro.herokuapp.com/)
-- backend - [link to live api](http://ensemble-movies.herokuapp.com/)
-
 ### Credits
 
 - Udacity tutors

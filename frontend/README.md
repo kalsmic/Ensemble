@@ -50,10 +50,3 @@ or
 ```bash
 npm run start:serve
 ```
-
-### Testing live project
-
- The live project can be accessed via [Heroku](https://ensemble-pro.herokuapp.com/)
- I have also provided some fake tokens for login for the different roles to make testing easy, simply click on one of the three roles on the login page.
-
- Also feel free to walk through the project set up and try out the Auth0 authentication implemented on the frontend.

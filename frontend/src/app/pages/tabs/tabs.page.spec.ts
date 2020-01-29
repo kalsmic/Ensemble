@@ -1,29 +1,36 @@
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {routerSpy} from '../../shared/__mocks__/index.mock';
+import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
+import {AuthService} from '../../core/auth.service';
+import {AuthServiceSpy} from '../../shared/__mocks__/index.mock';
 import {TabsPage} from './tabs.page';
 
 describe('TabsPage', () => {
-    let component: TabsPage;
-    let fixture: ComponentFixture<TabsPage>;
+  let fixture: ComponentFixture<TabsPage>;
+  let component: TabsPage;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [TabsPage],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            providers: [{provide: Router, useValue: routerSpy}]
-        }).compileComponents();
-    }));
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [FormsModule, ReactiveFormsModule],
+      declarations: [
+        TabsPage,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      providers: [
+        {provide: AuthService, useClass: AuthServiceSpy},
+      ]
+    }).overrideComponent(TabsPage, {}).compileComponents();
+    fixture = TestBed.createComponent(TabsPage);
+    component = fixture.debugElement.componentInstance;
+  });
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(TabsPage);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  afterEach(() => {
+    fixture.destroy();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should run #constructor()', async () => {
+    expect(component).toBeTruthy();
+  });
+
 });

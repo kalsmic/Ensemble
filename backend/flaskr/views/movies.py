@@ -222,6 +222,7 @@ class ListMovieActorsResource(Resource):
         :returns status_code 400 on failure and json
             {"success": False, "message": error_message}
     """
+
     @requires_auth("get:movies")
     @id_exists(entity='movie')
     def get(self, *args, **kwargs):

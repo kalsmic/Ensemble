@@ -22,9 +22,9 @@ export class MoviePage implements OnInit {
 
     constructor(
         public authService: AuthService,
-        public modalController: ModalController,
-        public movieService: MovieService,
-        public popoverController: PopoverController,
+        private modalController: ModalController,
+        private movieService: MovieService,
+        private popoverController: PopoverController,
     ) {
     }
 

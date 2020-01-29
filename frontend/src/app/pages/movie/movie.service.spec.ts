@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 
 import {environment} from '../../../environments/environment';
 import {ToastService} from '../../core/toast.service';
-import { MockToastService, paginationMock, routerSpy} from '../../shared/__mocks__/index.mock';
+import {MockToastService, paginationMock, routerSpy} from '../../shared/__mocks__/index.mock';
 import {initialPagination, Movie} from '../../shared/models';
 
 import {MovieService} from './movie.service';
@@ -64,7 +64,7 @@ describe('MovieService', () => {
         let movies: Movie[];
         movieService.getMovies().subscribe(data => movies = data);
 
-        const req = httpMock.expectOne(`${url}/movies`);
+        const req = httpMock.expectOne(`${url}/movies?page=1`);
         expect(req.request.method).toBe('GET');
 
         req.flush({movies: dummyMovies, ...paginationMock});
@@ -94,7 +94,7 @@ describe('MovieService', () => {
         let response: any = {};
 
         movieService.getMovieActors(1).subscribe(data => response = data);
-        const req = httpMock.expectOne(`${url}/movies/1/actors`);
+        const req = httpMock.expectOne(`${url}/movies/1/actors?page=1`);
         expect(req.request.method).toBe('GET');
 
         req.flush({actors, ...paginationMock});
